@@ -1,10 +1,17 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import MotionProvider from '@/components/motion/MotionProvider';
 import { INSTITUTION_INFO } from '@/lib/data';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#173D32',
+};
 
 export const metadata: Metadata = {
   title: {
@@ -93,10 +100,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body suppressHydrationWarning className="antialiased min-h-screen flex flex-col bg-[#F6F2E9] text-[#342B25] selection:bg-[#C5A46D] selection:text-[#173D32]">
+      <body suppressHydrationWarning className="antialiased min-h-screen flex flex-col bg-[#F6F2E9] text-[#342B25] selection:bg-[#C5A46D] selection:text-[#173D32] overflow-x-hidden w-full max-w-full">
         <AnnouncementBar />
         <Navbar />
-        <main className="flex-grow">
+        <main className="flex-grow w-full max-w-full overflow-x-hidden">
           <MotionProvider>{children}</MotionProvider>
         </main>
         <Footer />

@@ -23,28 +23,28 @@ export default function CompactCTA() {
         </p>
 
         {/* Primary Clear CTA */}
-        <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
+        <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <Link
             prefetch={true}
             href="/admissions/apply"
-            className="inline-flex items-center px-6 py-3 rounded-md bg-[#C5A46D] text-[#173D32] font-bold text-xs sm:text-sm uppercase tracking-wider shadow-gold hover:bg-[#DFCA9E] transition-all duration-200"
+            className="inline-flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-md bg-[#C5A46D] text-[#173D32] font-bold text-xs sm:text-sm uppercase tracking-wider shadow-gold hover:bg-[#DFCA9E] transition-all duration-200"
           >
             <span>Apply for Admissions 2026</span>
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
           </Link>
 
           <a
             href="/api/download?file=/documents/misc/institutional-prospectus-information-brochure-2026-27.pdf&name=Institutional-Prospectus-2026-27"
             download="Institutional-Prospectus-2026-27.pdf"
-            className="inline-flex items-center px-5 py-3 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm uppercase tracking-wider border border-white/20 transition-all duration-200"
+            className="inline-flex items-center justify-center px-4 sm:px-5 py-2.5 sm:py-3 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm uppercase tracking-wider border border-white/20 transition-all duration-200"
           >
-            <FileText className="w-4 h-4 mr-2 text-[#C5A46D]" />
+            <FileText className="w-4 h-4 mr-2 text-[#C5A46D] shrink-0" />
             <span>Download Prospectus</span>
           </a>
         </div>
 
         {/* Admissions Contact Footer Note */}
-        <p className="text-[11px] text-[#81917A] pt-2">
+        <p className="text-[10.5px] sm:text-[11px] text-[#81917A] pt-2 break-words">
           Admissions Helpline: <span className="text-[#DFCA9E] font-medium">{INSTITUTION_INFO.admissionsHelpline}</span> · Email: <span className="text-[#DFCA9E] font-medium">{INSTITUTION_INFO.email}</span>
         </p>
       </div>

@@ -78,26 +78,26 @@ export default function Navbar() {
           : 'bg-[#173D32] border-b border-[#C5A46D]/30 py-2.5'
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-5 xl:px-6 w-full">
-        <div className="flex items-center justify-between gap-1.5 lg:gap-2 xl:gap-3 w-full">
-          {/* Logo & College Identity */}
+      <div className="max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-5 xl:px-6 w-full">
+        <div className="flex items-center justify-between gap-1 sm:gap-2 xl:gap-3 w-full">
+          {/* Logo & College Identity - Fluid & responsive across all mobile screens */}
           <Link prefetch={true} href="/"
-            className="flex items-center space-x-2 sm:space-x-2.5 group shrink-0 min-w-max py-0.5 select-none"
+            className="flex items-center space-x-1.5 sm:space-x-2.5 group shrink-0 py-0.5 select-none min-w-0"
           >
             {/* Vedic Emblem Crest */}
-            <div className="w-9 h-9 sm:w-10 sm:h-10 2xl:w-11 2xl:h-11 rounded-full border-2 border-[#C5A46D] bg-[#0F2821] flex items-center justify-center p-0.5 shadow-gold group-hover:scale-105 transition-transform duration-300 shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 2xl:w-11 2xl:h-11 rounded-full border-2 border-[#C5A46D] bg-[#0F2821] flex items-center justify-center p-0.5 shadow-gold group-hover:scale-105 transition-transform duration-300 shrink-0">
               <div className="w-full h-full rounded-full border border-[#C5A46D]/40 flex flex-col items-center justify-center text-center">
-                <span className="text-[#C5A46D] text-xs font-serif font-bold leading-none">ॐ</span>
-                <span className="text-[7px] font-serif text-[#C5A46D]/90 uppercase tracking-widest leading-none mt-0.5">SHAMC</span>
+                <span className="text-[#C5A46D] text-[10px] sm:text-xs font-serif font-bold leading-none">ॐ</span>
+                <span className="text-[6px] sm:text-[7px] font-serif text-[#C5A46D]/90 uppercase tracking-widest leading-none mt-0.5">SHAMC</span>
               </div>
             </div>
 
-            {/* Non-wrapping typography */}
+            {/* Typography */}
             <div className="flex flex-col justify-center whitespace-nowrap shrink-0">
-              <span className="font-serif text-sm sm:text-base xl:text-[15px] 2xl:text-lg font-bold tracking-tight text-white group-hover:text-[#DFCA9E] transition-colors leading-tight whitespace-nowrap block">
+              <span className="font-serif text-xs sm:text-base xl:text-[15px] 2xl:text-lg font-bold tracking-tight text-white group-hover:text-[#DFCA9E] transition-colors leading-tight whitespace-nowrap block">
                 Shri Haridutt Ayurvedic
               </span>
-              <span className="text-[9px] sm:text-[10px] xl:text-[10px] 2xl:text-[10.5px] font-sans tracking-[0.14em] text-[#C5A46D] uppercase font-semibold leading-tight mt-0.5 whitespace-nowrap block">
+              <span className="text-[8px] sm:text-[10px] xl:text-[10px] 2xl:text-[10.5px] font-sans tracking-[0.1em] sm:tracking-[0.14em] text-[#C5A46D] uppercase font-semibold leading-tight mt-0.5 whitespace-nowrap block">
                 Medical College &amp; Hospital
               </span>
               <span className="hidden 2xl:block text-[8px] text-[#81917A] tracking-wider leading-none mt-0.5 whitespace-nowrap">
@@ -673,20 +673,21 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action: Apply Now & Mobile Hamburger */}
-          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+          <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
             <Link prefetch={true} href="/admissions/apply"
-              className="relative inline-flex items-center justify-center px-2.5 xl:px-3 py-1.5 text-[10.5px] xl:text-xs uppercase tracking-wider font-bold text-[#173D32] bg-gradient-to-r from-[#DFCA9E] via-[#C5A46D] to-[#9A7E4F] rounded shadow-gold hover:shadow-luxury hover:brightness-105 active:scale-95 transition-all duration-300 border border-[#DFCA9E] whitespace-nowrap shrink-0 select-none"
+              className="relative inline-flex items-center justify-center px-2 sm:px-2.5 xl:px-3 py-1 sm:py-1.5 text-[9.5px] sm:text-[10.5px] xl:text-xs uppercase tracking-wider font-bold text-[#173D32] bg-gradient-to-r from-[#DFCA9E] via-[#C5A46D] to-[#9A7E4F] rounded shadow-gold hover:shadow-luxury hover:brightness-105 active:scale-95 transition-all duration-300 border border-[#DFCA9E] whitespace-nowrap shrink-0 select-none"
             >
-              <Sparkles className="w-3 h-3 mr-1 text-[#173D32] shrink-0" />
-              <span className="whitespace-nowrap font-bold">Apply 2026</span>
+              <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 text-[#173D32] shrink-0" />
+              <span className="whitespace-nowrap font-bold hidden xs:inline">Apply 2026</span>
+              <span className="whitespace-nowrap font-bold xs:hidden">Apply</span>
             </Link>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-1.5 text-white hover:text-[#DFCA9E] focus:outline-none shrink-0"
+              className="xl:hidden p-1 sm:p-1.5 text-white hover:text-[#DFCA9E] focus:outline-none shrink-0"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>
