@@ -1,0 +1,596 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// =========================================================================
+// 1-5. USERS, ROLES & PERMISSION MATRIX (RBAC)
+// =========================================================================
+
+model User {
+  id                 String              @id @default(uuid())
+  name               String
+  email              String              @unique
+  password           String
+  role               String              @default("SUPER_ADMIN") // SUPER_ADMIN, PRINCIPAL, ADMISSION_ADMIN, ACADEMIC_ADMIN, CONTENT_MANAGER, FACULTY
+  phone              String?
+  isActive           Boolean             @default(true)
+  lastLogin          DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  userRoles          UserRole[]
+  auditLogs          AuditLog[]
+}
+
+model Role {
+  id                 String              @id @default(uuid())
+  name               String              @unique // Super Administrator, Admission Officer, etc.
+  slug               String              @unique // super-admin, admission-officer, etc.
+  description        String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  permissions        RolePermission[]
+  userRoles          UserRole[]
+}
+
+model Permission {
+  id                 String              @id @default(uuid())
+  slug               String              @unique // e.g. "admissions:approve", "courses:manage"
+  description        String
+  module             String              // admissions, academics, users, cms, settings
+  createdAt          DateTime            @default(now())
+  rolePermissions    RolePermission[]
+}
+
+model RolePermission {
+  id                 String              @id @default(uuid())
+  roleId             String
+  permissionId       String
+  role               Role                @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission         Permission          @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model UserRole {
+  id                 String              @id @default(uuid())
+  userId             String
+  roleId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role               Role                @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+// =========================================================================
+// 6. STUDENT SCHOLARS
+// =========================================================================
+
+model Student {
+  id                   String          @id @default(uuid())
+  studentId            String          @unique // e.g. "SHAMC-2025-014"
+  name                 String
+  email                String          @unique
+  password             String          @default("")
+  mobile               String
+  dob                  String
+  gender               String
+  bloodGroup           String          @default("B+")
+  courseCode           String          @default("BAMS")
+  batch                String          @default("2025-2030")
+  address              String
+  attendancePercentage Float           @default(85.5)
+  feesPaid             Boolean         @default(true)
+  isSuspended          Boolean         @default(false)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+}
+
+// =========================================================================
+// 7-8. AYURVEDIC DEPARTMENTS & FACULTY DIRECTORY
+// =========================================================================
+
+model Department {
+  id               String       @id @default(uuid())
+  code             String       @unique // e.g. "SAMHITA", "KAYA", "DRAVYAGUNA"
+  name             String
+  sanskritName     String
+  description      String
+  headOfDepartment String
+  facultyCount     Int          @default(5)
+  labs             String
+  image            String
+  faculties        Faculty[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Faculty {
+  id               String       @id @default(uuid())
+  facultyId        String       @unique
+  name             String
+  designation      String       // Professor & Principal, Reader, Lecturer, Medical Officer
+  departmentId     String?
+  department       Department?  @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  qualification    String       // BAMS, MD (Ayurveda - Kayachikitsa), Ph.D.
+  experienceYears  Int          @default(10)
+  specialization   String
+  email            String       @unique
+  phone            String?
+  bio              String
+  image            String
+  isHOD            Boolean      @default(false)
+  isLeadership     Boolean      @default(false)
+  isActive         Boolean      @default(true)
+  order            Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+// =========================================================================
+// 9-10. ACADEMIC PROGRAMMES & CURRICULUM DOCUMENTS
+// =========================================================================
+
+model Course {
+  id                   String            @id @default(uuid())
+  code                 String            @unique // "BAMS", "MD-KAYACHIKITSA", "CERT-PANCHAKARMA"
+  title                String
+  degree               String            // Undergraduate, Postgraduate, Diploma
+  duration             String            // 5.5 Years (including 1 year internship)
+  intake               Int               // 100 Seats
+  eligibility          String            // 10+2 with PCB (min 50%) & Qualified in NEET-UG
+  description          String
+  syllabusOverview     String
+  careerOpportunities  String
+  feePerYear           String            // INR 2,25,000 / Year
+  isApproved           Boolean           @default(true)
+  approvalBody         String            @default("NCISM & Ministry of AYUSH, Govt. of India")
+  documents            CourseDocument[]
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+}
+
+model CourseDocument {
+  id                 String       @id @default(uuid())
+  courseId           String
+  course             Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title              String
+  fileUrl            String
+  type               String       @default("SYLLABUS") // SYLLABUS, REGULATIONS, FEE_BREAKUP
+  createdAt          DateTime     @default(now())
+
+  @@index([courseId])
+}
+
+// =========================================================================
+// 11-14. ADMISSIONS, ENQUIRIES & DOSSIER VERIFICATION
+// =========================================================================
+
+model AdmissionEnquiry {
+  id                     String       @id @default(uuid())
+  enquiryNumber          String       @unique // e.g. "ENQ-2026-089"
+  studentName            String
+  parentName             String
+  mobile                 String
+  email                  String
+  programme              String
+  previousQualification  String
+  message                String
+  status                 String       @default("NEW") // NEW, CONTACTED, RESOLVED
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+
+  @@index([email])
+  @@index([mobile])
+}
+
+model AdmissionApplication {
+  id                 String                    @id @default(uuid())
+  applicationNumber  String                    @unique // e.g. "HC-AYUR-2026-0182"
+  fullName           String
+  fatherName         String
+  motherName         String
+  dob                String
+  gender             String
+  email              String
+  phone              String
+  category           String                    // GENERAL, OBC, SC, ST, EWS
+  neetRollNo         String?
+  neetScore          Int?
+  neetRank           Int?
+  previousSchool     String
+  qualification      String                    // 10+2 (PCB)
+  marksPercentage    Float
+  courseCode         String                    @default("BAMS")
+  address            String
+  city               String
+  state              String
+  pincode            String
+  status             String                    @default("SUBMITTED") // DRAFT, SUBMITTED, UNDER_REVIEW, DOCUMENTS_REQUIRED, APPROVED, REJECTED, CLOSED
+  adminNotes         String?
+  documents          ApplicationDocument[]
+  statusHistory      ApplicationStatusHistory[]
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  @@index([email])
+  @@index([phone])
+  @@index([neetRollNo])
+}
+
+model ApplicationDocument {
+  id                 String               @id @default(uuid())
+  applicationId      String
+  application        AdmissionApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  documentType       String               // NEET_SCORECARD, 10TH_MARKSHEET, 12TH_MARKSHEET, AADHAR_CARD, PASSPORT_PHOTO, CASTE_CERTIFICATE
+  fileName           String
+  originalName       String
+  mimeType           String
+  fileSize           Int
+  storagePath        String
+  isVerified         Boolean              @default(false)
+  createdAt          DateTime             @default(now())
+
+  @@index([applicationId])
+}
+
+model ApplicationStatusHistory {
+  id                 String               @id @default(uuid())
+  applicationId      String
+  application        AdmissionApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  oldStatus          String
+  newStatus          String
+  changedBy          String?              // e.g. "Super Administrator"
+  remarks            String?
+  createdAt          DateTime             @default(now())
+
+  @@index([applicationId])
+}
+
+// =========================================================================
+// 15-17. NOTICES, NEWS & ACADEMIC EVENTS
+// =========================================================================
+
+model Notice {
+  id                 String       @id @default(uuid())
+  title              String
+  category           String       // Academic, Examination, NCISM, Admissions, General
+  date               String
+  fileUrl            String?
+  isPinned           Boolean      @default(false)
+  isPublished        Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model News {
+  id                 String       @id @default(uuid())
+  title              String
+  slug               String       @unique
+  summary            String
+  content            String
+  category           String       // Institutional, Research, Medical Camp, Award
+  imageUrl           String
+  isFeatured         Boolean      @default(false)
+  isPublished        Boolean      @default(true)
+  publishedAt        DateTime     @default(now())
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model Event {
+  id                 String       @id @default(uuid())
+  title              String
+  slug               String       @unique
+  category           String       // Conference, Workshop, Health Camp, Convocation, Cultural
+  date               String
+  time               String?
+  venue              String
+  description        String
+  imageUrl           String
+  isUpcoming         Boolean      @default(true)
+  isPublished        Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+// Backward-compatible alias for existing frontend NewsEvent
+model NewsEvent {
+  id                 String       @id @default(uuid())
+  title              String
+  slug               String       @unique
+  date               String
+  category           String
+  summary            String
+  content            String
+  imageUrl           String
+  location           String
+  isFeatured         Boolean      @default(false)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+// =========================================================================
+// 18-19. GALLERY ARCHIVES & TAXONOMY
+// =========================================================================
+
+model GalleryCategory {
+  id                 String        @id @default(uuid())
+  name               String        @unique // Campus, Hospital, Herbal Garden, Events, Academics
+  slug               String        @unique
+  description        String?
+  createdAt          DateTime      @default(now())
+  items              GalleryItem[]
+}
+
+model GalleryItem {
+  id                 String           @id @default(uuid())
+  title              String
+  category           String           // Legacy text category fallback
+  categoryId         String?
+  categoryRef        GalleryCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  imageUrl           String
+  caption            String?
+  order              Int              @default(0)
+  isPublished        Boolean          @default(true)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([category])
+  @@index([categoryId])
+}
+
+// =========================================================================
+// 20-22. RESEARCH, TESTIMONIALS & CONTACT ENQUIRIES
+// =========================================================================
+
+model ResearchPublication {
+  id                 String       @id @default(uuid())
+  title              String
+  authors            String
+  journal            String
+  year               Int
+  volume             String?
+  doi                String?
+  abstract           String
+  category           String       // Clinical Trial, Pharmacognosy, Panchakarma, Rasashastra
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model Testimonial {
+  id                 String       @id @default(uuid())
+  authorName         String
+  role               String       // BAMS Scholar (Batch 2021-26), Vaidya Alumnus, Patient
+  batchOrDesignation String
+  quote              String
+  avatarUrl          String
+  rating             Int          @default(5)
+  isPublished        Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model ContactEnquiry {
+  id                 String       @id @default(uuid())
+  fullName           String
+  email              String
+  phone              String
+  subject            String
+  message            String
+  status             String       @default("UNREAD") // UNREAD, READ, REPLIED
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+// Backward-compatible alias
+model ContactMessage {
+  id                 String       @id @default(uuid())
+  fullName           String
+  email              String
+  phone              String
+  subject            String
+  message            String
+  status             String       @default("UNREAD")
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+// =========================================================================
+// 23-25. DYNAMIC CMS, SETTINGS & SEO METADATA
+// =========================================================================
+
+model WebsitePage {
+  id                 String       @id @default(uuid())
+  slug               String       @unique // e.g. "about", "vision-mission", "chairmans-message"
+  title              String
+  content            String
+  metaTitle          String?
+  metaDesc           String?
+  isPublished        Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model WebsiteSetting {
+  id                 String       @id @default(uuid())
+  key                String       @unique
+  value              String
+  description        String?
+  updatedAt          DateTime     @updatedAt
+}
+
+model SeoMetadata {
+  id                 String       @id @default(uuid())
+  path               String       @unique // e.g. "/", "/about", "/courses/bams"
+  title              String
+  description        String
+  keywords           String?
+  ogImage            String?
+  updatedAt          DateTime     @updatedAt
+}
+
+// =========================================================================
+// 26-27. NOTIFICATION AUDIT & SYSTEM AUDIT LOGS
+// =========================================================================
+
+model NotificationLog {
+  id                 String       @id @default(uuid())
+  recipient          String
+  channel            String       @default("EMAIL") // EMAIL, SMS
+  subject            String
+  message            String
+  status             String       @default("DELIVERED") // PENDING, DELIVERED, FAILED
+  error              String?
+  sentAt             DateTime     @default(now())
+}
+
+model AuditLog {
+  id                 String       @id @default(uuid())
+  action             String       // LOGIN, CREATE_COURSE, UPDATE_APPLICATION, etc.
+  entity             String
+  entityId           String?
+  details            String?
+  performedBy        String?
+  user               User?        @relation(fields: [performedBy], references: [id], onDelete: SetNull)
+  createdAt          DateTime     @default(now())
+}
+
+// =========================================================================
+// 28-30. ACADEMIC CALENDAR, STUDENT RESOURCES & FILE VAULT
+// =========================================================================
+
+model AcademicCalendarEvent {
+  id                 String       @id @default(uuid())
+  title              String
+  startDate          String
+  endDate            String
+  term               String       // Term 1, Term 2, Annual Exam, Clinical Rotation
+  type               String       // ACADEMIC, HOLIDAY, EXAMINATION, CULTURAL
+  description        String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model StudentResource {
+  id                 String       @id @default(uuid())
+  title              String
+  courseCode         String       @default("BAMS")
+  semester           String       // Professional Year 1, Professional Year 2, etc.
+  subject            String       // Rachana Sharir, Dravyaguna, Kayachikitsa
+  fileUrl            String
+  resourceType       String       @default("SYLLABUS") // LECTURE_NOTES, PREVIOUS_PAPERS, MANUAL, SYLLABUS
+  isPublished        Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model UploadedFile {
+  id                 String       @id @default(uuid())
+  originalName       String
+  fileName           String       @unique
+  mimeType           String
+  size               Int
+  path               String
+  isPrivate          Boolean      @default(false)
+  uploadedBy         String?
+  createdAt          DateTime     @default(now())
+}
+
+// Legacy Herbal Plant model for Herbarium & Charak Vatika
+model HerbalPlant {
+  id                 String       @id @default(uuid())
+  botanicalName      String       @unique
+  sanskritName       String
+  commonName         String
+  family             String
+  rasa               String
+  guna               String
+  virya              String
+  vipaka             String
+  therapeuticUses    String
+  habitat            String
+  imageUrl           String
+  category           String
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+// Legacy Campus Facility model
+model CampusFacility {
+  id                 String       @id @default(uuid())
+  facilityId         String       @unique
+  title              String
+  category           String
+  description        String
+  capacity           String
+  highlights         String
+  imageUrl           String
+  order              Int          @default(0)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+// =========================================================================
+// 31-33. NCISM MANDATORY STATUTORY DISCLOSURES
+// =========================================================================
+
+model DisclosureCategory {
+  id                 String               @id @default(uuid())
+  categoryNumber     Int                  @unique // 1 to 16
+  code               String               @unique // e.g. "PRINCIPAL_MS", "APPROVALS_PERMISSIONS"
+  title              String
+  description        String
+  icon               String               @default("FileText")
+  records            DisclosureRecord[]
+  documents          DisclosureDocument[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+}
+
+model DisclosureRecord {
+  id                 String              @id @default(uuid())
+  categoryId         String
+  category           DisclosureCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title              String
+  referenceCode      String?             // e.g. "NCISM/AYUSH/2026/8941"
+  academicYear       String              @default("2026-27")
+  status             String              @default("VERIFIED") // VERIFIED, PUBLISHED, UNDER_REVIEW, INFORMATION_REQUIRED
+  summary            String
+  structuredData     String?             // JSON string for tables/key-value pairs
+  order              Int                 @default(0)
+  documents          DisclosureDocument[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([categoryId])
+  @@index([academicYear])
+}
+
+model DisclosureDocument {
+  id                 String              @id @default(uuid())
+  categoryId         String
+  category           DisclosureCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  recordId           String?
+  record             DisclosureRecord?   @relation(fields: [recordId], references: [id], onDelete: SetNull)
+  title              String
+  documentCode       String?             // e.g. "NCISM-DOC-02-2026"
+  academicYear       String              @default("2026-27")
+  fileUrl            String              // /documents/ncism/...
+  fileType           String              @default("PDF") // PDF, DOCX, XLSX
+  fileSize           String              @default("1.8 MB")
+  isVerified         Boolean             @default(true)
+  isPublic           Boolean             @default(true)
+  uploadedDate       DateTime            @default(now())
+  lastUpdatedDate    DateTime            @default(now())
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([categoryId])
+  @@index([recordId])
+  @@index([academicYear])
+}

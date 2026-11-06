@@ -1,0 +1,225 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Shri Haridutt Ayurvedic Medical College & Hospital API",
+    "description": "Production REST API specification for Vedic Heritage × Modern Academic Luxury institutional platform.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Institutional Directorate of Admissions & Informatics",
+      "email": "admissions@hariduttayurveda.edu.in",
+      "url": "https://hariduttayurveda.edu.in"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "Current Environment REST Gateway"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Provide administrative or scholar JWT token"
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "auth_token",
+        "description": "HttpOnly browser session token"
+      }
+    },
+    "schemas": {
+      "StandardResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "data": { "type": "object" },
+          "message": { "type": "string" },
+          "error": { "type": "string" }
+        }
+      },
+      "Course": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "code": { "type": "string", "example": "BAMS" },
+          "title": { "type": "string", "example": "Bachelor of Ayurvedic Medicine and Surgery" },
+          "duration": { "type": "string", "example": "5.5 Years" },
+          "intake": { "type": "integer", "example": 100 },
+          "feePerYear": { "type": "string", "example": "₹2,25,000 / Year" },
+          "isApproved": { "type": "boolean" }
+        }
+      },
+      "AdmissionApplicationInput": {
+        "type": "object",
+        "required": [
+          "fullName", "fatherName", "motherName", "dob", "gender", "email",
+          "phone", "category", "previousSchool", "qualification", "marksPercentage",
+          "address", "city", "state", "pincode"
+        ],
+        "properties": {
+          "fullName": { "type": "string", "example": "Aarav Sharma" },
+          "fatherName": { "type": "string", "example": "Dr. Suresh Sharma" },
+          "motherName": { "type": "string", "example": "Sunita Sharma" },
+          "dob": { "type": "string", "format": "date", "example": "2005-08-14" },
+          "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+          "email": { "type": "string", "format": "email", "example": "aarav.sharma@example.com" },
+          "phone": { "type": "string", "example": "+91 98291 55432" },
+          "category": { "type": "string", "enum": ["GENERAL", "OBC", "SC", "ST", "EWS"] },
+          "neetRollNo": { "type": "string", "example": "2601149201" },
+          "neetScore": { "type": "integer", "example": 542 },
+          "previousSchool": { "type": "string", "example": "Delhi Public School" },
+          "qualification": { "type": "string", "example": "10+2 (PCB)" },
+          "marksPercentage": { "type": "number", "example": 88.6 },
+          "courseCode": { "type": "string", "default": "BAMS" },
+          "address": { "type": "string", "example": "Plot 45, Civil Lines" },
+          "city": { "type": "string", "example": "Jaipur" },
+          "state": { "type": "string", "example": "Rajasthan" },
+          "pincode": { "type": "string", "example": "302006" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "System Health & Database Latency Check",
+        "responses": {
+          "200": { "description": "System operational" },
+          "503": { "description": "Database degraded or disconnected" }
+        }
+      }
+    },
+    "/institution": {
+      "get": {
+        "summary": "Institutional Overview & Statutory Accreditations",
+        "responses": { "200": { "description": "College profile payload" } }
+      }
+    },
+    "/courses": {
+      "get": {
+        "summary": "List Approved Academic Courses",
+        "responses": { "200": { "description": "Array of approved courses" } }
+      }
+    },
+    "/courses/{slug}": {
+      "get": {
+        "summary": "Get Course Curricula & Syllabus by Code",
+        "parameters": [
+          { "name": "slug", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Course detail" },
+          "404": { "description": "Course not found" }
+        }
+      }
+    },
+    "/departments": {
+      "get": {
+        "summary": "List 14 Classical Ayurvedic Departments",
+        "responses": { "200": { "description": "Departments and faculty rosters" } }
+      }
+    },
+    "/faculty": {
+      "get": {
+        "summary": "Faculty Directory with Filters",
+        "parameters": [
+          { "name": "departmentId", "in": "query", "schema": { "type": "string" } },
+          { "name": "leadership", "in": "query", "schema": { "type": "boolean" } }
+        ],
+        "responses": { "200": { "description": "Faculty roster" } }
+      }
+    },
+    "/admissions/information": {
+      "get": {
+        "summary": "Admissions 2026-27 Guidelines & Intake",
+        "responses": { "200": { "description": "Admissions information" } }
+      }
+    },
+    "/admissions/enquiries": {
+      "post": {
+        "summary": "Submit Prospective Student Lead",
+        "responses": { "201": { "description": "Enquiry acknowledged" } }
+      }
+    },
+    "/admissions/applications": {
+      "post": {
+        "summary": "Submit Candidate BAMS/MD Admission Dossier",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AdmissionApplicationInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Application created with applicationNumber" },
+          "400": { "description": "Duplicate submission or validation failure" }
+        }
+      }
+    },
+    "/admissions/status": {
+      "get": {
+        "summary": "Candidate Dossier Status Tracking",
+        "parameters": [
+          { "name": "appNo", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Application tracking details" } }
+      }
+    },
+    "/notices": {
+      "get": {
+        "summary": "Official Gazette & Circulars",
+        "responses": { "200": { "description": "List of published notices" } }
+      }
+    },
+    "/news": {
+      "get": {
+        "summary": "Institutional News & Press Releases",
+        "responses": { "200": { "description": "List of published news" } }
+      }
+    },
+    "/gallery": {
+      "get": {
+        "summary": "Categorized Photographic Archives",
+        "responses": { "200": { "description": "Gallery images" } }
+      }
+    },
+    "/research": {
+      "get": {
+        "summary": "Peer-Reviewed Clinical & Pharmacognostical Publications",
+        "responses": { "200": { "description": "Research papers" } }
+      }
+    },
+    "/contact": {
+      "post": {
+        "summary": "Institutional Directorate Inquiry",
+        "responses": { "201": { "description": "Message recorded" } }
+      }
+    },
+    "/settings/public": {
+      "get": {
+        "summary": "Live Announcement Bar & Contact Settings",
+        "responses": { "200": { "description": "Settings key-value map" } }
+      }
+    },
+    "/admin/overview": {
+      "get": {
+        "summary": "Aggregated Executive Dashboard Metrics",
+        "security": [{ "bearerAuth": [] }, { "cookieAuth": [] }],
+        "responses": { "200": { "description": "Live admissions & faculty counts" } }
+      }
+    },
+    "/admin/admissions": {
+      "get": {
+        "summary": "Admin Application Dossier Review Table",
+        "security": [{ "bearerAuth": [] }, { "cookieAuth": [] }],
+        "responses": { "200": { "description": "Applications with filters" } }
+      }
+    }
+  }
+}
