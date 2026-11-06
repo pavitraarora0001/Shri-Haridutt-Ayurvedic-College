@@ -54,8 +54,12 @@ export default function Navbar() {
     setMobileExpanded(mobileExpanded === section ? null : section);
   };
 
-  const linkUnderlineClass =
-    'relative after:absolute after:bottom-0.5 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#C5A46D] hover:after:w-full after:transition-all after:duration-300';
+  const getNavItemClass = (isActive: boolean) =>
+    `h-9 px-1.5 xl:px-2 2xl:px-2.5 rounded text-[11.5px] xl:text-[12px] 2xl:text-[13px] font-medium tracking-normal transition-all duration-200 flex items-center space-x-1 whitespace-nowrap shrink-0 select-none ${
+      isActive
+        ? 'text-[#DFCA9E] bg-[#C5A46D]/15 font-semibold border-b-2 border-[#C5A46D]'
+        : 'text-[#F6F2E9] hover:text-[#DFCA9E] hover:bg-white/5'
+    }`;
 
   const dropdownVariants = {
     hidden: { opacity: 0, y: 8, scale: 0.98 },
@@ -78,11 +82,11 @@ export default function Navbar() {
           : 'bg-[#173D32] border-b border-[#C5A46D]/30 py-2.5'
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-5 xl:px-6 w-full">
-        <div className="flex items-center justify-between gap-1 sm:gap-2 xl:gap-3 w-full">
-          {/* Logo & College Identity - Fluid & responsive across all mobile screens */}
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-5 xl:px-5 2xl:px-8 w-full">
+        <div className="flex items-center justify-between gap-2 lg:gap-3 xl:gap-4 w-full">
+          {/* Logo & College Identity - Fluid & responsive across all screens */}
           <Link prefetch={true} href="/"
-            className="flex items-center space-x-1.5 sm:space-x-2.5 group shrink-0 py-0.5 select-none min-w-0"
+            className="flex items-center space-x-2 sm:space-x-2.5 group shrink-0 py-0.5 select-none min-w-0"
           >
             {/* Vedic Emblem Crest */}
             <div className="w-8 h-8 sm:w-10 sm:h-10 2xl:w-11 2xl:h-11 rounded-full border-2 border-[#C5A46D] bg-[#0F2821] flex items-center justify-center p-0.5 shadow-gold group-hover:scale-105 transition-transform duration-300 shrink-0">
@@ -94,10 +98,10 @@ export default function Navbar() {
 
             {/* Typography */}
             <div className="flex flex-col justify-center whitespace-nowrap shrink-0">
-              <span className="font-serif text-xs sm:text-base xl:text-[15px] 2xl:text-lg font-bold tracking-tight text-white group-hover:text-[#DFCA9E] transition-colors leading-tight whitespace-nowrap block">
+              <span className="font-serif text-xs sm:text-base xl:text-[14px] 2xl:text-lg font-bold tracking-tight text-white group-hover:text-[#DFCA9E] transition-colors leading-tight whitespace-nowrap block">
                 Shri Haridutt Ayurvedic
               </span>
-              <span className="text-[8px] sm:text-[10px] xl:text-[10px] 2xl:text-[10.5px] font-sans tracking-[0.1em] sm:tracking-[0.14em] text-[#C5A46D] uppercase font-semibold leading-tight mt-0.5 whitespace-nowrap block">
+              <span className="text-[8px] sm:text-[10px] xl:text-[9.5px] 2xl:text-[10.5px] font-sans tracking-[0.1em] sm:tracking-[0.14em] text-[#C5A46D] uppercase font-semibold leading-tight mt-0.5 whitespace-nowrap block">
                 Medical College &amp; Hospital
               </span>
               <span className="hidden 2xl:block text-[8px] text-[#81917A] tracking-wider leading-none mt-0.5 whitespace-nowrap">
@@ -106,15 +110,13 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* RAU-Inspired Master 9-Pillar Desktop Navigation */}
+          {/* RAU-Inspired Master 9-Pillar Desktop Navigation (Title Case & Exact Baseline Harmony) */}
           <nav className="hidden xl:flex items-center space-x-0.5 xl:space-x-0.5 2xl:space-x-1 shrink-0">
             {/* 1. HOME */}
             <Link prefetch={true} href="/"
-              className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                pathname === '/' ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-              }`}
+              className={getNavItemClass(pathname === '/')}
             >
-              Home
+              <span>Home</span>
             </Link>
 
             {/* 2. ABOUT US (Multi-Column Dropdown) */}
@@ -124,12 +126,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/about') ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/about'))}
               >
                 <span>About Us</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'about' && (
@@ -199,14 +199,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/documents') || pathname === '/mandatory-disclosures'
-                    ? 'text-[#DFCA9E] font-bold after:w-full'
-                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/documents') || pathname === '/mandatory-disclosures')}
               >
                 <span>Documents</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'documents' && (
@@ -277,14 +273,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/academics') || pathname.startsWith('/courses') || pathname.startsWith('/departments') || pathname.startsWith('/faculty')
-                    ? 'text-[#DFCA9E] font-bold after:w-full'
-                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/academics') || pathname.startsWith('/courses') || pathname.startsWith('/departments') || pathname.startsWith('/faculty'))}
               >
                 <span>Academics</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'academics' && (
@@ -355,12 +347,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/research') ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/research'))}
               >
                 <span>Research</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'research' && (
@@ -424,14 +414,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/hospital') || pathname.startsWith('/infrastructure/hospital')
-                    ? 'text-[#DFCA9E] font-bold after:w-full'
-                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/hospital') || pathname.startsWith('/infrastructure/hospital'))}
               >
                 <span>Hospital</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'hospital' && (
@@ -501,14 +487,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/news-events') || pathname === '/notices' || pathname === '/gallery' || pathname === '/achievements'
-                    ? 'text-[#DFCA9E] font-bold after:w-full'
-                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/news-events') || pathname === '/notices' || pathname === '/gallery' || pathname === '/achievements')}
               >
                 <span>News &amp; Events</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'news' && (
@@ -551,12 +533,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/examination') ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/examination'))}
               >
                 <span>Examination</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'examination' && (
@@ -604,14 +584,10 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/miscellaneous') || pathname === '/contact'
-                    ? 'text-[#DFCA9E] font-bold after:w-full'
-                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
-                }`}
+                className={getNavItemClass(pathname.startsWith('/miscellaneous') || pathname === '/contact')}
               >
                 <span>Miscellaneous</span>
-                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'miscellaneous' && (
@@ -673,18 +649,18 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action: Apply Now & Mobile Hamburger */}
-          <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
             <Link prefetch={true} href="/admissions/apply"
-              className="relative inline-flex items-center justify-center px-2 sm:px-2.5 xl:px-3 py-1 sm:py-1.5 text-[9.5px] sm:text-[10.5px] xl:text-xs uppercase tracking-wider font-bold text-[#173D32] bg-gradient-to-r from-[#DFCA9E] via-[#C5A46D] to-[#9A7E4F] rounded shadow-gold hover:shadow-luxury hover:brightness-105 active:scale-95 transition-all duration-300 border border-[#DFCA9E] whitespace-nowrap shrink-0 select-none"
+              className="h-9 px-3 xl:px-3.5 inline-flex items-center justify-center text-xs uppercase tracking-wider font-bold text-[#173D32] bg-gradient-to-r from-[#DFCA9E] via-[#C5A46D] to-[#9A7E4F] rounded shadow-gold hover:shadow-luxury hover:brightness-105 active:scale-95 transition-all duration-300 border border-[#DFCA9E] whitespace-nowrap shrink-0 select-none"
             >
-              <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 text-[#173D32] shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 mr-1 text-[#173D32] shrink-0" />
               <span className="whitespace-nowrap font-bold hidden xs:inline">Apply 2026</span>
               <span className="whitespace-nowrap font-bold xs:hidden">Apply</span>
             </Link>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-1 sm:p-1.5 text-white hover:text-[#DFCA9E] focus:outline-none shrink-0"
+              className="xl:hidden h-9 w-9 flex items-center justify-center rounded text-white hover:text-[#DFCA9E] hover:bg-white/5 focus:outline-none shrink-0"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
