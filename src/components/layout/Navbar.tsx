@@ -78,14 +78,14 @@ export default function Navbar() {
           : 'bg-[#173D32] border-b border-[#C5A46D]/30 py-2.5'
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-5 lg:px-7">
-        <div className="flex items-center justify-between gap-2 lg:gap-3 w-full">
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-5 xl:px-6 w-full">
+        <div className="flex items-center justify-between gap-1.5 lg:gap-2 xl:gap-3 w-full">
           {/* Logo & College Identity */}
           <Link prefetch={true} href="/"
-            className="flex items-center space-x-2.5 sm:space-x-3 group shrink-0 min-w-max py-0.5 select-none"
+            className="flex items-center space-x-2 sm:space-x-2.5 group shrink-0 min-w-max py-0.5 select-none"
           >
             {/* Vedic Emblem Crest */}
-            <div className="w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-[#C5A46D] bg-[#0F2821] flex items-center justify-center p-0.5 shadow-gold group-hover:scale-105 transition-transform duration-300 shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 2xl:w-11 2xl:h-11 rounded-full border-2 border-[#C5A46D] bg-[#0F2821] flex items-center justify-center p-0.5 shadow-gold group-hover:scale-105 transition-transform duration-300 shrink-0">
               <div className="w-full h-full rounded-full border border-[#C5A46D]/40 flex flex-col items-center justify-center text-center">
                 <span className="text-[#C5A46D] text-xs font-serif font-bold leading-none">ॐ</span>
                 <span className="text-[7px] font-serif text-[#C5A46D]/90 uppercase tracking-widest leading-none mt-0.5">SHAMC</span>
@@ -93,25 +93,25 @@ export default function Navbar() {
             </div>
 
             {/* Non-wrapping typography */}
-            <div className="flex flex-col justify-center whitespace-nowrap shrink-0 min-w-max">
-              <span className="font-serif text-sm sm:text-base md:text-lg font-bold tracking-tight text-white group-hover:text-[#C5A46D] transition-colors leading-tight whitespace-nowrap block">
+            <div className="flex flex-col justify-center whitespace-nowrap shrink-0">
+              <span className="font-serif text-sm sm:text-base xl:text-[15px] 2xl:text-lg font-bold tracking-tight text-white group-hover:text-[#DFCA9E] transition-colors leading-tight whitespace-nowrap block">
                 Shri Haridutt Ayurvedic
               </span>
-              <span className="text-[9.5px] sm:text-[10.5px] font-sans tracking-[0.15em] text-[#C5A46D] uppercase font-semibold leading-tight mt-0.5 whitespace-nowrap block">
+              <span className="text-[9px] sm:text-[10px] xl:text-[10px] 2xl:text-[10.5px] font-sans tracking-[0.14em] text-[#C5A46D] uppercase font-semibold leading-tight mt-0.5 whitespace-nowrap block">
                 Medical College &amp; Hospital
               </span>
-              <span className="hidden 2xl:block text-[8.5px] text-[#81917A] tracking-wider leading-none mt-0.5 whitespace-nowrap">
+              <span className="hidden 2xl:block text-[8px] text-[#81917A] tracking-wider leading-none mt-0.5 whitespace-nowrap">
                 Affiliated to Dr. S.R. Rajasthan Ayurved University · NCISM Approved
               </span>
             </div>
           </Link>
 
           {/* RAU-Inspired Master 9-Pillar Desktop Navigation */}
-          <nav className="hidden xl:flex items-center space-x-0.5 2xl:space-x-1 shrink-0">
+          <nav className="hidden xl:flex items-center space-x-0.5 xl:space-x-0.5 2xl:space-x-1 shrink-0">
             {/* 1. HOME */}
             <Link prefetch={true} href="/"
-              className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                pathname === '/' ? 'text-[#C5A46D] font-bold' : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+              className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                pathname === '/' ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
               }`}
             >
               Home
@@ -124,12 +124,12 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/about') ? 'text-[#C5A46D] font-bold' : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                  pathname.startsWith('/about') ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>About Us</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'about' && (
@@ -199,14 +199,14 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
                   pathname.startsWith('/documents') || pathname === '/mandatory-disclosures'
-                    ? 'text-[#C5A46D] font-bold'
-                    : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                    ? 'text-[#DFCA9E] font-bold after:w-full'
+                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>Documents</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'documents' && (
@@ -277,14 +277,14 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
                   pathname.startsWith('/academics') || pathname.startsWith('/courses') || pathname.startsWith('/departments') || pathname.startsWith('/faculty')
-                    ? 'text-[#C5A46D] font-bold'
-                    : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                    ? 'text-[#DFCA9E] font-bold after:w-full'
+                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>Academics</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'academics' && (
@@ -355,12 +355,12 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/research') ? 'text-[#C5A46D] font-bold' : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                  pathname.startsWith('/research') ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>Research</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'research' && (
@@ -424,14 +424,14 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
                   pathname.startsWith('/hospital') || pathname.startsWith('/infrastructure/hospital')
-                    ? 'text-[#C5A46D] font-bold'
-                    : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                    ? 'text-[#DFCA9E] font-bold after:w-full'
+                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>Hospital</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'hospital' && (
@@ -501,14 +501,14 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
                   pathname.startsWith('/news-events') || pathname === '/notices' || pathname === '/gallery' || pathname === '/achievements'
-                    ? 'text-[#C5A46D] font-bold'
-                    : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                    ? 'text-[#DFCA9E] font-bold after:w-full'
+                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>News &amp; Events</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'news' && (
@@ -551,12 +551,12 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
-                  pathname.startsWith('/examination') ? 'text-[#C5A46D] font-bold' : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                  pathname.startsWith('/examination') ? 'text-[#DFCA9E] font-bold after:w-full' : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>Examination</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'examination' && (
@@ -604,14 +604,14 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={`px-1.5 2xl:px-2 py-1.5 text-[11px] 2xl:text-[11.5px] font-medium tracking-wider uppercase transition-colors flex items-center space-x-1 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
+                className={`px-1 xl:px-1.5 2xl:px-2 py-1 text-[10px] xl:text-[10.5px] 2xl:text-[11.5px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-0.5 whitespace-nowrap shrink-0 ${linkUnderlineClass} ${
                   pathname.startsWith('/miscellaneous') || pathname === '/contact'
-                    ? 'text-[#C5A46D] font-bold'
-                    : 'text-[#F6F2E9]/90 hover:text-[#C5A46D]'
+                    ? 'text-[#DFCA9E] font-bold after:w-full'
+                    : 'text-[#F6F2E9] hover:text-[#DFCA9E]'
                 }`}
               >
                 <span>Miscellaneous</span>
-                <ChevronDown className="w-3 h-3 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="w-2.5 h-2.5 xl:w-2.5 xl:h-2.5 2xl:w-3 2xl:h-3 text-[#C5A46D]/80 group-hover:rotate-180 transition-transform duration-200 shrink-0" />
               </button>
               <AnimatePresence>
                 {activeDropdown === 'miscellaneous' && (
@@ -673,17 +673,17 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action: Apply Now & Mobile Hamburger */}
-          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 min-w-max">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
             <Link prefetch={true} href="/admissions/apply"
-              className="relative inline-flex items-center justify-center px-3 xl:px-3.5 py-1.5 text-xs uppercase tracking-wider font-semibold text-[#173D32] bg-gradient-to-r from-[#DFCA9E] via-[#C5A46D] to-[#9A7E4F] rounded shadow-gold hover:shadow-luxury hover:brightness-105 active:scale-95 transition-all duration-300 border border-[#DFCA9E] whitespace-nowrap shrink-0 select-none"
+              className="relative inline-flex items-center justify-center px-2.5 xl:px-3 py-1.5 text-[10.5px] xl:text-xs uppercase tracking-wider font-bold text-[#173D32] bg-gradient-to-r from-[#DFCA9E] via-[#C5A46D] to-[#9A7E4F] rounded shadow-gold hover:shadow-luxury hover:brightness-105 active:scale-95 transition-all duration-300 border border-[#DFCA9E] whitespace-nowrap shrink-0 select-none"
             >
-              <Sparkles className="w-3.5 h-3.5 mr-1 text-[#173D32] shrink-0" />
-              <span className="whitespace-nowrap font-bold text-[11px] xl:text-xs">Apply 2026</span>
+              <Sparkles className="w-3 h-3 mr-1 text-[#173D32] shrink-0" />
+              <span className="whitespace-nowrap font-bold">Apply 2026</span>
             </Link>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-white hover:text-[#C5A46D] focus:outline-none shrink-0"
+              className="xl:hidden p-1.5 text-white hover:text-[#DFCA9E] focus:outline-none shrink-0"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
