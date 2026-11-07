@@ -17,8 +17,8 @@ export default function AnnouncementBar() {
             className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[9.5px] sm:text-[10px] font-semibold bg-[#C5A46D]/20 text-[#DFCA9E] border border-[#C5A46D]/50 tracking-wide uppercase whitespace-nowrap shrink-0 hover:bg-[#C5A46D]/30 transition-colors"
           >
             <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 text-[#DFCA9E] shrink-0" />
-            <span className="hidden xs:inline">Admissions 2026</span>
-            <span className="xs:hidden">2026</span>
+            <span className="hidden sm:inline">Admissions 2026</span>
+            <span className="sm:hidden">2026</span>
           </Link>
 
           {/* Sacred Sanskrit Shloka - Shown on wider viewports */}
