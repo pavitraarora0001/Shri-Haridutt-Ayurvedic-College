@@ -6,8 +6,8 @@ import { Bell, Phone, Sparkles, User, GraduationCap } from 'lucide-react';
 
 export default function AnnouncementBar() {
   return (
-    <div className="bg-[#0B1E19] text-[#F6F2E9] text-xs border-b border-[#C5A46D]/20 py-1.5 px-3 sm:px-4 lg:px-6 transition-all duration-300 select-none overflow-hidden w-full">
-      <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-2 sm:gap-3 w-full">
+    <div className="bg-[#0B1E19] text-[#F6F2E9] text-xs border-b border-[#C5A46D]/20 py-1.5 transition-all duration-300 select-none overflow-hidden w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-3 w-full">
         {/* Left: Admissions Badge, Sacred Shloka & Live Announcement Ticker */}
         <div className="flex items-center space-x-2 min-w-0 overflow-hidden flex-1">
           {/* Admissions Badge */}

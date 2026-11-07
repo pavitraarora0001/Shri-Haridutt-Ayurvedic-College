@@ -55,7 +55,7 @@ export default function Navbar() {
   };
 
   const getNavItemClass = (isActive: boolean) =>
-    `h-9 px-1.5 xl:px-2 2xl:px-2.5 rounded text-[11.5px] xl:text-[12px] 2xl:text-[13px] font-medium tracking-normal transition-all duration-200 flex items-center space-x-1 whitespace-nowrap shrink-0 select-none ${
+    `h-9 px-1.5 xl:px-1.5 2xl:px-2.5 rounded text-[11px] xl:text-[11.5px] 2xl:text-[12.5px] font-medium tracking-normal transition-all duration-200 flex items-center space-x-0.5 xl:space-x-1 whitespace-nowrap shrink-0 select-none ${
       isActive
         ? 'text-[#DFCA9E] bg-[#C5A46D]/15 font-semibold border-b-2 border-[#C5A46D]'
         : 'text-[#F6F2E9] hover:text-[#DFCA9E] hover:bg-white/5'
@@ -82,8 +82,8 @@ export default function Navbar() {
           : 'bg-[#173D32] border-b border-[#C5A46D]/30 py-2.5'
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-5 xl:px-5 2xl:px-8 w-full">
-        <div className="flex items-center justify-between gap-2 lg:gap-3 xl:gap-4 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between gap-2 xl:gap-2.5 2xl:gap-4 w-full">
           {/* Logo & College Identity - Fluid & responsive across all screens */}
           <Link prefetch={true} href="/"
             className="flex items-center space-x-2 sm:space-x-2.5 group shrink-0 py-0.5 select-none min-w-0"
