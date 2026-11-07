@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Bell, Phone, Sparkles, User, GraduationCap } from 'lucide-react';
+import { Bell, Phone, Sparkles, User } from 'lucide-react';
 
 export default function AnnouncementBar() {
   return (
@@ -49,20 +49,9 @@ export default function AnnouncementBar() {
           <span className="hidden md:inline text-[#C5A46D]/40 shrink-0">•</span>
 
           <Link
-            href="/student/login"
-            prefetch={true}
-            className="hidden md:flex items-center text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors whitespace-nowrap shrink-0 text-[11px]"
-          >
-            <GraduationCap className="w-3.5 h-3.5 mr-1 text-[#C5A46D] shrink-0" />
-            <span className="whitespace-nowrap font-medium">Student Portal</span>
-          </Link>
-
-          <span className="hidden lg:inline text-[#C5A46D]/40 shrink-0">•</span>
-
-          <Link
             href="/faculty-portal/login"
             prefetch={true}
-            className="hidden lg:flex items-center text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors whitespace-nowrap shrink-0 text-[11px]"
+            className="hidden md:flex items-center text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors whitespace-nowrap shrink-0 text-[11px]"
           >
             <User className="w-3.5 h-3.5 mr-1 text-[#C5A46D] shrink-0" />
             <span className="whitespace-nowrap font-medium">Faculty Login</span>

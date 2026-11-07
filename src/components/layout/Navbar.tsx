@@ -866,9 +866,7 @@ export default function Navbar() {
               >
                 Apply Online 2026–27
               </Link>
-              <div className="flex items-center justify-between text-xs pt-2 text-[#81917A]">
-                <Link prefetch={true} href="/student/login" className="hover:text-[#C5A46D]">Scholar Portal</Link>
-                <span>•</span>
+              <div className="flex items-center justify-center space-x-4 text-xs pt-2 text-[#81917A]">
                 <Link prefetch={true} href="/faculty-portal/login" className="hover:text-[#C5A46D]">Faculty Login</Link>
                 <span>•</span>
                 <Link prefetch={true} href="/admin/login" className="hover:text-[#C5A46D]">Admin CMS</Link>

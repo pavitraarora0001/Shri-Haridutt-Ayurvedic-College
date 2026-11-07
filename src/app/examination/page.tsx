@@ -136,12 +136,6 @@ export default function ExaminationCentrePage() {
               <span>RAU Results Portal</span>
               <ExternalLink className="w-3.5 h-3.5 ml-2" />
             </a>
-            <Link
-              href="/student/login"
-              className="inline-flex items-center justify-center px-5 py-3 rounded-md bg-white/10 text-white font-medium text-xs uppercase tracking-wider border border-white/20 hover:bg-white/20 transition-all"
-            >
-              <span>Scholar Internal Portal</span>
-            </Link>
           </div>
         </div>
 

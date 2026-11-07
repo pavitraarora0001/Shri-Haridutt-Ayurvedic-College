@@ -54,7 +54,6 @@ export async function middleware(request: NextRequest) {
   if (
     pathname === '/admin/login' ||
     pathname === '/faculty-portal/login' ||
-    pathname === '/student/login' ||
     pathname.startsWith('/api/auth/')
   ) {
     return NextResponse.next();
@@ -94,12 +93,6 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
-
-    if (pathname.startsWith('/student')) {
-      const loginUrl = new URL('/student/login', request.url);
-      loginUrl.searchParams.set('callbackUrl', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
   }
 
   // 2. Role-Based Authorization
@@ -120,13 +113,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/faculty-portal/login?error=forbidden', request.url));
       }
     }
-
-    // Student zone
-    if (pathname.startsWith('/student')) {
-      if (user.role !== 'STUDENT' && user.role !== 'SUPER_ADMIN') {
-        return NextResponse.redirect(new URL('/student/login?error=forbidden', request.url));
-      }
-    }
   }
 
   return NextResponse.next();
@@ -136,7 +122,6 @@ export const config = {
   matcher: [
     '/admin/:path*',
     '/faculty-portal/:path*',
-    '/student/:path*',
     '/api/admin/:path*',
     '/api/v1/admin/:path*',
   ],

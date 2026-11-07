@@ -37,61 +37,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // 1. If logging into Student portal
+    // 1. Student Portal Permanently Disabled
     if (portalType === 'STUDENT') {
-      const student = await prisma.student.findFirst({
-        where: {
-          OR: [{ studentId: identifier }, { email: identifier }],
-        },
-      });
-
-      if (!student) {
-        return NextResponse.json({ error: 'Invalid student credentials.' }, { status: 401 });
-      }
-
-      const isValid = await bcrypt.compare(password, student.password);
-      if (!isValid) {
-        return NextResponse.json({ error: 'Invalid student credentials.' }, { status: 401 });
-      }
-
-      await AuthService.resetLoginRateLimit(identifier, clientIp);
-
-      // Create persisted session & refresh token
-      const session = await AuthService.createSession(student.id, 'STUDENT', clientIp, userAgent);
-
-      const token = signAccessToken({
-        id: student.id,
-        name: student.name,
-        email: student.email,
-        role: 'STUDENT',
-        type: 'STUDENT',
-        sessionId: session.sessionId,
-      });
-
-      const response = NextResponse.json({
-        success: true,
-        user: { name: student.name, role: 'STUDENT', studentId: student.studentId },
-      });
-
-      // Short-lived access token cookie (15 mins)
-      response.cookies.set('auth_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 15 * 60, // 15 mins
-        path: '/',
-      });
-
-      // Long-lived rotating refresh token cookie (7 days)
-      response.cookies.set('refresh_token', session.rawToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60, // 7 days
-        path: '/',
-      });
-
-      return response;
+      return NextResponse.json(
+        { error: 'Student portal access has been permanently disabled.' },
+        { status: 403 }
+      );
     }
 
     // 2. Admin & Faculty Portal Login
