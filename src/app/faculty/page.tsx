@@ -2,9 +2,36 @@ import React from 'react';
 import Link from 'next/link';
 import PageHeader from '@/components/common/PageHeader';
 import { LEADERSHIP } from '@/lib/data';
-import { GraduationCap, Award, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { prisma } from '@/lib/prisma';
+import { GraduationCap, Award, ArrowRight, ShieldCheck } from 'lucide-react';
 
-export default function FacultyDirectoryPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function FacultyDirectoryPage() {
+  let displayFaculty = LEADERSHIP;
+
+  try {
+    const dbFaculty = await prisma.faculty.findMany({
+      where: { isActive: true },
+      orderBy: [{ order: 'asc' }, { experienceYears: 'desc' }],
+    });
+
+    if (dbFaculty && dbFaculty.length > 0) {
+      displayFaculty = dbFaculty.map((f) => ({
+        id: f.id,
+        name: f.name,
+        designation: f.designation,
+        qualification: f.qualification,
+        experienceYears: f.experienceYears,
+        specialization: f.specialization,
+        bio: f.bio,
+        image: f.image || 'https://images.unsplash.com/photo-1582750433449-648ed127bb54',
+      }));
+    }
+  } catch (err) {
+    console.error('Error fetching faculty from DB:', err);
+  }
+
   return (
     <div>
       <PageHeader
@@ -28,7 +55,7 @@ export default function FacultyDirectoryPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {LEADERSHIP.map((faculty) => (
+            {displayFaculty.map((faculty) => (
               <div
                 key={faculty.id}
                 className="bg-white rounded-lg border border-[#C5A46D]/30 shadow-card hover:shadow-luxury hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden group"

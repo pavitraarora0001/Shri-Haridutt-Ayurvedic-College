@@ -1,10 +1,34 @@
 import React from 'react';
 import PageHeader from '@/components/common/PageHeader';
 import { NOTICES } from '@/lib/data';
+import { prisma } from '@/lib/prisma';
 import { Bell, FileText, Pin, Download, Calendar } from 'lucide-react';
 import Link from 'next/link';
 
-export default function NoticesPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function NoticesPage() {
+  let displayNotices = NOTICES;
+
+  try {
+    const dbNotices = await prisma.notice.findMany({
+      where: { isPublished: true },
+      orderBy: [{ isPinned: 'desc' }, { createdAt: 'desc' }],
+    });
+    if (dbNotices && dbNotices.length > 0) {
+      displayNotices = dbNotices.map((n) => ({
+        id: n.id,
+        title: n.title,
+        category: n.category,
+        date: n.date,
+        fileUrl: n.fileUrl || undefined,
+        isPinned: n.isPinned,
+      }));
+    }
+  } catch (err) {
+    console.error('Error fetching notices from DB:', err);
+  }
+
   return (
     <div>
       <PageHeader
@@ -29,7 +53,7 @@ export default function NoticesPage() {
           </div>
 
           <div className="space-y-4">
-            {NOTICES.map((notice) => (
+            {displayNotices.map((notice) => (
               <div
                 key={notice.id}
                 className={`p-6 rounded-lg border transition-all bg-white shadow-card ${
@@ -60,14 +84,16 @@ export default function NoticesPage() {
                 {notice.fileUrl && (
                   <div className="mt-4 pt-3 border-t border-[#C5A46D]/20 flex items-center justify-between text-xs">
                     <span className="text-[#81917A] flex items-center">
-                      <FileText className="w-4 h-4 mr-1 text-[#C5A46D]" /> PDF Document Available
+                      <FileText className="w-4 h-4 mr-1 text-[#C5A46D]" /> PDF Document Attached
                     </span>
-                    <Link
-                      href="/downloads"
+                    <a
+                      href={notice.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="font-semibold text-[#173D32] hover:text-[#C5A46D] flex items-center"
                     >
-                      <Download className="w-3.5 h-3.5 mr-1" /> Download Circular
-                    </Link>
+                      <Download className="w-3.5 h-3.5 mr-1 text-[#C5A46D]" /> View / Download PDF
+                    </a>
                   </div>
                 )}
               </div>

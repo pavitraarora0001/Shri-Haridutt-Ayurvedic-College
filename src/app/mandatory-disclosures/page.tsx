@@ -42,12 +42,37 @@ import {
 } from 'lucide-react';
 
 export default function MandatoryDisclosurePortal() {
+  const [categoriesData, setCategoriesData] = useState<DisclosureCategoryData[]>(NCISM_DISCLOSURES);
   const [activeCategoryNum, setActiveCategoryNum] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('ALL');
   const [activeDocModal, setActiveDocModal] = useState<DisclosureDocumentData | null>(null);
   const [viewMode, setViewMode] = useState<'PANEL' | 'ALL'>('PANEL');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  React.useEffect(() => {
+    fetch('/api/disclosures')
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          setCategoriesData((prev) => {
+            return prev.map((cat) => {
+              const dbCat = res.data.find((c: any) => c.categoryNumber === cat.categoryNumber);
+              if (dbCat && dbCat.documents && dbCat.documents.length > 0) {
+                const existingUrls = new Set(cat.documents.map((d) => d.fileUrl));
+                const newDocs = dbCat.documents.filter((d: any) => !existingUrls.has(d.fileUrl));
+                return {
+                  ...cat,
+                  documents: [...newDocs, ...cat.documents],
+                };
+              }
+              return cat;
+            });
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Icon mapper
   const getIcon = (iconName: string, className = 'w-5 h-5') => {
@@ -73,7 +98,7 @@ export default function MandatoryDisclosurePortal() {
 
   // Filter categories based on search & academic session
   const filteredCategories = useMemo(() => {
-    return NCISM_DISCLOSURES.filter((cat) => {
+    return categoriesData.filter((cat) => {
       const q = searchQuery.toLowerCase().trim();
       const matchSearch =
         !q ||
@@ -96,14 +121,14 @@ export default function MandatoryDisclosurePortal() {
     return (
       filteredCategories.find(c => c.categoryNumber === activeCategoryNum) ||
       filteredCategories[0] ||
-      NCISM_DISCLOSURES[0]
+      categoriesData[0]
     );
-  }, [filteredCategories, activeCategoryNum]);
+  }, [filteredCategories, activeCategoryNum, categoriesData]);
 
   // Statistics counters
   const totalDocsCount = useMemo(() => {
-    return NCISM_DISCLOSURES.reduce((acc, curr) => acc + curr.documents.length, 0);
-  }, []);
+    return categoriesData.reduce((acc, curr) => acc + curr.documents.length, 0);
+  }, [categoriesData]);
 
   return (
     <div className="bg-[#F6F2E9] min-h-screen text-[#342B25] selection:bg-[#C5A46D] selection:text-[#173D32]">

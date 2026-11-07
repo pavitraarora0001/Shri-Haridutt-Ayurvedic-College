@@ -1,9 +1,37 @@
 import React from 'react';
 import PageHeader from '@/components/common/PageHeader';
 import { NEWS_EVENTS } from '@/lib/data';
+import { prisma } from '@/lib/prisma';
 import { Calendar, MapPin, Tag } from 'lucide-react';
 
-export default function NewsEventsPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function NewsEventsPage() {
+  let displayNews = NEWS_EVENTS;
+
+  try {
+    const dbNews = await prisma.news.findMany({
+      where: { isPublished: true },
+      orderBy: { publishedAt: 'desc' },
+    });
+
+    if (dbNews && dbNews.length > 0) {
+      const mapped = dbNews.map((n) => ({
+        id: n.id,
+        title: n.title,
+        date: new Date(n.publishedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        category: n.category,
+        summary: n.summary,
+        content: n.content,
+        imageUrl: n.imageUrl || '/images/ayurveda/ancient-heritage/heritage-stone-architecture.webp',
+        location: 'Heritage Campus & Teaching Hospital',
+      }));
+      displayNews = [...mapped, ...NEWS_EVENTS];
+    }
+  } catch (err) {
+    console.error('Error fetching news from DB:', err);
+  }
+
   return (
     <div>
       <PageHeader
@@ -15,7 +43,7 @@ export default function NewsEventsPage() {
       <div className="py-20 bg-[#F6F2E9]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {NEWS_EVENTS.map((event) => (
+            {displayNews.map((event) => (
               <div
                 key={event.id}
                 className="bg-white rounded-lg border border-[#C5A46D]/30 shadow-card hover:shadow-luxury transition-all overflow-hidden flex flex-col justify-between group"
@@ -56,12 +84,6 @@ export default function NewsEventsPage() {
                       {event.content}
                     </p>
                   </div>
-                </div>
-
-                <div className="p-6 pt-0">
-                  <span className="text-[11px] font-semibold text-[#173D32] uppercase tracking-wider">
-                    Official College Event Dispatch
-                  </span>
                 </div>
               </div>
             ))}

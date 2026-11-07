@@ -205,12 +205,31 @@ const CATEGORIES = [
 ];
 
 export default function GalleryPage() {
+  const [items, setItems] = useState<GalleryItem[]>(GALLERY_DATA);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    fetch('/api/v1/gallery')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data && json.data.length > 0) {
+          const dbItems: GalleryItem[] = json.data.map((d: any, idx: number) => ({
+            id: 1000 + idx,
+            title: d.title,
+            category: d.category === 'Campus' ? 'Campus & Architecture' : d.category === 'Hospital' ? 'Hospital & Panchakarma' : d.category,
+            url: d.imageUrl,
+            caption: d.caption || '',
+          }));
+          setItems([...dbItems, ...GALLERY_DATA]);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const filteredItems = selectedCategory === 'ALL'
-    ? GALLERY_DATA
-    : GALLERY_DATA.filter((item) => item.category === selectedCategory);
+    ? items
+    : items.filter((item) => item.category === selectedCategory);
 
   const openLightbox = (index: number) => {
     setCurrentIndex(index);

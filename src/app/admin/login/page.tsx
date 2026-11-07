@@ -7,8 +7,8 @@ import { ShieldCheck, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState('admin@hariduttayurveda.edu.in');
-  const [password, setPassword] = useState('Admin@123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
-      router.push('/admin');
+      router.push('/admin/dashboard');
     } catch (err: any) {
       setError(err.message || 'Invalid administrator credentials.');
     } finally {
@@ -59,12 +59,6 @@ export default function AdminLoginPage() {
             <span>{error}</span>
           </div>
         )}
-
-        <div className="p-3 rounded bg-[#0F2821] border border-[#C5A46D]/30 text-[11px] text-[#F6F2E9] space-y-1">
-          <p className="font-semibold text-[#C5A46D]">Default Super Admin Credentials:</p>
-          <p>Email: <code>admin@hariduttayurveda.edu.in</code></p>
-          <p>Password: <code>Admin@123</code></p>
-        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
