@@ -8,13 +8,17 @@ export default function AnnouncementBar() {
       suppressHydrationWarning
       className="bg-[#0B1E19] text-[#F6F2E9] text-xs border-b border-[#C5A46D]/20 py-1.5 transition-all duration-300 select-none overflow-hidden w-full"
     >
-      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-6 2xl:px-8 flex items-center justify-between gap-2 sm:gap-3">
+      <div
+        suppressHydrationWarning
+        className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-6 2xl:px-8 flex items-center justify-between gap-2 sm:gap-3"
+      >
         {/* Left: Admissions Badge, Sacred Shloka & Live Announcement Ticker */}
-        <div className="flex items-center space-x-2 min-w-0 overflow-hidden flex-1">
+        <div suppressHydrationWarning className="flex items-center space-x-2 min-w-0 overflow-hidden flex-1">
           {/* Admissions Badge */}
           <Link
             href="/admissions/apply"
             prefetch={true}
+            suppressHydrationWarning
             className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[9.5px] sm:text-[10px] font-semibold bg-[#C5A46D]/20 text-[#DFCA9E] border border-[#C5A46D]/50 tracking-wide uppercase whitespace-nowrap shrink-0 hover:bg-[#C5A46D]/30 transition-colors"
           >
             <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 text-[#DFCA9E] shrink-0" />
