@@ -124,3 +124,48 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await getCurrentUser();
+    if (!user || user.type !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const documentId = searchParams.get('documentId');
+    const recordId = searchParams.get('recordId');
+
+    if (documentId) {
+      await prisma.disclosureDocument.delete({ where: { id: documentId } });
+      await prisma.auditLog.create({
+        data: {
+          action: 'DELETE_DISCLOSURE_DOCUMENT',
+          entity: 'DisclosureDocument',
+          entityId: documentId,
+          details: `Deleted disclosure document ${documentId}`,
+          performedBy: user.id,
+        },
+      });
+      return NextResponse.json({ success: true });
+    }
+
+    if (recordId) {
+      await prisma.disclosureRecord.delete({ where: { id: recordId } });
+      await prisma.auditLog.create({
+        data: {
+          action: 'DELETE_DISCLOSURE_RECORD',
+          entity: 'DisclosureRecord',
+          entityId: recordId,
+          details: `Deleted disclosure record ${recordId}`,
+          performedBy: user.id,
+        },
+      });
+      return NextResponse.json({ success: true });
+    }
+
+    return NextResponse.json({ error: 'documentId or recordId required' }, { status: 400 });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Failed to delete disclosure item.' }, { status: 500 });
+  }
+}
