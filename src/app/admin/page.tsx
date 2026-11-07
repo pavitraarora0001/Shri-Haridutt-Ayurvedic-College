@@ -131,6 +131,10 @@ export default function AdminDashboardPage() {
     try {
       // 1. Overview & Stats
       const overRes = await fetch('/api/admin/overview');
+      if (overRes.status === 401 || overRes.status === 403) {
+        router.push('/admin/login');
+        return;
+      }
       if (overRes.ok) {
         const overData = await overRes.json();
         if (overData.stats) setStats(overData.stats);

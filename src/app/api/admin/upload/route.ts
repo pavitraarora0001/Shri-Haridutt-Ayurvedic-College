@@ -3,8 +3,8 @@ import { getCurrentUser } from '@/lib/auth';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import { validateUploadedFile } from '@/lib/file-validator';
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 export async function POST(req: Request) {
@@ -21,26 +21,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided in upload payload.' }, { status: 400 });
     }
 
-    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'Invalid file format. Allowed formats: JPG, PNG, WebP, PDF.' },
-        { status: 400 }
-      );
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: 'File size exceeds maximum permitted limit of 5 MB.' },
-        { status: 400 }
-      );
-    }
-
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Generate unique name
-    const ext = path.extname(file.name).toLowerCase() || '.jpg';
-    const uniqueName = `media_${Date.now()}_${crypto.randomBytes(6).toString('hex')}${ext}`;
+    // Cryptographic Magic Byte Signature Verification
+    const validation = validateUploadedFile(buffer, file.name, file.type, MAX_FILE_SIZE);
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    // Generate guaranteed-safe unique filename
+    const safeExt = validation.safeExtension || '.jpg';
+    const uniqueName = `media_${Date.now()}_${crypto.randomBytes(6).toString('hex')}${safeExt}`;
     const uploadDir = path.join(process.cwd(), 'public', 'uploads');
     const filePath = path.join(uploadDir, uniqueName);
 

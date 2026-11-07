@@ -7,21 +7,27 @@ import { Search, CheckCircle2, Clock, XCircle, AlertCircle, ShieldCheck } from '
 
 function StatusContent() {
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get('q') || '';
+  const initialAppNo = searchParams.get('appNo') || searchParams.get('q') || '';
+  const initialVerify = searchParams.get('verify') || searchParams.get('phone') || searchParams.get('email') || '';
 
-  const [query, setQuery] = useState(initialQuery);
+  const [appNo, setAppNo] = useState(initialAppNo);
+  const [verifier, setVerifier] = useState(initialVerify);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStatus = async (q: string) => {
-    if (!q.trim()) return;
+  const fetchStatus = async (targetAppNo: string, targetVerify: string) => {
+    if (!targetAppNo.trim() || !targetVerify.trim()) {
+      setError('Please provide both your Application Reference Number and registered Mobile or Email.');
+      return;
+    }
     setLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const res = await fetch(`/api/admissions/status?q=${encodeURIComponent(q.trim())}`);
+      const url = `/api/admissions/status?appNo=${encodeURIComponent(targetAppNo.trim())}&verify=${encodeURIComponent(targetVerify.trim())}`;
+      const res = await fetch(url);
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || 'No matching record found.');
@@ -35,44 +41,68 @@ function StatusContent() {
   };
 
   useEffect(() => {
-    if (initialQuery) {
-      fetchStatus(initialQuery);
+    if (initialAppNo && initialVerify) {
+      fetchStatus(initialAppNo, initialVerify);
     }
-  }, [initialQuery]);
+  }, [initialAppNo, initialVerify]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchStatus(query);
+    fetchStatus(appNo, verifier);
   };
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
       {/* Search Box Card */}
       <div className="bg-white p-8 rounded-lg border border-[#C5A46D]/40 shadow-card">
-        <h2 className="font-serif text-xl font-bold text-[#173D32] mb-2">
-          Track Your Admission Application
+        <h2 className="font-serif text-xl font-bold text-[#173D32] mb-2 flex items-center">
+          <ShieldCheck className="w-5 h-5 mr-2 text-[#C5A46D]" />
+          <span>Track Your Admission Application</span>
         </h2>
         <p className="text-xs text-[#342B25]/75 mb-6 font-light">
-          Enter your Application Number (e.g. <code>HC-AYUR-2026-0182</code>), registered Mobile Number, or Email Address.
+          For candidate data privacy and statutory security, enter both your Application Number and registered Mobile Number or Email.
         </p>
 
-        <form onSubmit={handleSearch} className="flex gap-2">
-          <input
-            type="text"
-            required
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter HC-AYUR-2026-XXXX / Mobile / Email"
-            className="flex-grow border border-gray-300 rounded px-4 py-3 text-xs focus:outline-none focus:border-[#C5A46D]"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-3 rounded bg-[#173D32] text-white hover:bg-[#0F2821] text-xs uppercase tracking-wider font-semibold transition-colors flex items-center shrink-0"
-          >
-            {loading ? <Clock className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4 mr-1.5" />}
-            <span>Inspect Status</span>
-          </button>
+        <form onSubmit={handleSearch} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-[#173D32] uppercase tracking-wider mb-1">
+                Application Number *
+              </label>
+              <input
+                type="text"
+                required
+                value={appNo}
+                onChange={(e) => setAppNo(e.target.value)}
+                placeholder="e.g. HC-AYUR-2026-0001"
+                className="w-full border border-gray-300 rounded px-4 py-2.5 text-xs focus:outline-none focus:border-[#C5A46D]"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-[#173D32] uppercase tracking-wider mb-1">
+                Registered Mobile or Email *
+              </label>
+              <input
+                type="text"
+                required
+                value={verifier}
+                onChange={(e) => setVerifier(e.target.value)}
+                placeholder="Mobile (+91) or Email Address"
+                className="w-full border border-gray-300 rounded px-4 py-2.5 text-xs focus:outline-none focus:border-[#C5A46D]"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-2.5 rounded bg-[#173D32] text-white hover:bg-[#0F2821] text-xs uppercase tracking-wider font-semibold transition-colors flex items-center shrink-0 cursor-pointer shadow-gold"
+            >
+              {loading ? <Clock className="w-4 h-4 animate-spin mr-1.5" /> : <Search className="w-4 h-4 mr-1.5" />}
+              <span>Inspect Status</span>
+            </button>
+          </div>
         </form>
       </div>
 
@@ -119,49 +149,45 @@ function StatusContent() {
                 <strong className="text-sm font-serif text-[#173D32]">{result.fullName}</strong>
               </div>
               <div>
-                <span className="text-[#81917A] block">Course Programme:</span>
-                <strong className="text-sm font-serif text-[#173D32]">{result.courseCode}</strong>
+                <span className="text-[#81917A] block">Opted Programme:</span>
+                <span className="font-semibold text-[#173D32]">{result.courseCode}</span>
               </div>
               <div>
-                <span className="text-[#81917A] block">Category:</span>
-                <span className="font-medium text-[#173D32]">{result.category}</span>
+                <span className="text-[#81917A] block">Submission Date:</span>
+                <span>{new Date(result.submittedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
               </div>
               <div>
-                <span className="text-[#81917A] block">NEET-UG Score:</span>
-                <span className="font-medium text-[#173D32]">{result.neetScore ? `${result.neetScore} / 720` : 'Under Review'}</span>
+                <span className="text-[#81917A] block">Statutory Verification:</span>
+                <span className="text-emerald-700 font-semibold flex items-center">
+                  <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                  Candidate Ownership Confirmed
+                </span>
               </div>
             </div>
 
-            {result.adminNotes && (
-              <div className="p-4 rounded bg-amber-50 border border-amber-200">
-                <span className="font-semibold text-amber-900 block mb-1">
-                  Admissions Committee Note:
-                </span>
-                <p className="text-amber-800 leading-relaxed font-light">
-                  {result.adminNotes}
-                </p>
-              </div>
-            )}
-
-            {result.documents && result.documents.length > 0 && (
-              <div className="p-4 rounded bg-[#F6F2E9] border border-[#C5A46D]/30 space-y-2">
-                <span className="font-semibold text-[#173D32] block">
-                  Encrypted Dossier Attachments ({result.documents.length}):
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {result.documents.map((doc: any) => (
-                    <div key={doc.id} className="flex items-center text-[11px] bg-white p-2 rounded border border-[#C5A46D]/20 text-[#173D32]">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mr-1.5 shrink-0" />
-                      <span className="truncate font-mono">{doc.originalName}</span>
+            {/* Document Checklist */}
+            <div className="pt-2">
+              <h4 className="font-serif font-bold text-[#173D32] mb-3">
+                Submitted Verification Documents
+              </h4>
+              <div className="divide-y divide-gray-100 border rounded border-gray-200">
+                {result.documents && result.documents.length > 0 ? (
+                  result.documents.map((doc: any, idx: number) => (
+                    <div key={idx} className="p-3 flex items-center justify-between text-xs">
+                      <span className="font-medium text-[#173D32]">{doc.documentType}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                        doc.status === 'VERIFIED'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {doc.status}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <div className="p-3 text-xs text-gray-500 italic">No document records found.</div>
+                )}
               </div>
-            )}
-
-            <div className="pt-2 text-[11px] text-[#81917A] flex items-center justify-between">
-              <span>Registered: {new Date(result.submittedAt).toLocaleDateString()}</span>
-              <span>Shri Haridutt Admissions Directorate</span>
             </div>
           </div>
         </div>
@@ -170,20 +196,20 @@ function StatusContent() {
   );
 }
 
-export default function ApplicationStatusPage() {
+export default function AdmissionsStatusPage() {
   return (
-    <div>
+    <div className="bg-[#F6F2E9] min-h-screen text-[#342B25] pb-24">
       <PageHeader
-        title="Check Application Status"
-        subtitle="Live Admissions Dossier Tracker"
-        crumbs={[{ label: 'Admissions', href: '/admissions' }, { label: 'Track Status' }]}
+        title="Application Status & Dossier Verification"
+        subtitle="Track the official admissions evaluation, scrutiny status, and statutory clearance for AYUSH Batch 2026–27."
+        crumbs={[
+          { label: 'Admissions 2026', href: '/admissions' },
+          { label: 'Application Status' },
+        ]}
       />
-
-      <div className="py-20 bg-[#F6F2E9]">
-        <Suspense fallback={<div className="text-center py-12 text-xs">Loading application tracker...</div>}>
-          <StatusContent />
-        </Suspense>
-      </div>
+      <Suspense fallback={<div className="text-center py-12 text-xs text-[#81917A]">Loading verification engine...</div>}>
+        <StatusContent />
+      </Suspense>
     </div>
   );
 }

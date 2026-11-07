@@ -40,3 +40,5 @@ Thumbs.db
 # storage uploads
 /storage/uploads/*
 /storage/private_documents/*
+/storage/*.json
+/storage/ratelimit.json

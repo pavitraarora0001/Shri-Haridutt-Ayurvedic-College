@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import { validateUploadedFile } from '@/lib/file-validator';
 
-const ALLOWED_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 export async function POST(req: Request) {
@@ -16,26 +16,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No document file received.' }, { status: 400 });
     }
 
-    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'Invalid document format. Only PDF, JPG, and PNG documents are accepted.' },
-        { status: 400 }
-      );
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: 'Document file size exceeds 5 MB statutory limit.' },
-        { status: 400 }
-      );
-    }
-
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Private storage: files are stored with random UUIDs and non-executable extensions
-    const ext = path.extname(file.name).toLowerCase() || '.bin';
-    const storedFileName = `doc_${crypto.randomUUID()}${ext}`;
+    // Cryptographic Magic Byte Signature Verification
+    const validation = validateUploadedFile(buffer, file.name, file.type, MAX_FILE_SIZE);
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    // Private isolated storage: files are stored with random UUIDs and strictly verified extensions
+    const safeExt = validation.safeExtension || '.bin';
+    const storedFileName = `doc_${crypto.randomUUID()}${safeExt}`;
     const storageDir = path.join(process.cwd(), 'storage', 'private_documents');
     const fullPath = path.join(storageDir, storedFileName);
 
@@ -47,7 +39,7 @@ export async function POST(req: Request) {
         documentType,
         originalName: file.name,
         fileName: storedFileName,
-        mimeType: file.type,
+        mimeType: validation.detectedType || file.type,
         fileSize: file.size,
         storagePath: storedFileName,
       },

@@ -2,15 +2,37 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signJwtToken } from '@/lib/auth';
+import { AuthService } from '@/modules/auth/auth.service';
 
 export async function POST(req: Request) {
   try {
+    const clientIp =
+      req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+      req.headers.get('x-real-ip') ||
+      '127.0.0.1';
+
     const { identifier, password, portalType } = await req.json();
 
     if (!identifier || !password) {
       return NextResponse.json(
         { error: 'Please provide both username/email and password.' },
         { status: 400 }
+      );
+    }
+
+    // Enforce brute-force attack prevention (5 attempts / 15 mins)
+    const rateLimit = AuthService.checkLoginRateLimit(identifier, clientIp);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error: `Too many login attempts. For institutional security, access is temporarily locked. Please try again in ${
+            rateLimit.retryAfterSec || 900
+          } seconds.`,
+        },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateLimit.retryAfterSec || 900) },
+        }
       );
     }
 
@@ -23,14 +45,17 @@ export async function POST(req: Request) {
       });
 
       if (!student) {
-        return NextResponse.json({ error: 'Student record not found.' }, { status: 401 });
-      }
-
-      // Check password
-      const isValid = await bcrypt.compare(password, student.password);
-      if (!isValid && student.password !== password) {
         return NextResponse.json({ error: 'Invalid student credentials.' }, { status: 401 });
       }
+
+      // Secure hashed password comparison
+      const isValid = await bcrypt.compare(password, student.password);
+      if (!isValid) {
+        return NextResponse.json({ error: 'Invalid student credentials.' }, { status: 401 });
+      }
+
+      // Reset login rate limiter on successful authentication
+      AuthService.resetLoginRateLimit(identifier, clientIp);
 
       const token = signJwtToken({
         id: student.id,
@@ -58,11 +83,11 @@ export async function POST(req: Request) {
 
     // 2. Admin & Faculty Portal Login
     const user = await prisma.user.findUnique({
-      where: { email: identifier },
+      where: { email: identifier.toLowerCase().trim() },
     });
 
     if (!user || !user.isActive) {
-      return NextResponse.json({ error: 'User account not found or deactivated.' }, { status: 401 });
+      return NextResponse.json({ error: 'Account not found or deactivated.' }, { status: 401 });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -74,6 +99,9 @@ export async function POST(req: Request) {
     if (portalType === 'FACULTY' && user.role !== 'FACULTY' && user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Account does not have faculty privileges.' }, { status: 403 });
     }
+
+    // Reset login rate limiter on successful authentication
+    AuthService.resetLoginRateLimit(identifier, clientIp);
 
     const token = signJwtToken({
       id: user.id,
