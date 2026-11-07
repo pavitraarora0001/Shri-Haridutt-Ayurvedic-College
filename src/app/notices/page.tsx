@@ -23,6 +23,7 @@ export default async function NoticesPage() {
         date: n.date,
         fileUrl: n.fileUrl || undefined,
         isPinned: n.isPinned,
+        isPublished: n.isPublished,
       }));
     }
   } catch (err) {

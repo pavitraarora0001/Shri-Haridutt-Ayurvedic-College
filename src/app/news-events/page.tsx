@@ -19,12 +19,14 @@ export default async function NewsEventsPage() {
       const mapped = dbNews.map((n) => ({
         id: n.id,
         title: n.title,
+        slug: n.slug,
         date: new Date(n.publishedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
         category: n.category,
         summary: n.summary,
         content: n.content,
         imageUrl: n.imageUrl || '/images/ayurveda/ancient-heritage/heritage-stone-architecture.webp',
         location: 'Heritage Campus & Teaching Hospital',
+        isFeatured: n.isFeatured,
       }));
       displayNews = [...mapped, ...NEWS_EVENTS];
     }

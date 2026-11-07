@@ -19,13 +19,19 @@ export default async function FacultyDirectoryPage() {
     if (dbFaculty && dbFaculty.length > 0) {
       displayFaculty = dbFaculty.map((f) => ({
         id: f.id,
+        facultyId: f.facultyId,
         name: f.name,
         designation: f.designation,
         qualification: f.qualification,
         experienceYears: f.experienceYears,
         specialization: f.specialization,
+        email: f.email,
+        phone: f.phone || undefined,
         bio: f.bio,
         image: f.image || 'https://images.unsplash.com/photo-1582750433449-648ed127bb54',
+        isHOD: f.isHOD,
+        isLeadership: f.isLeadership,
+        order: f.order,
       }));
     }
   } catch (err) {
