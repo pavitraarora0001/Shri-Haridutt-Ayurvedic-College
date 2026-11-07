@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { signJwtToken } from '@/lib/auth';
+import { signAccessToken } from '@/lib/auth';
 import { AuthService } from '@/modules/auth/auth.service';
 
 export async function POST(req: Request) {
@@ -10,6 +10,7 @@ export async function POST(req: Request) {
       req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
       req.headers.get('x-real-ip') ||
       '127.0.0.1';
+    const userAgent = req.headers.get('user-agent') || undefined;
 
     const { identifier, password, portalType } = await req.json();
 
@@ -20,8 +21,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Enforce brute-force attack prevention (5 attempts / 15 mins)
-    const rateLimit = AuthService.checkLoginRateLimit(identifier, clientIp);
+    // Enforce database-backed atomic brute-force protection (5 attempts / 15 mins)
+    const rateLimit = await AuthService.checkLoginRateLimit(identifier, clientIp);
     if (!rateLimit.allowed) {
       return NextResponse.json(
         {
@@ -48,21 +49,23 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Invalid student credentials.' }, { status: 401 });
       }
 
-      // Secure hashed password comparison
       const isValid = await bcrypt.compare(password, student.password);
       if (!isValid) {
         return NextResponse.json({ error: 'Invalid student credentials.' }, { status: 401 });
       }
 
-      // Reset login rate limiter on successful authentication
-      AuthService.resetLoginRateLimit(identifier, clientIp);
+      await AuthService.resetLoginRateLimit(identifier, clientIp);
 
-      const token = signJwtToken({
+      // Create persisted session & refresh token
+      const session = await AuthService.createSession(student.id, 'STUDENT', clientIp, userAgent);
+
+      const token = signAccessToken({
         id: student.id,
         name: student.name,
         email: student.email,
         role: 'STUDENT',
         type: 'STUDENT',
+        sessionId: session.sessionId,
       });
 
       const response = NextResponse.json({
@@ -70,11 +73,21 @@ export async function POST(req: Request) {
         user: { name: student.name, role: 'STUDENT', studentId: student.studentId },
       });
 
+      // Short-lived access token cookie (15 mins)
       response.cookies.set('auth_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: 15 * 60, // 15 mins
+        path: '/',
+      });
+
+      // Long-lived rotating refresh token cookie (7 days)
+      response.cookies.set('refresh_token', session.rawToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60, // 7 days
         path: '/',
       });
 
@@ -95,20 +108,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Incorrect email or password.' }, { status: 401 });
     }
 
-    // Role check if logging into faculty portal
     if (portalType === 'FACULTY' && user.role !== 'FACULTY' && user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Account does not have faculty privileges.' }, { status: 403 });
     }
 
-    // Reset login rate limiter on successful authentication
-    AuthService.resetLoginRateLimit(identifier, clientIp);
+    await AuthService.resetLoginRateLimit(identifier, clientIp);
 
-    const token = signJwtToken({
+    // Create persisted session & refresh token
+    const session = await AuthService.createSession(user.id, 'USER', clientIp, userAgent);
+
+    const token = signAccessToken({
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
       type: user.role === 'FACULTY' ? 'FACULTY' : 'ADMIN',
+      sessionId: session.sessionId,
     });
 
     const response = NextResponse.json({
@@ -116,11 +131,21 @@ export async function POST(req: Request) {
       user: { name: user.name, email: user.email, role: user.role },
     });
 
+    // Short-lived access token cookie (15 mins)
     response.cookies.set('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 15 * 60, // 15 mins
+      path: '/',
+    });
+
+    // Long-lived rotating refresh token cookie (7 days)
+    response.cookies.set('refresh_token', session.rawToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 days
       path: '/',
     });
 

@@ -10,6 +10,9 @@ const ADMIN_ROLES = [
   'CONTENT_MANAGER',
 ];
 
+const JWT_ISSUER = 'hariduttayurveda.edu.in';
+const JWT_AUDIENCE = 'shamc-portal';
+
 async function verifyJwtEdge(token: string, secret: string) {
   try {
     const parts = token.split('.');
@@ -36,6 +39,8 @@ async function verifyJwtEdge(token: string, secret: string) {
 
     const payload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')));
     if (payload.exp && payload.exp * 1000 < Date.now()) return null;
+    if (payload.iss && payload.iss !== JWT_ISSUER) return null;
+    if (payload.aud && payload.aud !== JWT_AUDIENCE) return null;
     return payload;
   } catch {
     return null;
@@ -61,7 +66,9 @@ export async function middleware(request: NextRequest) {
   const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
   const token = cookieToken || bearerToken;
 
-  const secret = process.env.JWT_SECRET || 'dev-ephemeral-jwt-secret-shamc-secure-ayurveda-2026-key';
+  const secret =
+    process.env.JWT_SECRET ||
+    (process.env.NODE_ENV === 'production' ? '' : 'dev-ephemeral-jwt-secret-shamc-secure-ayurveda-2026-key');
 
   const user = token ? await verifyJwtEdge(token, secret) : null;
 

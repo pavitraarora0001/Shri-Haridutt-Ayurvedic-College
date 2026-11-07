@@ -10,7 +10,7 @@ export async function GET(req: Request) {
       '127.0.0.1';
 
     // Anti-enumeration Rate Limiter (Max 10 queries per minute per IP)
-    const rateLimit = AuthService.checkRateLimit(`admissions_status:${clientIp}`, 10, 60000);
+    const rateLimit = await AuthService.checkRateLimit(`admissions_status:${clientIp}`, 10, 60000);
     if (!rateLimit.allowed) {
       return NextResponse.json(
         {

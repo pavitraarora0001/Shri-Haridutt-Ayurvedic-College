@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
-    const rateCheck = AuthService.checkRateLimit(`apply_${ip}`, 10, 60000);
+    const rateCheck = await AuthService.checkRateLimit(`apply_${ip}`, 10, 60000);
     if (!rateCheck.allowed) {
       return NextResponse.json(
         { success: false, error: 'Too many application submissions from this IP. Please wait.' },

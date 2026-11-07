@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { AuthService } from '../auth/auth.service';
+import { revokeAllUserSessions } from '@/lib/auth';
 
 export class UsersService {
   static async listUsers(options: { page?: number; limit?: number; search?: string; role?: string } = {}) {
@@ -104,7 +105,7 @@ export class UsersService {
       updatePayload.password = await AuthService.hashPassword(data.password);
     }
 
-    return prisma.user.update({
+    const updated = await prisma.user.update({
       where: { id },
       data: updatePayload,
       select: {
@@ -116,10 +117,18 @@ export class UsersService {
         updatedAt: true,
       },
     });
+
+    // Invalidate active sessions if password is changed or account is deactivated
+    if (data.password || data.isActive === false) {
+      await revokeAllUserSessions(id);
+    }
+
+    return updated;
   }
 
   static async deleteUser(id: string) {
-    // Soft deactivate or delete
+    // Soft deactivate and immediately invalidate all sessions
+    await revokeAllUserSessions(id);
     return prisma.user.update({
       where: { id },
       data: { isActive: false },
