@@ -58,6 +58,9 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/site.webmanifest',
+  verification: {
+    google: 'B_nuYFuxSm9psdTP_-4bed8s3zyUMlrNWbuItLKO1Uc',
+  },
   robots: {
     index: true,
     follow: true,
