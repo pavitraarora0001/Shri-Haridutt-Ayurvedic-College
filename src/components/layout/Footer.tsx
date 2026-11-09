@@ -242,7 +242,7 @@ export default function Footer() {
             </Link>
             <span className="hidden sm:inline">•</span>
             <Link prefetch={true} href="/admin/login" className="hover:text-[#C5A46D] transition-colors">
-              Admin CMS
+              Admin Panel
             </Link>
           </div>
 

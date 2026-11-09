@@ -24,7 +24,8 @@ import {
   Stethoscope,
   Calendar,
   ExternalLink,
-  Users
+  Users,
+  User
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -867,9 +868,10 @@ export default function Navbar() {
                 Apply Online 2026–27
               </Link>
               <div className="flex items-center justify-center space-x-4 text-xs pt-2 text-[#81917A]">
-                <Link prefetch={true} href="/faculty-portal/login" className="hover:text-[#C5A46D]">Faculty Login</Link>
-                <span>•</span>
-                <Link prefetch={true} href="/admin/login" className="hover:text-[#C5A46D]">Admin CMS</Link>
+                <Link prefetch={true} href="/admin/login" className="hover:text-[#C5A46D] flex items-center gap-1.5 font-medium text-[#DFCA9E]">
+                  <User className="w-3.5 h-3.5 text-[#C5A46D]" />
+                  <span>Admin Panel</span>
+                </Link>
               </div>
             </div>
           </motion.div>

@@ -50,25 +50,15 @@ export default function AnnouncementBar() {
             <span className="font-sans text-[10.5px] sm:text-[11px] tracking-normal whitespace-nowrap font-semibold text-white">+91 98290 44120</span>
           </a>
 
-          <span className="hidden md:inline text-[#C5A46D]/40 shrink-0">•</span>
-
-          <Link
-            href="/faculty-portal/login"
-            prefetch={true}
-            className="hidden md:flex items-center text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors whitespace-nowrap shrink-0 text-[11px]"
-          >
-            <User className="w-3.5 h-3.5 mr-1 text-[#C5A46D] shrink-0" />
-            <span className="whitespace-nowrap font-medium">Faculty Login</span>
-          </Link>
-
           <span className="hidden sm:inline text-[#C5A46D]/40 shrink-0">•</span>
 
           <Link
             href="/admin/login"
             prefetch={true}
-            className="hidden sm:inline-flex text-[#DFCA9E] hover:text-white hover:bg-[#C5A46D]/20 transition-colors font-semibold uppercase text-[9.5px] sm:text-[10px] tracking-wider whitespace-nowrap shrink-0 px-1.5 py-0.5 rounded border border-[#C5A46D]/30"
+            className="hidden sm:flex items-center text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors whitespace-nowrap shrink-0 text-[11px]"
           >
-            CMS
+            <User className="w-3.5 h-3.5 mr-1 text-[#C5A46D] shrink-0" />
+            <span className="whitespace-nowrap font-medium">Admin Panel</span>
           </Link>
         </div>
       </div>
