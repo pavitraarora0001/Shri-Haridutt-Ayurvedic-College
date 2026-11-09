@@ -46,8 +46,14 @@ export async function POST(req: Request) {
     }
 
     // 2. Admin & Faculty Portal Login
+    const normalizedIdentifier = identifier.toLowerCase().trim();
+    const lookupEmail =
+      normalizedIdentifier === 'admin'
+        ? 'admin@hariduttayurveda.edu.in'
+        : normalizedIdentifier;
+
     const user = await prisma.user.findUnique({
-      where: { email: identifier.toLowerCase().trim() },
+      where: { email: lookupEmail },
     });
 
     if (!user || !user.isActive) {

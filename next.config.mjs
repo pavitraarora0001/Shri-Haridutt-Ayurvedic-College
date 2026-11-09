@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+if (process.platform === 'win32') {
+  process.env.NEXT_TEST_WASM = '1';
+}
+
 const isDev = process.env.NODE_ENV !== 'production';
 
 const cspHeader = `

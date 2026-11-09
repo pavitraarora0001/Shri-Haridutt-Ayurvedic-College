@@ -1,16 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShieldCheck, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Pre-load dashboard bundle in the background for instant transition
+  useEffect(() => {
+    router.prefetch('/admin/dashboard');
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,10 +33,10 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
-      router.push('/admin/dashboard');
+      // Instant transition
+      router.replace('/admin/dashboard');
     } catch (err: any) {
       setError(err.message || 'Invalid administrator credentials.');
-    } finally {
       setLoading(false);
     }
   };
@@ -63,16 +69,16 @@ export default function AdminLoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-[#C5A46D] mb-1">
-              Admin Electronic Mail
+              Admin Login ID / Email
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-[#81917A] absolute left-3 top-1/2 transform -translate-y-1/2" />
               <input
-                type="email"
+                type="text"
                 required
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="admin@institution.edu.in"
+                placeholder="admin or admin@hariduttayurveda.edu.in"
                 className="w-full bg-[#0F2821] border border-[#C5A46D]/40 rounded pl-9 pr-3 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-[#C5A46D]"
               />
             </div>
@@ -85,13 +91,21 @@ export default function AdminLoginPage() {
             <div className="relative">
               <Lock className="w-4 h-4 text-[#81917A] absolute left-3 top-1/2 transform -translate-y-1/2" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full bg-[#0F2821] border border-[#C5A46D]/40 rounded pl-9 pr-3 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-[#C5A46D]"
+                className="w-full bg-[#0F2821] border border-[#C5A46D]/40 rounded pl-9 pr-10 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-[#C5A46D]"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#81917A] hover:text-[#C5A46D] transition-colors focus:outline-none"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 

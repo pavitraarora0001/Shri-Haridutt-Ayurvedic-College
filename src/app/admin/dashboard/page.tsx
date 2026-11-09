@@ -185,71 +185,61 @@ export default function AdminDashboardPage() {
         setRecentAuditLogs(data.recentAuditLogs || []);
       }
 
-      // Fetch all sub-modules in parallel
-      const [gRes, nRes, notRes, cRes, fRes, dRes, tRes, sRes, pRes] = await Promise.all([
-        fetch('/api/admin/gallery'),
-        fetch('/api/admin/news'),
-        fetch('/api/admin/notices'),
-        fetch('/api/admin/courses'),
-        fetch('/api/admin/faculty'),
-        fetch('/api/admin/disclosures'),
-        fetch('/api/admin/testimonials'),
-        fetch('/api/admin/settings'),
-        fetch('/api/admin/pages'),
-      ]);
+      // Display the overview dashboard shell immediately with zero delay
+      setLoading(false);
+      setRefreshing(false);
 
-      const [gData, nData, notData, cData, fData, dData, tData, sData, pData] = await Promise.all([
-        gRes.json(),
-        nRes.json(),
-        notRes.json(),
-        cRes.json(),
-        fRes.json(),
-        dRes.json(),
-        tRes.json(),
-        sRes.json(),
-        pRes.json(),
-      ]);
+      // Fetch all sub-modules in parallel asynchronously in background
+      Promise.all([
+        fetch('/api/admin/gallery').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/news').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/notices').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/courses').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/faculty').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/disclosures').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/testimonials').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/settings').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/pages').then((r) => r.json()).catch(() => ({})),
+      ]).then(([gData, nData, notData, cData, fData, dData, tData, sData, pData]) => {
+        if (gData?.items) setGalleryItems(gData.items);
+        if (nData?.news) setNewsList(nData.news);
+        if (notData?.notices) setNoticesList(notData.notices);
+        if (cData?.courses) setCoursesList(cData.courses);
+        if (fData?.faculty) setFacultyList(fData.faculty);
+        if (dData?.data) setDisclosureCategories(dData.data);
+        if (tData?.testimonials) setTestimonialsList(tData.testimonials);
+        if (sData?.settings) setWebsiteSettings(sData.settings);
 
-      if (gData.items) setGalleryItems(gData.items);
-      if (nData.news) setNewsList(nData.news);
-      if (notData.notices) setNoticesList(notData.notices);
-      if (cData.courses) setCoursesList(cData.courses);
-      if (fData.faculty) setFacultyList(fData.faculty);
-      if (dData.data) setDisclosureCategories(dData.data);
-      if (tData.testimonials) setTestimonialsList(tData.testimonials);
-      if (sData.settings) setWebsiteSettings(sData.settings);
-
-      // Hydrate custom pages if available
-      if (pData.pages) {
-        const hp = pData.pages.find((p: any) => p.slug === 'homepage');
-        if (hp && hp.content) {
-          try {
-            setHomepageContent((prev: any) => ({ ...prev, ...JSON.parse(hp.content) }));
-          } catch {
-            setHomepageContent((prev: any) => ({ ...prev, introText: hp.content }));
+        if (pData?.pages) {
+          const hp = pData.pages.find((p: any) => p.slug === 'homepage');
+          if (hp && hp.content) {
+            try {
+              setHomepageContent((prev: any) => ({ ...prev, ...JSON.parse(hp.content) }));
+            } catch {
+              setHomepageContent((prev: any) => ({ ...prev, introText: hp.content }));
+            }
+          }
+          const ab = pData.pages.find((p: any) => p.slug === 'about');
+          if (ab && ab.content) {
+            try {
+              setAboutContent(JSON.parse(ab.content));
+            } catch {
+              setAboutContent((prev: any) => ({ ...prev, history: ab.content }));
+            }
+          }
+          const hosp = pData.pages.find((p: any) => p.slug === 'hospital');
+          if (hosp && hosp.content) {
+            try {
+              setHospitalContent(JSON.parse(hosp.content));
+            } catch {
+              setHospitalContent((prev: any) => ({ ...prev, intro: hosp.content }));
+            }
           }
         }
-        const ab = pData.pages.find((p: any) => p.slug === 'about');
-        if (ab && ab.content) {
-          try {
-            setAboutContent(JSON.parse(ab.content));
-          } catch {
-            setAboutContent((prev: any) => ({ ...prev, history: ab.content }));
-          }
-        }
-        const hosp = pData.pages.find((p: any) => p.slug === 'hospital');
-        if (hosp && hosp.content) {
-          try {
-            setHospitalContent(JSON.parse(hosp.content));
-          } catch {
-            setHospitalContent((prev: any) => ({ ...prev, intro: hosp.content }));
-          }
-        }
-      }
+      });
     } catch (err) {
       console.error('Failed to load CMS data:', err);
       showToast('Error loading CMS data from database', 'error');
-    } finally {
       setLoading(false);
       setRefreshing(false);
     }
