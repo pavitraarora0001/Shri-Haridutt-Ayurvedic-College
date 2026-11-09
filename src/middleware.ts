@@ -115,16 +115,7 @@ export async function middleware(request: NextRequest) {
   if (!user) {
     if (isApi) {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Authentication required for administrative endpoint.',
-          diagnostic: {
-            hasToken: !!token,
-            tokenLength: token?.length,
-            verifyReason: lastVerifyError,
-            candidateCount: CANDIDATE_SECRETS.length,
-          },
-        },
+        { success: false, error: 'Authentication required for administrative endpoint.' },
         { status: 401 }
       );
     }
