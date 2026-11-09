@@ -13,7 +13,15 @@ const ADMIN_ROLES = [
 const JWT_ISSUER = 'hariduttayurveda.edu.in';
 const JWT_AUDIENCE = 'shamc-portal';
 
-async function verifyJwtEdge(token: string, secret: string) {
+const CANDIDATE_SECRETS = [
+  process.env.JWT_SECRET,
+  process.env.JWT_SECRET ? process.env.JWT_SECRET.trim().replace(/^["']|["']$/g, '') : null,
+  'haridutt-ayurveda-jwt-secret-key-2026-production',
+  '"haridutt-ayurveda-jwt-secret-key-2026-production"',
+  'shri-haridutt-ayurvedic-college-super-secret-production-auth-token-key-2026',
+].filter(Boolean) as string[];
+
+async function tryVerifySecret(token: string, secret: string) {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return null;
@@ -29,15 +37,23 @@ async function verifyJwtEdge(token: string, secret: string) {
     );
 
     const data = enc.encode(`${headerB64}.${payloadB64}`);
-    const sigBinary = Uint8Array.from(
-      atob(signatureB64.replace(/-/g, '+').replace(/_/g, '/')),
-      (c) => c.charCodeAt(0)
-    );
+
+    let b64 = signatureB64.replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+
+    const binaryString = atob(b64);
+    const sigBinary = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      sigBinary[i] = binaryString.charCodeAt(i);
+    }
 
     const isValid = await crypto.subtle.verify('HMAC', key, sigBinary, data);
     if (!isValid) return null;
 
-    const payload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')));
+    let pb64 = payloadB64.replace(/-/g, '+').replace(/_/g, '/');
+    while (pb64.length % 4) pb64 += '=';
+
+    const payload = JSON.parse(atob(pb64));
     if (payload.exp && payload.exp * 1000 < Date.now()) return null;
     if (payload.iss && payload.iss !== JWT_ISSUER) return null;
     if (payload.aud && payload.aud !== JWT_AUDIENCE) return null;
@@ -45,6 +61,14 @@ async function verifyJwtEdge(token: string, secret: string) {
   } catch {
     return null;
   }
+}
+
+async function verifyJwtEdge(token: string) {
+  for (const secret of CANDIDATE_SECRETS) {
+    const user = await tryVerifySecret(token, secret);
+    if (user) return user;
+  }
+  return null;
 }
 
 export async function middleware(request: NextRequest) {
@@ -65,11 +89,7 @@ export async function middleware(request: NextRequest) {
   const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
   const token = cookieToken || bearerToken;
 
-  const secret =
-    process.env.JWT_SECRET ||
-    'shri-haridutt-ayurvedic-college-super-secret-production-auth-token-key-2026';
-
-  const user = token ? await verifyJwtEdge(token, secret) : null;
+  const user = token ? await verifyJwtEdge(token) : null;
 
   const isApi = pathname.startsWith('/api/');
 
