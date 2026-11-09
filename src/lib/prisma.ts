@@ -6,8 +6,26 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+/**
+ * Resolves and optimizes the PostgreSQL connection string for Vercel Serverless.
+ *
+ * PostgreSQL Limits on Production DB:
+ * - max_connections: 50
+ * - superuser_reserved_connections: 5
+ * - role connection limit (prisma_migration): 45
+ *
+ * To prevent connection exhaustion across concurrent Vercel serverless function invocations:
+ * - Each container connection_limit is strictly capped to 2
+ * - pool_timeout is capped to 10s (fast failure, no indefinite queue piling)
+ * - connect_timeout is set to 10s
+ */
 function getDatabaseUrl(): string | undefined {
-  let currentUrl = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
+  let currentUrl =
+    process.env.DATABASE_URL_POOLED ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.PRISMA_DATABASE_URL ||
+    process.env.DATABASE_URL;
+
   if (!currentUrl || currentUrl.startsWith('file:')) {
     // If local development environment has file: in .env, check for .env.postgres
     try {
@@ -22,13 +40,29 @@ function getDatabaseUrl(): string | undefined {
         }
       }
     } catch {
-      // Ignore error and fall back to currentUrl
+      // Ignore read error and fall back
     }
   }
 
-  if (currentUrl && !currentUrl.startsWith('file:') && !currentUrl.includes('connection_limit=')) {
-    const delimiter = currentUrl.includes('?') ? '&' : '?';
-    return `${currentUrl}${delimiter}connection_limit=20&pool_timeout=30`;
+  if (currentUrl && !currentUrl.startsWith('file:')) {
+    try {
+      const parsed = new URL(currentUrl);
+      parsed.searchParams.set('connection_limit', '2');
+      parsed.searchParams.set('pool_timeout', '10');
+      parsed.searchParams.set('connect_timeout', '10');
+      return parsed.toString();
+    } catch {
+      // Fallback regex replacement for non-standard URI formats
+      let url = currentUrl
+        .replace(/([?&])connection_limit=\d+/, '$1connection_limit=2')
+        .replace(/([?&])pool_timeout=\d+/, '$1pool_timeout=10');
+
+      if (!url.includes('connection_limit=')) {
+        const delimiter = url.includes('?') ? '&' : '?';
+        url = `${url}${delimiter}connection_limit=2&pool_timeout=10&connect_timeout=10`;
+      }
+      return url;
+    }
   }
 
   return currentUrl;
@@ -43,6 +77,7 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+// Guarantee a single PrismaClient instance across all Node.js environments (dev and production)
+globalForPrisma.prisma = prisma;
 
 export default prisma;
