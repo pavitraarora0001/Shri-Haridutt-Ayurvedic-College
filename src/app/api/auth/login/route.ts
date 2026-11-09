@@ -12,7 +12,10 @@ export async function POST(req: Request) {
       '127.0.0.1';
     const userAgent = req.headers.get('user-agent') || undefined;
 
-    const { identifier, password, portalType } = await req.json();
+    const body = await req.json();
+    const identifier = (body.identifier || body.email || body.username || '').toString().trim();
+    const password = (body.password || '').toString();
+    const portalType = body.portalType || 'ADMIN';
 
     if (!identifier || !password) {
       return NextResponse.json(
@@ -108,7 +111,10 @@ export async function POST(req: Request) {
 
     return response;
   } catch (error: any) {
-    console.error('Auth login error:', error);
-    return NextResponse.json({ error: 'Internal server authentication error.' }, { status: 500 });
+    console.error('Auth login error:', error?.message || error);
+    return NextResponse.json(
+      { error: error?.message || 'Internal server authentication error.' },
+      { status: 500 }
+    );
   }
 }

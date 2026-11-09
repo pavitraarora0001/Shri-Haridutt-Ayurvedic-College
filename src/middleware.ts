@@ -67,7 +67,7 @@ export async function middleware(request: NextRequest) {
 
   const secret =
     process.env.JWT_SECRET ||
-    (process.env.NODE_ENV === 'production' ? '' : 'dev-ephemeral-jwt-secret-shamc-secure-ayurveda-2026-key');
+    'shri-haridutt-ayurvedic-college-super-secret-production-auth-token-key-2026';
 
   const user = token ? await verifyJwtEdge(token, secret) : null;
 

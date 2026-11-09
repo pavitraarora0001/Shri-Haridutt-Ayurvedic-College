@@ -33,8 +33,8 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
-      // Instant transition
-      router.replace('/admin/dashboard');
+      // Instant transition to dashboard
+      window.location.href = '/admin/dashboard';
     } catch (err: any) {
       setError(err.message || 'Invalid administrator credentials.');
       setLoading(false);
