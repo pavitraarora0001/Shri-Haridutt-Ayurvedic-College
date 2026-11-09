@@ -21,10 +21,15 @@ const CANDIDATE_SECRETS = [
   'shri-haridutt-ayurvedic-college-super-secret-production-auth-token-key-2026',
 ].filter(Boolean) as string[];
 
+let lastVerifyError = '';
+
 async function tryVerifySecret(token: string, secret: string) {
   try {
     const parts = token.split('.');
-    if (parts.length !== 3) return null;
+    if (parts.length !== 3) {
+      lastVerifyError = 'parts length is ' + parts.length;
+      return null;
+    }
     const [headerB64, payloadB64, signatureB64] = parts;
 
     const enc = new TextEncoder();
@@ -48,17 +53,30 @@ async function tryVerifySecret(token: string, secret: string) {
     }
 
     const isValid = await crypto.subtle.verify('HMAC', key, sigBinary, data);
-    if (!isValid) return null;
+    if (!isValid) {
+      lastVerifyError = 'HMAC signature invalid for candidate secret';
+      return null;
+    }
 
     let pb64 = payloadB64.replace(/-/g, '+').replace(/_/g, '/');
     while (pb64.length % 4) pb64 += '=';
 
     const payload = JSON.parse(atob(pb64));
-    if (payload.exp && payload.exp * 1000 < Date.now()) return null;
-    if (payload.iss && payload.iss !== JWT_ISSUER) return null;
-    if (payload.aud && payload.aud !== JWT_AUDIENCE) return null;
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      lastVerifyError = `Expired: exp=${payload.exp * 1000} now=${Date.now()}`;
+      return null;
+    }
+    if (payload.iss && payload.iss !== JWT_ISSUER) {
+      lastVerifyError = `Issuer mismatch: ${payload.iss} vs ${JWT_ISSUER}`;
+      return null;
+    }
+    if (payload.aud && payload.aud !== JWT_AUDIENCE) {
+      lastVerifyError = `Audience mismatch: ${payload.aud} vs ${JWT_AUDIENCE}`;
+      return null;
+    }
     return payload;
-  } catch {
+  } catch (err: any) {
+    lastVerifyError = 'Exception in tryVerifySecret: ' + (err?.message || String(err));
     return null;
   }
 }
@@ -97,7 +115,16 @@ export async function middleware(request: NextRequest) {
   if (!user) {
     if (isApi) {
       return NextResponse.json(
-        { success: false, error: 'Authentication required for administrative endpoint.' },
+        {
+          success: false,
+          error: 'Authentication required for administrative endpoint.',
+          diagnostic: {
+            hasToken: !!token,
+            tokenLength: token?.length,
+            verifyReason: lastVerifyError,
+            candidateCount: CANDIDATE_SECRETS.length,
+          },
+        },
         { status: 401 }
       );
     }
