@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser, revokeAllUserSessions } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
@@ -16,8 +16,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Please provide both current and new password.' }, { status: 400 });
     }
 
-    if (newPassword.length < 8) {
-      return NextResponse.json({ error: 'New password must be at least 8 characters long.' }, { status: 400 });
+    if (newPassword.length < 10) {
+      return NextResponse.json({ error: 'New password must be at least 10 characters long with uppercase, lowercase, numbers, and symbols.' }, { status: 400 });
+    }
+
+    if (currentPassword === newPassword) {
+      return NextResponse.json({ error: 'New password must be different from current password.' }, { status: 400 });
     }
 
     // Verify current user from database
@@ -34,13 +38,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Current password does not match.' }, { status: 400 });
     }
 
-    // Hash new password securely
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Hash new password securely with 12 salt rounds
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
 
     await prisma.user.update({
       where: { id: user.id },
       data: { password: hashedPassword },
     });
+
+    // Invalidate all active sessions across all devices for this user
+    await revokeAllUserSessions(user.id);
 
     // Record audit log
     await prisma.auditLog.create({
@@ -48,12 +55,21 @@ export async function POST(req: Request) {
         action: 'CHANGE_PASSWORD',
         entity: 'User',
         entityId: user.id,
-        details: 'Admin user updated password credentials',
+        details: 'Admin user updated password credentials and revoked all active sessions',
         performedBy: user.id,
       },
     });
 
-    return NextResponse.json({ success: true, message: 'Password updated successfully.' });
+    const response = NextResponse.json({
+      success: true,
+      message: 'Password rotated successfully. All previous sessions have been revoked. Please re-login with your new credentials.'
+    });
+
+    // Expire cookies immediately
+    response.cookies.set('auth_token', '', { httpOnly: true, maxAge: 0, path: '/' });
+    response.cookies.set('refresh_token', '', { httpOnly: true, maxAge: 0, path: '/' });
+
+    return response;
   } catch (error: any) {
     console.error('Password change error:', error);
     return NextResponse.json({ error: 'Failed to update password.' }, { status: 500 });

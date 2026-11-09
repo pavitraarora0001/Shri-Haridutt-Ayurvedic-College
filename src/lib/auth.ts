@@ -253,7 +253,16 @@ export async function getCurrentUser(): Promise<UserSessionPayload | null> {
     const verified = verifyAccessToken(token);
     if (!verified) return null;
 
-    // Verify active status in database
+    // Verify active status and non-revoked session in database
+    if (verified.sessionId) {
+      const session = await prisma.userSession.findUnique({
+        where: { id: verified.sessionId },
+      });
+      if (!session || session.isRevoked || session.expiresAt.getTime() < Date.now()) {
+        return null;
+      }
+    }
+
     if (verified.type === 'STUDENT') {
       const student = await prisma.student.findUnique({ where: { id: verified.id } });
       if (!student) return null;

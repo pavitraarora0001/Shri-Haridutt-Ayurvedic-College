@@ -43,3 +43,6 @@ Thumbs.db
 /storage/private_documents/*
 /storage/*.json
 /storage/ratelimit.json
+
+.vercel
+.env*.local

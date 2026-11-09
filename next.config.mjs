@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
+const isDev = process.env.NODE_ENV !== 'production';
+
 const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  img-src 'self' data: blob: https://images.unsplash.com https://images.pexels.com https://upload.wikimedia.org https://placehold.co https://hariduttayurveda.edu.in;
-  connect-src 'self' https://*;
+  img-src 'self' data: blob: https://images.unsplash.com https://images.pexels.com https://upload.wikimedia.org https://placehold.co https://hariduttayurveda.edu.in https://*.public.blob.vercel-storage.com;
+  connect-src 'self' https://* http://* ws: wss:;
   frame-ancestors 'self';
   object-src 'none';
   base-uri 'self';
@@ -18,6 +20,15 @@ const nextConfig = {
   compress: true,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.watchOptions = {
+        poll: 800,
+        aggregateTimeout: 300,
+      };
+    }
+    return config;
   },
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -39,6 +50,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
       },
     ],
   },
@@ -86,15 +101,19 @@ const nextConfig = {
           },
         ],
       },
-      {
-        source: '/_next/static/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
+      ...(isDev
+        ? []
+        : [
+            {
+              source: '/_next/static/:path*',
+              headers: [
+                {
+                  key: 'Cache-Control',
+                  value: 'public, max-age=31536000, immutable',
+                },
+              ],
+            },
+          ]),
     ];
   },
 };

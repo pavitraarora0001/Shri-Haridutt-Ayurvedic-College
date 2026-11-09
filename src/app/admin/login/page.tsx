@@ -72,7 +72,8 @@ export default function AdminLoginPage() {
                 required
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                className="w-full bg-[#0F2821] border border-[#C5A46D]/40 rounded pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A46D]"
+                placeholder="admin@institution.edu.in"
+                className="w-full bg-[#0F2821] border border-[#C5A46D]/40 rounded pl-9 pr-3 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-[#C5A46D]"
               />
             </div>
           </div>
@@ -88,7 +89,8 @@ export default function AdminLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#0F2821] border border-[#C5A46D]/40 rounded pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A46D]"
+                placeholder="••••••••••••"
+                className="w-full bg-[#0F2821] border border-[#C5A46D]/40 rounded pl-9 pr-3 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-[#C5A46D]"
               />
             </div>
           </div>

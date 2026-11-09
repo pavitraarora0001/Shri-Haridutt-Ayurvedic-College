@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import crypto from 'crypto';
 import { validateUploadedFile } from '@/lib/file-validator';
+import { uploadMedia, deleteMedia } from '@/lib/storage';
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB for high-res photos and documents
 
@@ -16,7 +15,7 @@ export async function POST(req: Request) {
     }
 
     const formData = await req.formData();
-    
+
     // Support both multiple files ('files') or single file ('file')
     const rawFiles = formData.getAll('files') as File[];
     const singleFile = formData.get('file') as File | null;
@@ -25,9 +24,6 @@ export async function POST(req: Request) {
     if (filesToProcess.length === 0) {
       return NextResponse.json({ error: 'No files provided in upload payload.' }, { status: 400 });
     }
-
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    await mkdir(uploadDir, { recursive: true });
 
     const uploadedResults = [];
 
@@ -44,30 +40,30 @@ export async function POST(req: Request) {
       // Generate guaranteed-safe unique filename
       const safeExt = validation.safeExtension || '.jpg';
       const uniqueName = `media_${Date.now()}_${crypto.randomBytes(6).toString('hex')}${safeExt}`;
-      const filePath = path.join(uploadDir, uniqueName);
+      const contentType = validation.detectedType || file.type || 'application/octet-stream';
 
-      await writeFile(filePath, buffer);
-      const publicUrl = `/uploads/${uniqueName}`;
+      // Upload to persistent storage (Vercel Blob / dev fallback)
+      const storageResult = await uploadMedia(buffer, uniqueName, contentType);
 
       // Persist in UploadedFile database model
       await prisma.uploadedFile.create({
         data: {
           originalName: file.name,
           fileName: uniqueName,
-          mimeType: validation.detectedType || file.type || 'application/octet-stream',
+          mimeType: contentType,
           size: file.size,
-          path: publicUrl,
+          path: storageResult.url,
           isPrivate: false,
           uploadedBy: user.id,
         },
       });
 
       uploadedResults.push({
-        url: publicUrl,
+        url: storageResult.url,
         fileName: file.name,
         storedName: uniqueName,
         size: file.size,
-        mimeType: validation.detectedType,
+        mimeType: contentType,
       });
     }
 
@@ -82,7 +78,39 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('File upload error:', error);
     return NextResponse.json(
-      { error: 'An unexpected error occurred during file upload.' },
+      { error: error.message || 'An unexpected error occurred during file upload.' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const user = await getCurrentUser();
+    if (!user || user.type !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized. Admin session required.' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const url = searchParams.get('url');
+
+    if (!url) {
+      return NextResponse.json({ error: 'URL parameter is required.' }, { status: 400 });
+    }
+
+    // Safely remove blob or local file
+    await deleteMedia(url);
+
+    // Clean up record in UploadedFile if present
+    await prisma.uploadedFile.deleteMany({
+      where: { path: url },
+    });
+
+    return NextResponse.json({ success: true, message: 'File deleted successfully.' });
+  } catch (error: any) {
+    console.error('File delete error:', error);
+    return NextResponse.json(
+      { error: error.message || 'An unexpected error occurred during file deletion.' },
       { status: 500 }
     );
   }

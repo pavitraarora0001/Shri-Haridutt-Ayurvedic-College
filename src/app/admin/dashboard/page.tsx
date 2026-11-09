@@ -24,6 +24,7 @@ import {
   Trash2,
   Edit3,
   Eye,
+  EyeOff,
   CheckCircle2,
   AlertCircle,
   UploadCloud,
@@ -89,6 +90,9 @@ export default function AdminDashboardPage() {
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Data states
   const [galleryItems, setGalleryItems] = useState<any[]>([]);
@@ -284,9 +288,15 @@ export default function AdminDashboardPage() {
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast('Password updated successfully');
+        showToast('Password updated. All sessions revoked. Redirecting to login...', 'success');
         setPasswordModalOpen(false);
         setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setShowCurrentPassword(false);
+        setShowNewPassword(false);
+        setShowConfirmPassword(false);
+        setTimeout(() => {
+          router.push('/admin/login');
+        }, 1200);
       } else {
         showToast(data.error || 'Password update failed', 'error');
       }
@@ -1839,7 +1849,18 @@ export default function AdminDashboardPage() {
                 <KeyRound className="w-5 h-5 text-[#C5A46D]" />
                 <h3 className="font-serif font-bold text-base text-[#173D32]">Change Admin Password</h3>
               </div>
-              <button onClick={() => setPasswordModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                type="button"
+                onClick={() => {
+                  setPasswordModalOpen(false);
+                  setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                  setShowCurrentPassword(false);
+                  setShowNewPassword(false);
+                  setShowConfirmPassword(false);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Close modal"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -1847,39 +1868,81 @@ export default function AdminDashboardPage() {
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
                 <label className="text-xs font-semibold text-[#173D32] block mb-1">Current Password *</label>
-                <input
-                  type="password"
-                  required
-                  value={passwordForm.currentPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                  className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
-                />
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    required
+                    value={passwordForm.currentPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                    className="w-full px-3 py-2 pr-10 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D] transition-colors"
+                    placeholder="Enter current password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#173D32] transition-colors focus:outline-none"
+                    aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'}
+                    title={showCurrentPassword ? 'Hide current password' : 'Show current password'}
+                  >
+                    {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#173D32] block mb-1">New Password (min 8 chars) *</label>
-                <input
-                  type="password"
-                  required
-                  value={passwordForm.newPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                  className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
-                />
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">New Password (min 10 chars) *</label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? 'text' : 'password'}
+                    required
+                    value={passwordForm.newPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                    className="w-full px-3 py-2 pr-10 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D] transition-colors"
+                    placeholder="Enter new password (min 10 characters)"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#173D32] transition-colors focus:outline-none"
+                    aria-label={showNewPassword ? 'Hide new password' : 'Show new password'}
+                    title={showNewPassword ? 'Hide new password' : 'Show new password'}
+                  >
+                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-[#173D32] block mb-1">Confirm New Password *</label>
-                <input
-                  type="password"
-                  required
-                  value={passwordForm.confirmPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                  className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
-                />
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    required
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                    className="w-full px-3 py-2 pr-10 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D] transition-colors"
+                    placeholder="Confirm new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#173D32] transition-colors focus:outline-none"
+                    aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    title={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div className="flex justify-end space-x-2 pt-3 border-t">
                 <button
                   type="button"
-                  onClick={() => setPasswordModalOpen(false)}
+                  onClick={() => {
+                    setPasswordModalOpen(false);
+                    setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                    setShowCurrentPassword(false);
+                    setShowNewPassword(false);
+                    setShowConfirmPassword(false);
+                  }}
                   className="px-3 py-1.5 rounded text-xs text-gray-600 hover:bg-gray-100"
                 >
                   Cancel
@@ -2100,6 +2163,542 @@ export default function AdminDashboardPage() {
               <div className="flex justify-end space-x-2 pt-3 border-t">
                 <button type="button" onClick={() => setNoticeModalOpen(false)} className="px-3 py-1.5 rounded text-xs text-gray-600">Cancel</button>
                 <button type="submit" className="px-4 py-1.5 rounded bg-[#173D32] text-white text-xs font-semibold">Save Notice</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== NEWS MODAL ==================== */}
+      {newsModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#C5A46D] max-w-xl w-full p-6 my-8 animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b mb-4">
+              <h3 className="font-serif font-bold text-base text-[#173D32]">
+                {newsForm.id ? 'Edit News Article' : 'Publish New Article / Event'}
+              </h3>
+              <button onClick={() => setNewsModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
+            </div>
+            <form onSubmit={handleSaveNews} className="space-y-3">
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Headline / Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={newsForm.title}
+                  onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })}
+                  placeholder="e.g. National Ayurveda Day Celebrated with 500+ Patients"
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Category</label>
+                  <select
+                    value={newsForm.category}
+                    onChange={(e) => setNewsForm({ ...newsForm, category: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  >
+                    <option value="Institutional">Institutional</option>
+                    <option value="Academic">Academic &amp; Seminars</option>
+                    <option value="Hospital">Hospital &amp; Health Camps</option>
+                    <option value="Achievements">Achievements &amp; Awards</option>
+                    <option value="Sports">Sports &amp; Cultural</option>
+                    <option value="Research">Research &amp; Publications</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Featured Article</label>
+                  <label className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer pt-1.5">
+                    <input
+                      type="checkbox"
+                      checked={newsForm.isFeatured}
+                      onChange={(e) => setNewsForm({ ...newsForm, isFeatured: e.target.checked })}
+                      className="rounded text-[#173D32]"
+                    />
+                    <span>Highlight on Homepage</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Featured Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const urls = await uploadFiles([e.target.files[0]]);
+                      if (urls[0]) setNewsForm({ ...newsForm, imageUrl: urls[0] });
+                    }
+                  }}
+                  className="w-full text-xs text-gray-600 mb-1"
+                />
+                <input
+                  type="text"
+                  value={newsForm.imageUrl}
+                  onChange={(e) => setNewsForm({ ...newsForm, imageUrl: e.target.value })}
+                  placeholder="Or enter image URL"
+                  className="w-full px-3 py-1 rounded border border-gray-200 text-xs outline-none"
+                />
+                {newsForm.imageUrl && (
+                  <div className="mt-1.5 flex items-center space-x-2">
+                    <img src={newsForm.imageUrl} alt="Preview" className="w-12 h-9 object-cover rounded border" />
+                    <span className="text-[10px] text-green-700 truncate">{newsForm.imageUrl}</span>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Summary / Excerpt *</label>
+                <textarea
+                  rows={2}
+                  required
+                  value={newsForm.summary}
+                  onChange={(e) => setNewsForm({ ...newsForm, summary: e.target.value })}
+                  placeholder="Brief 1-2 sentence summary displayed on cards and news lists..."
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Full Article Content *</label>
+                <textarea
+                  rows={4}
+                  required
+                  value={newsForm.content}
+                  onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })}
+                  placeholder="Comprehensive news details, event outcomes, quotes, and descriptions..."
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+
+              <div className="flex items-center space-x-4 pt-1">
+                <label className="flex items-center space-x-1.5 text-xs text-gray-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newsForm.isPublished}
+                    onChange={(e) => setNewsForm({ ...newsForm, isPublished: e.target.checked })}
+                    className="rounded text-[#173D32]"
+                  />
+                  <span>Publish Immediately (Visible to Public)</span>
+                </label>
+              </div>
+
+              <div className="flex justify-end space-x-2 pt-3 border-t">
+                <button type="button" onClick={() => setNewsModalOpen(false)} className="px-3 py-1.5 rounded text-xs text-gray-600">Cancel</button>
+                <button type="submit" disabled={uploading} className="px-4 py-1.5 rounded bg-[#173D32] text-white text-xs font-semibold hover:bg-[#0F2821]">
+                  {uploading ? 'Uploading...' : 'Save Article'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== COURSE MODAL ==================== */}
+      {courseModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#C5A46D] max-w-lg w-full p-6 my-8 animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b mb-4">
+              <h3 className="font-serif font-bold text-base text-[#173D32]">
+                {courseForm.id ? 'Edit Academic Programme' : 'Add New Academic Programme'}
+              </h3>
+              <button onClick={() => setCourseModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
+            </div>
+            <form onSubmit={handleSaveCourse} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Course Code *</label>
+                  <input
+                    type="text"
+                    required
+                    value={courseForm.code}
+                    onChange={(e) => setCourseForm({ ...courseForm, code: e.target.value })}
+                    placeholder="e.g. BAMS"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Approved Intake (Seats)</label>
+                  <input
+                    type="number"
+                    value={courseForm.intake}
+                    onChange={(e) => setCourseForm({ ...courseForm, intake: parseInt(e.target.value) || 0 })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Programme Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={courseForm.title}
+                  onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
+                  placeholder="e.g. Bachelor of Ayurvedic Medicine and Surgery"
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Degree Type</label>
+                  <select
+                    value={courseForm.degree}
+                    onChange={(e) => setCourseForm({ ...courseForm, degree: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  >
+                    <option value="Undergraduate">Undergraduate (UG)</option>
+                    <option value="Postgraduate">Postgraduate (PG)</option>
+                    <option value="Diploma">Diploma / Certificate</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Duration</label>
+                  <input
+                    type="text"
+                    value={courseForm.duration}
+                    onChange={(e) => setCourseForm({ ...courseForm, duration: e.target.value })}
+                    placeholder="e.g. 5.5 Years"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Eligibility Criteria</label>
+                <input
+                  type="text"
+                  value={courseForm.eligibility}
+                  onChange={(e) => setCourseForm({ ...courseForm, eligibility: e.target.value })}
+                  placeholder="e.g. 10+2 with PCB (50%) &amp; NEET UG Qualified"
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Fee Structure</label>
+                <input
+                  type="text"
+                  value={courseForm.feePerYear}
+                  onChange={(e) => setCourseForm({ ...courseForm, feePerYear: e.target.value })}
+                  placeholder="e.g. ₹2,25,000 / Year"
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Overview &amp; Curriculum Description</label>
+                <textarea
+                  rows={3}
+                  value={courseForm.description}
+                  onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+              <div className="flex justify-end space-x-2 pt-3 border-t">
+                <button type="button" onClick={() => setCourseModalOpen(false)} className="px-3 py-1.5 rounded text-xs text-gray-600">Cancel</button>
+                <button type="submit" className="px-4 py-1.5 rounded bg-[#173D32] text-white text-xs font-semibold hover:bg-[#0F2821]">Save Programme</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== FACULTY MODAL ==================== */}
+      {facultyModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#C5A46D] max-w-xl w-full p-6 my-8 animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b mb-4">
+              <h3 className="font-serif font-bold text-base text-[#173D32]">
+                {facultyForm.id ? 'Edit Faculty Member' : 'Add New Faculty Member'}
+              </h3>
+              <button onClick={() => setFacultyModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
+            </div>
+            <form onSubmit={handleSaveFaculty} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={facultyForm.name}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, name: e.target.value })}
+                    placeholder="e.g. Dr. Vaidya Kripashankar Vyas"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Designation *</label>
+                  <input
+                    type="text"
+                    required
+                    value={facultyForm.designation}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, designation: e.target.value })}
+                    placeholder="e.g. Professor &amp; HOD"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Qualification</label>
+                  <input
+                    type="text"
+                    value={facultyForm.qualification}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, qualification: e.target.value })}
+                    placeholder="e.g. BAMS, MD (Ayu)"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Specialization</label>
+                  <input
+                    type="text"
+                    value={facultyForm.specialization}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, specialization: e.target.value })}
+                    placeholder="e.g. Kayachikitsa"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Experience (Yrs)</label>
+                  <input
+                    type="number"
+                    value={facultyForm.experienceYears}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, experienceYears: parseInt(e.target.value) || 0 })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={facultyForm.email}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, email: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Phone</label>
+                  <input
+                    type="text"
+                    value={facultyForm.phone}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, phone: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Faculty Portrait Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const urls = await uploadFiles([e.target.files[0]]);
+                      if (urls[0]) setFacultyForm({ ...facultyForm, image: urls[0] });
+                    }
+                  }}
+                  className="w-full text-xs text-gray-600 mb-1"
+                />
+                <input
+                  type="text"
+                  value={facultyForm.image}
+                  onChange={(e) => setFacultyForm({ ...facultyForm, image: e.target.value })}
+                  placeholder="Or enter portrait image URL"
+                  className="w-full px-3 py-1 rounded border border-gray-200 text-xs outline-none"
+                />
+              </div>
+              <div className="flex items-center space-x-4 pt-1">
+                <label className="flex items-center space-x-1.5 text-xs text-gray-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={facultyForm.isHOD}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, isHOD: e.target.checked })}
+                    className="rounded text-[#173D32]"
+                  />
+                  <span>Head of Department (HOD)</span>
+                </label>
+                <label className="flex items-center space-x-1.5 text-xs text-gray-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={facultyForm.isLeadership}
+                    onChange={(e) => setFacultyForm({ ...facultyForm, isLeadership: e.target.checked })}
+                    className="rounded text-[#173D32]"
+                  />
+                  <span>Executive / Clinical Leadership</span>
+                </label>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Academic &amp; Clinical Biography</label>
+                <textarea
+                  rows={3}
+                  value={facultyForm.bio}
+                  onChange={(e) => setFacultyForm({ ...facultyForm, bio: e.target.value })}
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+              <div className="flex justify-end space-x-2 pt-3 border-t">
+                <button type="button" onClick={() => setFacultyModalOpen(false)} className="px-3 py-1.5 rounded text-xs text-gray-600">Cancel</button>
+                <button type="submit" disabled={uploading} className="px-4 py-1.5 rounded bg-[#173D32] text-white text-xs font-semibold hover:bg-[#0F2821]">
+                  {uploading ? 'Uploading...' : 'Save Profile'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== DISCLOSURE DOCUMENT MODAL ==================== */}
+      {docModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#C5A46D] max-w-lg w-full p-6 animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b mb-4">
+              <h3 className="font-serif font-bold text-base text-[#173D32]">Upload NCISM Mandatory Document</h3>
+              <button onClick={() => setDocModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
+            </div>
+            <form onSubmit={handleSaveDocument} className="space-y-3">
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Document Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={docForm.title}
+                  onChange={(e) => setDocForm({ ...docForm, title: e.target.value })}
+                  placeholder="e.g. NCISM Annual Affiliation &amp; Permission Order"
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Category *</label>
+                  <select
+                    required
+                    value={docForm.categoryId}
+                    onChange={(e) => setDocForm({ ...docForm, categoryId: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  >
+                    <option value="">Select Category...</option>
+                    {disclosureCategories.map((c: any) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Academic Year</label>
+                  <input
+                    type="text"
+                    value={docForm.academicYear}
+                    onChange={(e) => setDocForm({ ...docForm, academicYear: e.target.value })}
+                    placeholder="2026-27"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Upload PDF Document *</label>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={async (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const urls = await uploadFiles([e.target.files[0]]);
+                      if (urls[0]) setDocForm({ ...docForm, fileUrl: urls[0] });
+                    }
+                  }}
+                  className="w-full text-xs text-gray-600 mb-1"
+                />
+                <input
+                  type="text"
+                  value={docForm.fileUrl}
+                  onChange={(e) => setDocForm({ ...docForm, fileUrl: e.target.value })}
+                  placeholder="Or enter PDF URL"
+                  className="w-full px-3 py-1 rounded border border-gray-200 text-xs outline-none"
+                />
+              </div>
+              <div className="flex justify-end space-x-2 pt-3 border-t">
+                <button type="button" onClick={() => setDocModalOpen(false)} className="px-3 py-1.5 rounded text-xs text-gray-600">Cancel</button>
+                <button type="submit" disabled={uploading} className="px-4 py-1.5 rounded bg-[#173D32] text-white text-xs font-semibold hover:bg-[#0F2821]">
+                  {uploading ? 'Uploading...' : 'Save Document'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== TESTIMONIAL MODAL ==================== */}
+      {testimonialModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#C5A46D] max-w-lg w-full p-6 animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b mb-4">
+              <h3 className="font-serif font-bold text-base text-[#173D32]">Add Scholar / Patient Review</h3>
+              <button onClick={() => setTestimonialModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
+            </div>
+            <form onSubmit={handleSaveTestimonial} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Author Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={testimonialForm.authorName}
+                    onChange={(e) => setTestimonialForm({ ...testimonialForm, authorName: e.target.value })}
+                    placeholder="e.g. Vaidya Ananya Sharma"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Role / Affiliation</label>
+                  <select
+                    value={testimonialForm.role}
+                    onChange={(e) => setTestimonialForm({ ...testimonialForm, role: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  >
+                    <option value="BAMS Scholar">BAMS Scholar</option>
+                    <option value="Hospital Patient">Hospital Patient</option>
+                    <option value="Alumni">Alumni Physician</option>
+                    <option value="Parent">Parent / Guardian</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Batch / City</label>
+                  <input
+                    type="text"
+                    value={testimonialForm.batchOrDesignation}
+                    onChange={(e) => setTestimonialForm({ ...testimonialForm, batchOrDesignation: e.target.value })}
+                    placeholder="e.g. Batch 2022-27"
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Rating (1-5)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={testimonialForm.rating}
+                    onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) || 5 })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#173D32] block mb-1">Review / Quote *</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={testimonialForm.quote}
+                  onChange={(e) => setTestimonialForm({ ...testimonialForm, quote: e.target.value })}
+                  placeholder="Share the authentic learning experience, clinical training, or healing journey..."
+                  className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                />
+              </div>
+              <div className="flex justify-end space-x-2 pt-3 border-t">
+                <button type="button" onClick={() => setTestimonialModalOpen(false)} className="px-3 py-1.5 rounded text-xs text-gray-600">Cancel</button>
+                <button type="submit" className="px-4 py-1.5 rounded bg-[#173D32] text-white text-xs font-semibold hover:bg-[#0F2821]">Save Review</button>
               </div>
             </form>
           </div>
