@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 
@@ -21,6 +22,14 @@ export async function POST(req: Request) {
   try {
     const data: Record<string, string> = await req.json();
 
+    // Synchronize synonymous keys for consistent cross-system hydration
+    if (data.contact_phone && !data.admissions_helpline) {
+      data.admissions_helpline = data.contact_phone;
+    }
+    if (data.contact_email && !data.admissions_email) {
+      data.admissions_email = data.contact_email;
+    }
+
     for (const [key, value] of Object.entries(data)) {
       await prisma.websiteSetting.upsert({
         where: { key },
@@ -37,6 +46,18 @@ export async function POST(req: Request) {
         performedBy: user.id,
       },
     });
+
+    // Instant cache purge across all public layouts & pages
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/contact');
+      revalidatePath('/about');
+      revalidatePath('/infrastructure/hospital');
+      revalidatePath('/miscellaneous');
+    } catch (revalidateErr) {
+      console.warn('Cache revalidation notice:', revalidateErr);
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 
@@ -47,6 +48,14 @@ export async function POST(req: Request) {
       },
     });
 
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/notices');
+    } catch (e) {
+      console.warn('Revalidate error:', e);
+    }
+
     return NextResponse.json({ success: true, notice });
   } catch (err: any) {
     return NextResponse.json({ error: 'Failed to create notice.' }, { status: 500 });
@@ -85,6 +94,14 @@ export async function PUT(req: Request) {
       },
     });
 
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/notices');
+    } catch (e) {
+      console.warn('Revalidate error:', e);
+    }
+
     return NextResponse.json({ success: true, notice });
   } catch (err: any) {
     return NextResponse.json({ error: 'Failed to update notice.' }, { status: 500 });
@@ -113,6 +130,14 @@ export async function DELETE(req: Request) {
         performedBy: user.id,
       },
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/notices');
+    } catch (e) {
+      console.warn('Revalidate error:', e);
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

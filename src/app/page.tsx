@@ -1,15 +1,17 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import CompactHero from '@/components/home/CompactHero';
 import QuickAccess from '@/components/home/QuickAccess';
 import CompactAbout from '@/components/home/CompactAbout';
 import CompactCourses from '@/components/home/CompactCourses';
+import CompactNewsNotices from '@/components/home/CompactNewsNotices';
+import CompactCTA from '@/components/home/CompactCTA';
 
-// Code-split below-the-fold compact sections for high Core Web Vitals & FCP performance
-const CompactHospital = dynamic(() => import('@/components/home/CompactHospital'), { ssr: true });
-const CompactCampus = dynamic(() => import('@/components/home/CompactCampus'), { ssr: true });
-const CompactNewsNotices = dynamic(() => import('@/components/home/CompactNewsNotices'), { ssr: true });
-const CompactCTA = dynamic(() => import('@/components/home/CompactCTA'), { ssr: true });
+// Code-split below-the-fold static sections
+const CompactHospital = nextDynamic(() => import('@/components/home/CompactHospital'), { ssr: true });
+const CompactCampus = nextDynamic(() => import('@/components/home/CompactCampus'), { ssr: true });
+
+export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   return (

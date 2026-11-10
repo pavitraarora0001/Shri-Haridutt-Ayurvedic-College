@@ -1778,7 +1778,7 @@ export default function AdminDashboardPage() {
                   <label className="text-xs font-semibold text-[#173D32] block mb-1">Campus Physical Address</label>
                   <input
                     type="text"
-                    value={websiteSettings['campus_address'] || 'NH-11B Heritage Campus, Karauli District, Rajasthan 322241'}
+                    value={websiteSettings['campus_address'] || '5FR3+37H, near technology park, L. B. Shastri Nagar Colony, Sewar, Bharatpur, Sewar, Rajasthan 321001'}
                     onChange={(e) => setWebsiteSettings({ ...websiteSettings, campus_address: e.target.value })}
                     className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
                   />

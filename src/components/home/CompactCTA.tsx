@@ -1,11 +1,11 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, Phone, Mail, FileText } from 'lucide-react';
-import { INSTITUTION_INFO } from '@/lib/data';
+import { Sparkles, ArrowRight, FileText } from 'lucide-react';
+import { getInstitutionalSettings } from '@/lib/settings';
 
-export default function CompactCTA() {
+export default async function CompactCTA() {
+  const settings = await getInstitutionalSettings();
+
   return (
     <section className="bg-gradient-to-r from-[#0F2821] via-[#173D32] to-[#0F2821] text-white py-12 md:py-14 border-t-2 border-[#C5A46D]/30 relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-4">
@@ -45,7 +45,7 @@ export default function CompactCTA() {
 
         {/* Admissions Contact Footer Note */}
         <p className="text-[10.5px] sm:text-[11px] text-[#81917A] pt-2 break-words">
-          Admissions Helpline: <span className="text-[#DFCA9E] font-medium">{INSTITUTION_INFO.admissionsHelpline}</span> · Email: <span className="text-[#DFCA9E] font-medium">{INSTITUTION_INFO.email}</span>
+          Admissions Helpline: <span className="text-[#DFCA9E] font-medium">{settings.admissionsHelpline}</span> · Email: <span className="text-[#DFCA9E] font-medium">{settings.contactEmail}</span>
         </p>
       </div>
     </section>

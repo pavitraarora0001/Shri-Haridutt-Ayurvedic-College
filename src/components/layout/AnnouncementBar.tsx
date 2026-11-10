@@ -1,8 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { Bell, Phone, Sparkles, User } from 'lucide-react';
+import { getInstitutionalSettings } from '@/lib/settings';
 
-export default function AnnouncementBar() {
+export default async function AnnouncementBar() {
+  const settings = await getInstitutionalSettings();
+  const phoneDigits = settings.contactPhone.replace(/[^0-9+]/g, '');
+
   return (
     <div
       suppressHydrationWarning
@@ -34,20 +38,20 @@ export default function AnnouncementBar() {
           {/* Announcement Ticker with Pulsing Icon */}
           <div className="text-[#F6F2E9] truncate flex items-center text-[10.5px] sm:text-[11px] font-normal min-w-0 pl-0.5">
             <Bell className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 text-[#C5A46D] shrink-0 inline animate-pulse" />
-            <span className="truncate">NEET-UG 2026 AYUSH State &amp; All-India Counseling Active</span>
+            <span className="truncate">{settings.announcementBannerText}</span>
           </div>
         </div>
 
         {/* Right: Helplines and Quick Portal Access (Responsive on Mobile) */}
         <div className="flex items-center space-x-1.5 sm:space-x-2.5 text-xs font-medium shrink-0 whitespace-nowrap">
           <a
-            href="tel:+919829044120"
+            href={`tel:${phoneDigits}`}
             className="flex items-center text-[#DFCA9E] hover:text-white transition-colors whitespace-nowrap shrink-0"
             title="Admissions Helpline"
           >
             <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 text-[#C5A46D] shrink-0" />
             <span className="hidden sm:inline text-[#C5A46D]/90 mr-1 text-[11px] font-sans whitespace-nowrap">Admissions:</span>
-            <span className="font-sans text-[10.5px] sm:text-[11px] tracking-normal whitespace-nowrap font-semibold text-white">+91 98290 44120</span>
+            <span className="font-sans text-[10.5px] sm:text-[11px] tracking-normal whitespace-nowrap font-semibold text-white">{settings.contactPhone}</span>
           </a>
 
           <span className="hidden sm:inline text-[#C5A46D]/40 shrink-0">•</span>

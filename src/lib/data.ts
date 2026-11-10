@@ -8,7 +8,7 @@ export const INSTITUTION_INFO = {
   tagline: "Where Ancient Wisdom Meets Modern Healthcare",
   subTagline: "Discover the science of Ayurveda. Build a future rooted in knowledge, compassion and holistic healing.",
   approvals: "Recognised by NCISM, Ministry of AYUSH, Govt. of India & Affiliated to State AYUSH University",
-  address: "NH-11B Heritage Campus, Post Office Complex, Rajasthan 322241, India",
+  address: "5FR3+37H, near technology park, L. B. Shastri Nagar Colony, Sewar, Bharatpur, Sewar, Rajasthan 321001, India",
   phone: "+91 (01464) 224589, +91 94140 33812",
   email: "admissions@hariduttayurveda.edu.in",
   infoEmail: "info@hariduttayurveda.edu.in",

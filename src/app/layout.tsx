@@ -6,6 +6,8 @@ import Footer from '@/components/layout/Footer';
 import MotionProvider from '@/components/motion/MotionProvider';
 import { INSTITUTION_INFO } from '@/lib/data';
 
+export const dynamic = 'force-dynamic';
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -83,10 +85,10 @@ export default function RootLayout({
     description: INSTITUTION_INFO.subTagline,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'NH-11B Heritage Campus',
-      addressLocality: 'Karauli District',
+      streetAddress: '5FR3+37H, near technology park, L. B. Shastri Nagar Colony, Sewar',
+      addressLocality: 'Bharatpur',
       addressRegion: 'Rajasthan',
-      postalCode: '322241',
+      postalCode: '321001',
       addressCountry: 'IN',
     },
     contactPoint: {

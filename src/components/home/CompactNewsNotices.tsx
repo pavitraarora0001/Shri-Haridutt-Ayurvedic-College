@@ -1,14 +1,63 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Bell, Calendar, ArrowRight, ExternalLink } from 'lucide-react';
+import { Bell, Calendar, ArrowRight } from 'lucide-react';
 import { NOTICES, NEWS_EVENTS } from '@/lib/data';
+import { prisma } from '@/lib/prisma';
 
-export default function CompactNewsNotices() {
-  const latestNotices = NOTICES.slice(0, 4);
-  const latestNews = NEWS_EVENTS.slice(0, 2);
+export default async function CompactNewsNotices() {
+  let latestNotices = NOTICES.slice(0, 4);
+  let latestNews = NEWS_EVENTS.slice(0, 2);
+
+  try {
+    const dbNotices = await prisma.notice.findMany({
+      where: { isPublished: true },
+      orderBy: [{ isPinned: 'desc' }, { createdAt: 'desc' }],
+      take: 4,
+    });
+    if (dbNotices && dbNotices.length > 0) {
+      latestNotices = dbNotices.map((n) => ({
+        id: n.id,
+        title: n.title,
+        category: n.category,
+        date: n.date,
+        fileUrl: n.fileUrl || undefined,
+        isPinned: n.isPinned,
+        isPublished: n.isPublished,
+      }));
+    }
+  } catch (err) {
+    console.warn('Fallback to static notices:', err);
+  }
+
+  try {
+    const dbNews = await prisma.news.findMany({
+      where: { isPublished: true },
+      orderBy: { publishedAt: 'desc' },
+      take: 2,
+    });
+    if (dbNews && dbNews.length > 0) {
+      latestNews = dbNews.map((n) => ({
+        id: n.id,
+        title: n.title,
+        slug: n.slug,
+        date: new Date(n.publishedAt).toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }),
+        category: n.category,
+        summary: n.summary,
+        content: n.content,
+        imageUrl:
+          n.imageUrl || '/images/ayurveda/ancient-heritage/heritage-stone-architecture.webp',
+        location: 'Heritage Campus & Teaching Hospital',
+        isFeatured: n.isFeatured,
+      }));
+    }
+  } catch (err) {
+    console.warn('Fallback to static news:', err);
+  }
 
   return (
     <section className="bg-[#FAF7F0] py-12 md:py-16 border-b border-[#C5A46D]/20">
@@ -52,7 +101,7 @@ export default function CompactNewsNotices() {
                     </div>
                     <Link
                       prefetch={true}
-                      href="/examination"
+                      href="/notices"
                       className="text-xs font-medium text-[#342B25] group-hover:text-[#C5A46D] transition-colors leading-snug line-clamp-2"
                     >
                       {notice.title}

@@ -1,10 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { INSTITUTION_INFO } from '@/lib/data';
+import { getInstitutionalSettings } from '@/lib/settings';
 import { MapPin, Phone, Mail, ShieldCheck, HeartHandshake, ExternalLink } from 'lucide-react';
 import { BotanicalSprig } from '@/components/motion/BotanicalGraphics';
 
-export default function Footer() {
+export default async function Footer() {
+  const settings = await getInstitutionalSettings();
   return (
     <footer className="bg-[#0F2821] text-[#F6F2E9] border-t-2 border-[#C5A46D]/40 pt-16 pb-0 relative overflow-hidden">
       {/* Decorative Botanical Leaf in Footer Background */}
@@ -51,6 +53,41 @@ export default function Footer() {
               <ShieldCheck className="w-4 h-4 text-[#C5A46D] shrink-0" />
               <span>Recognised by NCISM & Ministry of AYUSH, Govt. of India</span>
             </div>
+
+            {(settings.socialFacebook || settings.socialYoutube || settings.socialInstagram) && (
+              <div className="pt-2 flex items-center space-x-3 text-xs">
+                {settings.socialFacebook && (
+                  <a
+                    href={settings.socialFacebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
+                  >
+                    Facebook
+                  </a>
+                )}
+                {settings.socialYoutube && (
+                  <a
+                    href={settings.socialYoutube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
+                  >
+                    YouTube
+                  </a>
+                )}
+                {settings.socialInstagram && (
+                  <a
+                    href={settings.socialInstagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
+                  >
+                    Instagram
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Column 2: Quick Institutional Links */}
@@ -170,7 +207,7 @@ export default function Footer() {
               <div className="flex items-start space-x-2.5">
                 <MapPin className="w-4 h-4 text-[#C5A46D] shrink-0 mt-0.5" />
                 <span className="text-[#F6F2E9]/80 leading-relaxed">
-                  {INSTITUTION_INFO.address}
+                  {settings.campusAddress}
                 </span>
               </div>
 
@@ -178,7 +215,7 @@ export default function Footer() {
                 <Phone className="w-4 h-4 text-[#C5A46D] shrink-0 mt-0.5" />
                 <div>
                   <p className="text-[#C5A46D] font-medium">Admissions Helpline:</p>
-                  <p className="text-[#F6F2E9]/90">{INSTITUTION_INFO.admissionsHelpline}</p>
+                  <p className="text-[#F6F2E9]/90">{settings.admissionsHelpline}</p>
                   <p className="text-[#81917A] text-[10px] mt-0.5">Mon–Sat: 9:00 AM – 5:00 PM</p>
                 </div>
               </div>
@@ -187,15 +224,15 @@ export default function Footer() {
                 <HeartHandshake className="w-4 h-4 text-[#C5A46D] shrink-0 mt-0.5" />
                 <div>
                   <p className="text-[#C5A46D] font-medium">Hospital 24x7 Casualty & OPD:</p>
-                  <p className="text-[#F6F2E9]/90">{INSTITUTION_INFO.hospitalEmergency}</p>
+                  <p className="text-[#F6F2E9]/90">{settings.hospitalEmergency}</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-2.5">
                 <Mail className="w-4 h-4 text-[#C5A46D] shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[#F6F2E9]/90">{INSTITUTION_INFO.email}</p>
-                  <p className="text-[#81917A] text-[10px]">{INSTITUTION_INFO.infoEmail}</p>
+                  <p className="text-[#F6F2E9]/90">{settings.contactEmail}</p>
+                  <p className="text-[#81917A] text-[10px]">{settings.infoEmail}</p>
                 </div>
               </div>
 
@@ -247,7 +284,7 @@ export default function Footer() {
           </div>
 
           <p className="text-center text-xs text-[#81917A] pt-2">
-            © {new Date().getFullYear()} {INSTITUTION_INFO.name}. All Rights Reserved.
+            © {new Date().getFullYear()} {settings.name}. All Rights Reserved.
           </p>
         </div>
       </div>
