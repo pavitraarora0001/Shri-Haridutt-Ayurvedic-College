@@ -1751,50 +1751,242 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
 
+              {/* Module 1: Institutional Identity */}
               <div className="bg-white p-6 rounded-xl border border-[#C5A46D]/30 shadow-card space-y-4">
-                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2">Institutional Contact Points</h3>
+                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2 flex items-center justify-between">
+                  <span>Institutional Identity &amp; Branding</span>
+                  <span className="text-[10px] font-sans text-[#81917A] uppercase font-normal tracking-wider">Official Records</span>
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Admissions Helpline Phone</label>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">College Official Name</label>
                     <input
                       type="text"
-                      value={websiteSettings['contact_phone'] || '+91 98290 44120'}
-                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, contact_phone: e.target.value })}
-                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
+                      value={websiteSettings['site.institution_name'] || 'Shri Haridutt Ayurvedic Medical College & Hospital'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, 'site.institution_name': e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Admissions Email Address</label>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Attached Teaching Hospital Name</label>
                     <input
-                      type="email"
-                      value={websiteSettings['contact_email'] || 'admissions@hariduttayurveda.edu.in'}
-                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, contact_email: e.target.value })}
-                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
+                      type="text"
+                      value={websiteSettings['site.hospital_name'] || 'Shri Haridutt Ayurvedic Hospital (100-Bed Teaching Hospital)'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, 'site.hospital_name': e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
                     />
                   </div>
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Vedic Sanskrit Motto</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['site.sanskrit_motto'] || 'सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, 'site.sanskrit_motto': e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Motto Meaning</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['site.motto_meaning'] || 'May all be prosperous and happy, may all be free from illness.'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, 'site.motto_meaning': e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                </div>
+              </div>
 
+              {/* Module 2: Campus Address & Location */}
+              <div className="bg-white p-6 rounded-xl border border-[#C5A46D]/30 shadow-card space-y-4">
+                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2 flex items-center justify-between">
+                  <span>Campus Physical Address &amp; Navigation</span>
+                  <span className="text-[10px] font-sans text-[#81917A] uppercase font-normal tracking-wider">Geo-Coordinates &amp; Maps</span>
+                </h3>
                 <div>
-                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Campus Physical Address</label>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Complete Physical Campus Address *</label>
                   <input
                     type="text"
                     value={websiteSettings['campus_address'] || '5FR3+37H, near technology park, L. B. Shastri Nagar Colony, Sewar, Bharatpur, Sewar, Rajasthan 321001'}
                     onChange={(e) => setWebsiteSettings({ ...websiteSettings, campus_address: e.target.value })}
-                    className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
+                    className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
                   />
                 </div>
-
-                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2 pt-4">Google Maps &amp; Social Links</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">City</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['city'] || 'Bharatpur'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, city: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">District</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['district'] || 'Bharatpur'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, district: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">State</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['state'] || 'Rajasthan'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, state: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">PIN Code</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['pincode'] || '321001'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, pincode: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                </div>
                 <div>
-                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Google Maps Embed URL / Query</label>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Google Maps Embed URL / Location Query</label>
                   <input
                     type="text"
                     value={websiteSettings['google_maps_url'] || ''}
                     onChange={(e) => setWebsiteSettings({ ...websiteSettings, google_maps_url: e.target.value })}
-                    className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none"
-                    placeholder="https://maps.google.com/..."
+                    className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    placeholder="https://maps.google.com/maps?q=... or leave blank for automatic campus pin"
                   />
+                  <p className="text-[10px] text-[#81917A] mt-1">Leave empty to automatically generate a pin at the campus physical address.</p>
                 </div>
+              </div>
+
+              {/* Module 3: Institutional Contact Points */}
+              <div className="bg-white p-6 rounded-xl border border-[#C5A46D]/30 shadow-card space-y-4">
+                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2 flex items-center justify-between">
+                  <span>Institutional Contact Points &amp; Helplines</span>
+                  <span className="text-[10px] font-sans text-[#81917A] uppercase font-normal tracking-wider">Telephony &amp; Correspondence</span>
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Primary Admissions Helpline Phone *</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['contact_phone'] || '+91 98290 44120'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, contact_phone: e.target.value, admissions_helpline: e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Secondary / General EPABX Phone</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['secondary_phone'] || '+91 (01464) 224589'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, secondary_phone: e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Hospital 24x7 Casualty &amp; Emergency Helpline *</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['hospital_emergency_phone'] || '+91 94140 33815'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, hospital_emergency_phone: e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Hospital OPD Contact Phone</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['opd_contact_phone'] || '+91 98290 44121'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, opd_contact_phone: e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Admissions Email *</label>
+                    <input
+                      type="email"
+                      value={websiteSettings['contact_email'] || 'admissions@hariduttayurveda.edu.in'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, contact_email: e.target.value, admissions_email: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">General Directorate Email</label>
+                    <input
+                      type="email"
+                      value={websiteSettings['info_email'] || 'info@hariduttayurveda.edu.in'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, info_email: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Hospital Superintendent Email</label>
+                    <input
+                      type="email"
+                      value={websiteSettings['hospital_email'] || 'hospital.ms@hariduttayurveda.edu.in'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, hospital_email: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Module 4: Operational & Hospital Timings */}
+              <div className="bg-white p-6 rounded-xl border border-[#C5A46D]/30 shadow-card space-y-4">
+                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2 flex items-center justify-between">
+                  <span>Operational &amp; Clinical Working Hours</span>
+                  <span className="text-[10px] font-sans text-[#81917A] uppercase font-normal tracking-wider">Schedule</span>
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">College &amp; Admissions Office Timings</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['college_office_timings'] || 'Monday to Saturday: 9:00 AM – 5:00 PM'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, college_office_timings: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Hospital OPD Hours</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['hospital_opd_timings'] || 'Monday to Saturday: 8:00 AM – 2:00 PM'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, hospital_opd_timings: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Hospital Casualty &amp; IPD Availability</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['hospital_emergency_availability'] || '24x7 Round the Clock (365 Days Open)'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, hospital_emergency_availability: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Module 5: Digital Presence & Social Media */}
+              <div className="bg-white p-6 rounded-xl border border-[#C5A46D]/30 shadow-card space-y-4">
+                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2 flex items-center justify-between">
+                  <span>Digital Presence &amp; Social Channels</span>
+                  <span className="text-[10px] font-sans text-[#81917A] uppercase font-normal tracking-wider">Social Links</span>
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
                     <label className="text-xs font-semibold text-[#173D32] block mb-1">Facebook URL</label>
@@ -1802,16 +1994,8 @@ export default function AdminDashboardPage() {
                       type="text"
                       value={websiteSettings['social_facebook'] || ''}
                       onChange={(e) => setWebsiteSettings({ ...websiteSettings, social_facebook: e.target.value })}
-                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold text-[#173D32] block mb-1">YouTube Channel URL</label>
-                    <input
-                      type="text"
-                      value={websiteSettings['social_youtube'] || ''}
-                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, social_youtube: e.target.value })}
-                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                      placeholder="https://facebook.com/..."
                     />
                   </div>
                   <div>
@@ -1820,9 +2004,103 @@ export default function AdminDashboardPage() {
                       type="text"
                       value={websiteSettings['social_instagram'] || ''}
                       onChange={(e) => setWebsiteSettings({ ...websiteSettings, social_instagram: e.target.value })}
-                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none"
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                      placeholder="https://instagram.com/..."
                     />
                   </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">YouTube Channel URL</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['social_youtube'] || ''}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, social_youtube: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                      placeholder="https://youtube.com/@..."
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">LinkedIn Profile / Page</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['social_linkedin'] || ''}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, social_linkedin: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                      placeholder="https://linkedin.com/company/..."
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">X / Twitter URL</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['social_twitter'] || ''}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, social_twitter: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                      placeholder="https://x.com/..."
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">WhatsApp Helpline Number / Link</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['social_whatsapp'] || ''}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, social_whatsapp: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                      placeholder="+91 98290 44120"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#173D32] block mb-1">Official Canonical Website URL</label>
+                  <input
+                    type="text"
+                    value={websiteSettings['official_website_url'] || 'https://www.shrihariduttayurvediccollege.org'}
+                    onChange={(e) => setWebsiteSettings({ ...websiteSettings, official_website_url: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                  />
+                </div>
+              </div>
+
+              {/* Module 6: Live Announcements & Admissions Status */}
+              <div className="bg-white p-6 rounded-xl border border-[#C5A46D]/30 shadow-card space-y-4">
+                <h3 className="font-serif text-base font-semibold text-[#173D32] border-b pb-2 flex items-center justify-between">
+                  <span>Header Announcement Ticker &amp; Admissions Status</span>
+                  <span className="text-[10px] font-sans text-[#81917A] uppercase font-normal tracking-wider">Live Broadcast</span>
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Header Announcement Ticker Text *</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['announcement_banner_text'] || 'NEET-UG 2026 AYUSH State & All-India Counseling Active'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, announcement_banner_text: e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#173D32] block mb-1">Announcement Action Link</label>
+                    <input
+                      type="text"
+                      value={websiteSettings['announcement_link'] || '/admissions/apply'}
+                      onChange={(e) => setWebsiteSettings({ ...websiteSettings, announcement_link: e.target.value })}
+                      className="w-full px-3 py-2 rounded border border-gray-300 text-xs outline-none focus:border-[#C5A46D]"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3 pt-1">
+                  <input
+                    type="checkbox"
+                    id="admissions_open_toggle"
+                    checked={websiteSettings['admissions_open'] !== 'false'}
+                    onChange={(e) => setWebsiteSettings({ ...websiteSettings, admissions_open: String(e.target.checked) })}
+                    className="h-4 w-4 rounded text-[#173D32] border-gray-300 focus:ring-[#C5A46D]"
+                  />
+                  <label htmlFor="admissions_open_toggle" className="text-xs font-semibold text-[#173D32] cursor-pointer">
+                    Admissions 2026–27 Open (Shows active admissions badges across hero, CTAs, and announcement bar)
+                  </label>
                 </div>
               </div>
             </div>

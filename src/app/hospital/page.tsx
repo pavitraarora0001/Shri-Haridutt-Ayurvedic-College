@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import PageHeader from '@/components/common/PageHeader';
 import { 
@@ -7,6 +5,9 @@ import {
   Bed, ShieldCheck, Activity, Users, Award, ArrowRight, Sparkles, CheckCircle2
 } from 'lucide-react';
 import Link from 'next/link';
+import { getInstitutionalSettings, formatPhoneForTel } from '@/lib/settings';
+
+export const dynamic = 'force-dynamic';
 
 const CLINICAL_DEPARTMENTS = [
   {
@@ -60,12 +61,14 @@ const CLINICAL_STATISTICS = [
   { label: 'Panchakarma Therapies / Month', value: '1,200+ Procedures', sub: 'Shirodhara, Basti & Abhyanga' },
 ];
 
-export default function HospitalSanctumPage() {
+export default async function HospitalSanctumPage() {
+  const settings = await getInstitutionalSettings();
+
   return (
     <div className="bg-[#F6F2E9] min-h-screen text-[#342B25]">
       <PageHeader
-        title="100-Bed Teaching Hospital & Panchakarma Sanctum"
-        subtitle="Compassionate Healing Through Classical Vedic Ayurveda · 8 Specialized Clinical OPDs · 24x7 Casualty"
+        title="100-Bed Teaching Hospital &amp; Panchakarma Sanctum"
+        subtitle={`Compassionate Healing Through Classical Vedic Ayurveda · 8 Specialized Clinical OPDs · ${settings.hospitalEmergencyAvailability}`}
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Hospital' }]}
       />
 
@@ -88,17 +91,17 @@ export default function HospitalSanctumPage() {
 
           <div className="shrink-0 flex flex-col sm:flex-row md:flex-col gap-3 w-full md:w-auto">
             <a
-              href="tel:+919829044120"
+              href={`tel:${formatPhoneForTel(settings.hospitalEmergency)}`}
               className="inline-flex items-center justify-center px-5 py-3 rounded-md bg-[#C5A46D] text-[#173D32] font-bold text-xs uppercase tracking-wider shadow-gold hover:bg-[#DFCA9E] transition-all"
             >
               <Phone className="w-3.5 h-3.5 mr-2" />
-              <span>24x7 Casualty: +91 98290 44120</span>
+              <span>24x7 Casualty: {settings.hospitalEmergency}</span>
             </a>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-5 py-3 rounded-md bg-white/10 text-white font-medium text-xs uppercase tracking-wider border border-white/20 hover:bg-white/20 transition-all"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-md bg-white/10 text-white font-medium text-xs uppercase tracking-wider border border-white/20 hover:bg-white/20 transition-all text-center"
             >
-              <span>OPD Timings &amp; Route Map</span>
+              <span>OPD Timings ({settings.hospitalOpdTimings.split(':')[1]?.trim() || '8 AM – 2 PM'}) &amp; Route Map</span>
             </Link>
           </div>
         </div>

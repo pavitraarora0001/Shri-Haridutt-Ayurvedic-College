@@ -1,10 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import PageHeader from '@/components/common/PageHeader';
-import { INSTITUTION_INFO } from '@/lib/data';
+import { getInstitutionalSettings, formatPhoneForTel } from '@/lib/settings';
 import { HeartPulse, Stethoscope, BedDouble, ShieldCheck, Clock, Phone, CheckCircle2 } from 'lucide-react';
 
-export default function HospitalPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function HospitalPage() {
+  const settings = await getInstitutionalSettings();
   const wards = [
     { name: 'Kayachikitsa (General Medicine Ward)', beds: '30 Beds', desc: 'Managing chronic arthritis, diabetes complications, GI disorders and paralysis.' },
     { name: 'Panchakarma Special Inpatient Wing', beds: '25 Beds', desc: 'Equipped with individual Shirodhara suites, steam chambers and detoxification recovery units.' },
@@ -58,7 +61,7 @@ export default function HospitalPage() {
                 Comprehensive Outpatient & Inpatient Ayurvedic Healing
               </h2>
               <p className="text-sm text-[#342B25]/85 leading-relaxed font-light">
-                The attached teaching hospital of <strong>{INSTITUTION_INFO.name}</strong> serves as the nerve center for bedside clinical training. Under the direct supervision of experienced professors and registered Vaidyas, students observe, diagnose, and treat real patients suffering from diverse ailments.
+                The attached teaching hospital of <strong>{settings.name}</strong> serves as the nerve center for bedside clinical training. Under the direct supervision of experienced professors and registered Vaidyas, students observe, diagnose, and treat real patients suffering from diverse ailments.
               </p>
               <p className="text-sm text-[#342B25]/85 leading-relaxed font-light">
                 The clinical complex encompasses 12 daily specialty OPDs, computerized registration, diagnostic pathology lab, X-ray unit, ECG, ultra-sonography, labour room, and a modern operation theatre integrated with classical Kshara Sutra ligation.
@@ -69,8 +72,13 @@ export default function HospitalPage() {
                   <Phone className="w-4 h-4" />
                   <span className="text-xs uppercase tracking-wider font-semibold">Hospital 24x7 Helpline</span>
                 </div>
-                <p className="text-sm font-serif font-bold">{INSTITUTION_INFO.hospitalEmergency}</p>
-                <p className="text-[11px] text-[#81917A]">OPD Hours: Monday to Saturday, 8:00 AM – 2:00 PM</p>
+                <a
+                  href={`tel:${formatPhoneForTel(settings.hospitalEmergency)}`}
+                  className="text-sm font-serif font-bold hover:text-[#DFCA9E] transition-colors block"
+                >
+                  {settings.hospitalEmergency}
+                </a>
+                <p className="text-[11px] text-[#81917A]">OPD Hours: {settings.hospitalOpdTimings}</p>
               </div>
             </div>
 

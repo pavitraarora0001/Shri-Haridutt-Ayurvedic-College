@@ -843,7 +843,7 @@ function DocumentPreviewModal({
                 Recognised by NCISM, Ministry of AYUSH, Govt. of India · Affiliated to Dr. S.R. Rajasthan Ayurved University
               </p>
               <p className="text-[10px] text-[#342B25]/75 font-mono">
-                NH-11B Heritage Campus, Karauli District, Rajasthan 322241 | Helpline: +91 98290 44120
+                {INSTITUTION_INFO.address} | Helpline: {INSTITUTION_INFO.admissionsHelpline}
               </p>
             </div>
 

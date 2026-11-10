@@ -65,7 +65,7 @@ function buildLuxuryEmailHtml(headline: string, bodyContent: string, actionButto
       ${actionButton ? `<div style="text-align: center;"><a href="${actionButton.url}" class="btn">${actionButton.label}</a></div>` : ''}
     </div>
     <div class="footer">
-      <p>National Highway 11B Corridor, Rajasthan, India<br>
+      <p>5FR3+37H, near technology park, L. B. Shastri Nagar Colony, Sewar, Bharatpur, Rajasthan 321001<br>
       Admissions Helpline: +91 98290 44120 | EPABX: +91 (01464) 224589</p>
       <p style="margin-top: 8px;">© ${new Date().getFullYear()} Shri Haridutt Ayurvedic Medical College & Hospital. All Rights Reserved.</p>
     </div>

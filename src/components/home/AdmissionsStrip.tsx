@@ -6,6 +6,7 @@ import SectionTitle from '@/components/common/SectionTitle';
 import { Sparkles, CheckCircle2, Send, FileText, HelpCircle, PhoneCall, ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { FloatingLeaf } from '@/components/motion/BotanicalGraphics';
+import { INSTITUTION_INFO } from '@/lib/data';
 
 export default function AdmissionsStrip() {
   const [formData, setFormData] = useState({
@@ -131,7 +132,7 @@ export default function AdmissionsStrip() {
               </div>
               <div className="text-xs">
                 <p className="text-[#C5A46D] font-semibold uppercase tracking-wider">Admissions Directorate</p>
-                <p className="text-white text-base font-serif font-bold mt-0.5">+91 98290 44120 / +91 (01464) 224589</p>
+                <p className="text-white text-base font-serif font-bold mt-0.5">{INSTITUTION_INFO.admissionsHelpline} / {INSTITUTION_INFO.phone.split(',')[0]}</p>
                 <p className="text-[#81917A] text-[11px]">Free one-on-one pre-counseling guidance available.</p>
               </div>
             </div>

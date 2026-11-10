@@ -100,11 +100,11 @@ export default function ContactStrip() {
                     How to Reach Our Campus
                   </h4>
                   <p className="text-xs text-[#342B25]/70">
-                    Located on NH-11B corridor with direct connectivity to Jaipur, Bharatpur and Kota.
+                    Located near technology park, Sewar, Bharatpur with direct connectivity to Agra, Jaipur and Delhi-NCR.
                   </p>
                 </div>
                 <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded bg-[#173D32] text-[#C5A46D]">
-                  Rajasthan, India
+                  Bharatpur, Rajasthan
                 </span>
               </div>
 
@@ -112,7 +112,7 @@ export default function ContactStrip() {
               <div className="w-full h-80 rounded border border-[#C5A46D]/30 overflow-hidden relative shadow-inner">
                 <iframe
                   title="Shri Haridutt Ayurvedic College Location"
-                  src="https://maps.google.com/maps?q=Karauli,Rajasthan,India&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                  src="https://maps.google.com/maps?q=5FR3%2B37H%2C%20near%20technology%20park%2C%20L.%20B.%20Shastri%20Nagar%20Colony%2C%20Sewar%2C%20Bharatpur%2C%20Sewar%2C%20Rajasthan%20321001&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=&amp;output=embed"
                   className="w-full h-full border-0"
                   allowFullScreen
                   loading="lazy"
@@ -123,15 +123,15 @@ export default function ContactStrip() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 text-xs">
                 <div className="p-2.5 rounded bg-[#F6F2E9] border border-[#C5A46D]/20">
                   <span className="font-semibold text-[#173D32] block">By Railway:</span>
-                  <span className="text-[#342B25]/75 text-[11px]">Gangapur City Junction (32 km) / Hindaun City (28 km)</span>
+                  <span className="text-[#342B25]/75 text-[11px]">Bharatpur Junction (6 km) / Sewar Station (3 km)</span>
                 </div>
                 <div className="p-2.5 rounded bg-[#F6F2E9] border border-[#C5A46D]/20">
                   <span className="font-semibold text-[#173D32] block">By Air:</span>
-                  <span className="text-[#342B25]/75 text-[11px]">Jaipur International Airport (JAI) — 150 km via NH-21</span>
+                  <span className="text-[#342B25]/75 text-[11px]">Agra Airport (55 km) / Jaipur Airport (180 km)</span>
                 </div>
                 <div className="p-2.5 rounded bg-[#F6F2E9] border border-[#C5A46D]/20">
                   <span className="font-semibold text-[#173D32] block">By Road:</span>
-                  <span className="text-[#342B25]/75 text-[11px]">Direct state transport buses on NH-11B highway</span>
+                  <span className="text-[#342B25]/75 text-[11px]">Direct road transit via NH-21 &amp; Sewar-Bharatpur Road</span>
                 </div>
               </div>
             </div>

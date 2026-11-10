@@ -1,7 +1,6 @@
 import React from 'react';
 import PageHeader from '@/components/common/PageHeader';
-import { INSTITUTION_INFO } from '@/lib/data';
-import { getInstitutionalSettings } from '@/lib/settings';
+import { getInstitutionalSettings, formatPhoneForTel } from '@/lib/settings';
 import { MapPin, Phone, Mail, Clock, ShieldAlert } from 'lucide-react';
 import ContactForm from '@/components/contact/ContactForm';
 
@@ -46,8 +45,21 @@ export default async function ContactPage() {
                     <Phone className="w-5 h-5 text-[#C5A46D] shrink-0 mt-0.5" />
                     <div>
                       <strong className="text-white block font-serif">Admissions Helpline:</strong>
-                      <span>{settings.admissionsHelpline}</span>
-                      <span className="block text-[#81917A] mt-0.5">Campus EPABX: {INSTITUTION_INFO.phone}</span>
+                      <a
+                        href={`tel:${formatPhoneForTel(settings.admissionsHelpline)}`}
+                        className="text-white hover:text-[#DFCA9E] transition-colors block"
+                      >
+                        {settings.admissionsHelpline}
+                      </a>
+                      <span className="block text-[#81917A] mt-0.5">
+                        Campus EPABX:{' '}
+                        <a
+                          href={`tel:${formatPhoneForTel(settings.secondaryPhone)}`}
+                          className="hover:text-[#DFCA9E] transition-colors"
+                        >
+                          {settings.secondaryPhone}
+                        </a>
+                      </span>
                     </div>
                   </div>
 
@@ -55,7 +67,12 @@ export default async function ContactPage() {
                     <ShieldAlert className="w-5 h-5 text-[#C5A46D] shrink-0 mt-0.5" />
                     <div>
                       <strong className="text-white block font-serif">Hospital 24x7 Casualty &amp; OPD:</strong>
-                      <span className="text-[#DFCA9E] font-medium">{settings.hospitalEmergency}</span>
+                      <a
+                        href={`tel:${formatPhoneForTel(settings.hospitalEmergency)}`}
+                        className="text-[#DFCA9E] font-medium hover:underline block"
+                      >
+                        {settings.hospitalEmergency}
+                      </a>
                     </div>
                   </div>
 
@@ -63,8 +80,18 @@ export default async function ContactPage() {
                     <Mail className="w-5 h-5 text-[#C5A46D] shrink-0 mt-0.5" />
                     <div>
                       <strong className="text-white block font-serif">Electronic Mail:</strong>
-                      <span>{settings.contactEmail}</span>
-                      <span className="block text-[#81917A]">{settings.infoEmail}</span>
+                      <a
+                        href={`mailto:${settings.contactEmail}`}
+                        className="hover:text-[#DFCA9E] transition-colors block"
+                      >
+                        {settings.contactEmail}
+                      </a>
+                      <a
+                        href={`mailto:${settings.infoEmail}`}
+                        className="block text-[#81917A] hover:text-[#DFCA9E] transition-colors"
+                      >
+                        {settings.infoEmail}
+                      </a>
                     </div>
                   </div>
 
@@ -72,8 +99,10 @@ export default async function ContactPage() {
                     <Clock className="w-5 h-5 text-[#C5A46D] shrink-0 mt-0.5" />
                     <div>
                       <strong className="text-white block font-serif">Administrative Hours:</strong>
-                      <span>Monday to Saturday: 9:00 AM – 5:00 PM</span>
-                      <span className="block text-[#81917A]">Hospital Services: 24 Hours Open</span>
+                      <span>{settings.collegeOfficeTimings}</span>
+                      <span className="block text-[#81917A] mt-0.5">
+                        {settings.hospitalEmergencyAvailability} (OPD: {settings.hospitalOpdTimings})
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -92,7 +121,7 @@ export default async function ContactPage() {
             <div className="w-full h-80 rounded overflow-hidden border border-[#C5A46D]/30 shadow-inner">
               <iframe
                 title="Google Maps Campus Directions"
-                src={settings.googleMapsUrl}
+                src={settings.googleMapsEmbedUrl}
                 className="w-full h-full border-0"
                 allowFullScreen
                 loading="lazy"

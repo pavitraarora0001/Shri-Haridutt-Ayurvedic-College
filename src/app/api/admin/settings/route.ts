@@ -53,8 +53,16 @@ export async function POST(req: Request) {
       revalidatePath('/');
       revalidatePath('/contact');
       revalidatePath('/about');
+      revalidatePath('/hospital');
       revalidatePath('/infrastructure/hospital');
+      revalidatePath('/mandatory-disclosures');
+      revalidatePath('/admissions');
+      revalidatePath('/admissions/apply');
       revalidatePath('/miscellaneous');
+      revalidatePath('/news-events');
+      revalidatePath('/notices');
+      revalidatePath('/gallery');
+      revalidatePath('/academics');
     } catch (revalidateErr) {
       console.warn('Cache revalidation notice:', revalidateErr);
     }

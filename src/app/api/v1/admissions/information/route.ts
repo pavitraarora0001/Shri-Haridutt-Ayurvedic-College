@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server';
 import { AcademicsService } from '@/modules/academics/academics.service';
+import { getInstitutionalSettings } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const courses = await AcademicsService.listCourses({ approvedOnly: true });
+  const [courses, settings] = await Promise.all([
+    AcademicsService.listCourses({ approvedOnly: true }),
+    getInstitutionalSettings(),
+  ]);
+
   return NextResponse.json({
     success: true,
     data: {
@@ -20,8 +25,8 @@ export async function GET() {
         { round: 'Round 2 Counseling', status: 'UPCOMING', dates: 'December 2026' },
         { round: 'Mop-Up / Stray Vacancy', status: 'SCHEDULED', dates: 'January 2027' },
       ],
-      helpline: '+91 98290 44120',
-      email: 'admissions@hariduttayurveda.edu.in',
+      helpline: settings.admissionsHelpline,
+      email: settings.admissionsEmail,
       courses,
     },
   });

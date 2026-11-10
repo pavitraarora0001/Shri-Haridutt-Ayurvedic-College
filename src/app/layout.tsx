@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import MotionProvider from '@/components/motion/MotionProvider';
 import { INSTITUTION_INFO } from '@/lib/data';
+import { getInstitutionalSettings } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,35 +70,74 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getInstitutionalSettings();
+
   // Institutional JSON-LD Structured Data
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'EducationalOrganization',
-    name: INSTITUTION_INFO.name,
-    alternateName: INSTITUTION_INFO.shortName,
-    url: 'https://hariduttayurveda.edu.in',
-    logo: 'https://hariduttayurveda.edu.in/logo.png',
-    description: INSTITUTION_INFO.subTagline,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: '5FR3+37H, near technology park, L. B. Shastri Nagar Colony, Sewar',
-      addressLocality: 'Bharatpur',
-      addressRegion: 'Rajasthan',
-      postalCode: '321001',
-      addressCountry: 'IN',
-    },
-    contactPoint: {
-      '@type': 'ContactPoint',
-      telephone: '+91-98290-44120',
-      contactType: 'admissions',
-      areaServed: 'IN',
-      availableLanguage: ['English', 'Hindi', 'Sanskrit'],
-    },
+    '@graph': [
+      {
+        '@type': 'EducationalOrganization',
+        '@id': `${settings.officialWebsiteUrl}/#college`,
+        name: settings.name,
+        alternateName: settings.shortName,
+        url: settings.officialWebsiteUrl,
+        logo: `${settings.officialWebsiteUrl}${settings.logoUrl}`,
+        description: settings.collegeDescription,
+        sameAs: [
+          settings.socialFacebook,
+          settings.socialInstagram,
+          settings.socialYoutube,
+          settings.socialLinkedin,
+          settings.socialTwitter,
+        ].filter(Boolean),
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: settings.campusAddress,
+          addressLocality: settings.city,
+          addressRegion: settings.state,
+          postalCode: settings.pincode,
+          addressCountry: 'IN',
+        },
+        contactPoint: [
+          {
+            '@type': 'ContactPoint',
+            telephone: settings.admissionsHelpline,
+            contactType: 'admissions',
+            areaServed: 'IN',
+            availableLanguage: ['English', 'Hindi', 'Sanskrit'],
+          },
+          {
+            '@type': 'ContactPoint',
+            telephone: settings.hospitalEmergency,
+            contactType: 'emergency',
+            areaServed: 'IN',
+          },
+        ],
+      },
+      {
+        '@type': 'MedicalOrganization',
+        '@id': `${settings.officialWebsiteUrl}/#hospital`,
+        name: settings.hospitalName,
+        url: `${settings.officialWebsiteUrl}/hospital`,
+        description: settings.hospitalDescription,
+        telephone: settings.hospitalEmergency,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: settings.campusAddress,
+          addressLocality: settings.city,
+          addressRegion: settings.state,
+          postalCode: settings.pincode,
+          addressCountry: 'IN',
+        },
+        openingHours: 'Mo-Sa 08:00-14:00',
+      },
+    ],
   };
 
   return (

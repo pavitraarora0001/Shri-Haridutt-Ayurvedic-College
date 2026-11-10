@@ -65,7 +65,7 @@ export const NCISM_DISCLOSURES: DisclosureCategoryData[] = [
           'Date of Joining Institution': '12 July 2018',
           'Official Direct Email': 'principal@hariduttayurveda.edu.in',
           'Institutional Phone / Helpline': '+91 98290 44120',
-          'Permanent Residential Address': 'Principal Bungalow, Haridutt Campus, Karauli District, Rajasthan'
+          'Permanent Residential Address': 'Principal Bungalow, Haridutt Campus, Sewar, Bharatpur, Rajasthan'
         }
       },
       {

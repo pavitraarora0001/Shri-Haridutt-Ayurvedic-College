@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { INSTITUTION_INFO } from '@/lib/data';
-import { getInstitutionalSettings } from '@/lib/settings';
+import { getInstitutionalSettings, formatPhoneForTel } from '@/lib/settings';
 import { MapPin, Phone, Mail, ShieldCheck, HeartHandshake, ExternalLink } from 'lucide-react';
 import { BotanicalSprig } from '@/components/motion/BotanicalGraphics';
 
@@ -28,10 +28,10 @@ export default async function Footer() {
               </div>
               <div>
                 <h3 className="font-serif text-lg font-bold text-white leading-tight">
-                  Shri Haridutt Ayurvedic
+                  {settings.name.split('Medical')[0].trim() || 'Shri Haridutt Ayurvedic'}
                 </h3>
                 <p className="text-xs text-[#C5A46D] font-medium tracking-wide uppercase">
-                  Medical College & Hospital
+                  Medical College &amp; Hospital
                 </p>
               </div>
             </div>
@@ -42,20 +42,20 @@ export default async function Footer() {
 
             <div className="p-3 bg-[#173D32]/60 rounded border border-[#C5A46D]/30">
               <p className="text-[11px] font-serif text-[#C5A46D] italic">
-                "{INSTITUTION_INFO.sanskritMotto}"
+                "{settings.sanskritMotto}"
               </p>
               <p className="text-[10px] text-[#81917A] mt-0.5">
-                {INSTITUTION_INFO.mottoMeaning}
+                {settings.mottoMeaning}
               </p>
             </div>
 
             <div className="pt-1 flex items-center space-x-2 text-[11px] text-[#81917A]">
               <ShieldCheck className="w-4 h-4 text-[#C5A46D] shrink-0" />
-              <span>Recognised by NCISM & Ministry of AYUSH, Govt. of India</span>
+              <span>Recognised by NCISM &amp; Ministry of AYUSH, Govt. of India</span>
             </div>
 
-            {(settings.socialFacebook || settings.socialYoutube || settings.socialInstagram) && (
-              <div className="pt-2 flex items-center space-x-3 text-xs">
+            {(settings.socialFacebook || settings.socialYoutube || settings.socialInstagram || settings.socialLinkedin || settings.socialTwitter || settings.socialWhatsapp) && (
+              <div className="pt-2 flex flex-wrap items-center gap-3 text-xs">
                 {settings.socialFacebook && (
                   <a
                     href={settings.socialFacebook}
@@ -64,6 +64,16 @@ export default async function Footer() {
                     className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
                   >
                     Facebook
+                  </a>
+                )}
+                {settings.socialInstagram && (
+                  <a
+                    href={settings.socialInstagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
+                  >
+                    Instagram
                   </a>
                 )}
                 {settings.socialYoutube && (
@@ -76,14 +86,34 @@ export default async function Footer() {
                     YouTube
                   </a>
                 )}
-                {settings.socialInstagram && (
+                {settings.socialLinkedin && (
                   <a
-                    href={settings.socialInstagram}
+                    href={settings.socialLinkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
                   >
-                    Instagram
+                    LinkedIn
+                  </a>
+                )}
+                {settings.socialTwitter && (
+                  <a
+                    href={settings.socialTwitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
+                  >
+                    X / Twitter
+                  </a>
+                )}
+                {settings.socialWhatsapp && (
+                  <a
+                    href={settings.socialWhatsapp.startsWith('http') ? settings.socialWhatsapp : `https://wa.me/${settings.socialWhatsapp.replace(/[^0-9]/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#C5A46D] hover:text-[#DFCA9E] transition-colors"
+                  >
+                    WhatsApp
                   </a>
                 )}
               </div>
@@ -215,24 +245,45 @@ export default async function Footer() {
                 <Phone className="w-4 h-4 text-[#C5A46D] shrink-0 mt-0.5" />
                 <div>
                   <p className="text-[#C5A46D] font-medium">Admissions Helpline:</p>
-                  <p className="text-[#F6F2E9]/90">{settings.admissionsHelpline}</p>
-                  <p className="text-[#81917A] text-[10px] mt-0.5">Mon–Sat: 9:00 AM – 5:00 PM</p>
+                  <a
+                    href={`tel:${formatPhoneForTel(settings.admissionsHelpline)}`}
+                    className="text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors block"
+                  >
+                    {settings.admissionsHelpline}
+                  </a>
+                  <p className="text-[#81917A] text-[10px] mt-0.5">{settings.collegeOfficeTimings}</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-2.5">
                 <HeartHandshake className="w-4 h-4 text-[#C5A46D] shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[#C5A46D] font-medium">Hospital 24x7 Casualty & OPD:</p>
-                  <p className="text-[#F6F2E9]/90">{settings.hospitalEmergency}</p>
+                  <p className="text-[#C5A46D] font-medium">Hospital 24x7 Casualty &amp; OPD:</p>
+                  <a
+                    href={`tel:${formatPhoneForTel(settings.hospitalEmergency)}`}
+                    className="text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors block"
+                  >
+                    {settings.hospitalEmergency}
+                  </a>
+                  <p className="text-[#81917A] text-[10px] mt-0.5">{settings.hospitalOpdTimings}</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-2.5">
                 <Mail className="w-4 h-4 text-[#C5A46D] shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[#F6F2E9]/90">{settings.contactEmail}</p>
-                  <p className="text-[#81917A] text-[10px]">{settings.infoEmail}</p>
+                  <a
+                    href={`mailto:${settings.contactEmail}`}
+                    className="text-[#F6F2E9]/90 hover:text-[#DFCA9E] transition-colors block"
+                  >
+                    {settings.contactEmail}
+                  </a>
+                  <a
+                    href={`mailto:${settings.infoEmail}`}
+                    className="text-[#81917A] text-[10px] hover:text-[#DFCA9E] transition-colors block"
+                  >
+                    {settings.infoEmail}
+                  </a>
                 </div>
               </div>
 
