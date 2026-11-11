@@ -30,9 +30,14 @@ export default function LaboratoriesPage() {
       desc: 'Semi-automated biochemistry analyzers, electrolyte meters, urine test analyzers, centrifugation units, and autoclave sterilization validating modern diagnostic markers.',
     },
     {
-      name: 'Netra Kriyakalpa & Shalakya Procedure Suite',
-      dept: 'Shalakya Tantra',
-      desc: 'Sterile suite for ocular therapeutic cleansing including Tarpana, Putapaka, Aschyotana, and ENT endoscopy examinations.',
+      name: 'Modern High-Speed Computer & ICT Laboratory',
+      dept: 'Digital Technology & E-Learning',
+      desc: 'Workstations with high-speed fiber-optic internet, DELNET library repository terminal access, statistical data processing software, and digital Ayurvedic Samhita archives.',
+    },
+    {
+      name: 'Smart Audiovisual Recording Studio & ICT Lecture Theatre',
+      dept: 'Pedagogy & Educational Technology',
+      desc: 'Acoustically insulated studio equipped with high-definition lecture capture cameras, interactive smartboards, and live streaming capabilities for online clinical demonstrations.',
     },
   ];
 

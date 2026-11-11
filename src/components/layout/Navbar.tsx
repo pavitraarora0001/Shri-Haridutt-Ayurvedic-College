@@ -520,7 +520,11 @@ export default function Navbar() {
                     <div className="border-t border-[#C5A46D]/20 my-1" />
                     <Link prefetch={true} href="/gallery" className="block px-4 py-1.5 text-[#C5A46D] font-bold hover:bg-[#173D32] transition-colors flex items-center justify-between">
                       <span>Photo Gallery Archive</span>
-                      <span className="text-[10px] bg-[#C5A46D] text-[#173D32] px-1.5 rounded">24 Frames</span>
+                      <span className="text-[10px] bg-[#C5A46D] text-[#173D32] px-1.5 rounded">27+ Photos</span>
+                    </Link>
+                    <Link prefetch={true} href="/gallery?tab=videos" className="block px-4 py-1.5 text-[#DFCA9E] font-bold hover:bg-[#173D32] transition-colors flex items-center justify-between">
+                      <span>Video Gallery (Official Films)</span>
+                      <span className="text-[10px] bg-[#DFCA9E] text-[#173D32] px-1.5 rounded">8 Videos</span>
                     </Link>
                   </motion.div>
                 )}
@@ -811,7 +815,8 @@ export default function Navbar() {
                   <Link prefetch={true} href="/notices" className="block py-0.5 text-[#DFCA9E] font-semibold">Official Notices &amp; Circulars</Link>
                   <Link prefetch={true} href="/student-life" className="block py-0.5 text-[#F6F2E9]/90 hover:text-[#C5A46D]">Cultural &amp; Sports</Link>
                   <Link prefetch={true} href="/achievements" className="block py-0.5 text-[#F6F2E9]/90 hover:text-[#C5A46D]">Achievements &amp; Medals</Link>
-                  <Link prefetch={true} href="/gallery" className="block py-0.5 text-[#C5A46D] font-bold">Photo Gallery (24 Frames)</Link>
+                  <Link prefetch={true} href="/gallery" className="block py-0.5 text-[#C5A46D] font-bold">Photo Gallery (27+ Photos)</Link>
+                  <Link prefetch={true} href="/gallery?tab=videos" className="block py-0.5 text-[#DFCA9E] font-bold">Video Gallery (8 Official Films)</Link>
                 </div>
               )}
             </div>

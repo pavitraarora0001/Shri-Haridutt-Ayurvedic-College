@@ -63,8 +63,8 @@ export default function CompactAbout() {
           <div className="lg:col-span-5 relative">
             <div className="relative rounded-xl overflow-hidden border-2 border-[#C5A46D]/40 shadow-luxury aspect-[4/3] w-full">
               <Image
-                src="/images/ayurveda/ancient-heritage/heritage-wooden-archway.webp"
-                alt="Shri Haridutt Ayurvedic Medical College Campus Heritage"
+                src="/images/campus-real/colleg_photo1.jpg"
+                alt="Shri Haridutt Ayurvedic Medical College & Hospital Technology Park Campus"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover"

@@ -105,6 +105,25 @@ export default function OrganizationStructurePage() {
               <div className="p-2.5 bg-white rounded border border-[#C5A46D]/20">Student Grievance (SGRC)</div>
             </div>
           </div>
+
+          {/* Official Institutional Organogram Document Chart */}
+          <div className="bg-white rounded-xl border-2 border-[#C5A46D]/40 p-6 sm:p-8 max-w-4xl mx-auto shadow-luxury space-y-4">
+            <div className="border-b border-[#C5A46D]/20 pb-3">
+              <span className="text-[10px] uppercase font-bold text-[#C5A46D] tracking-wider block">Verified Document</span>
+              <h3 className="font-serif text-xl font-bold text-[#173D32]">Official Administrative Governance Organogram</h3>
+              <p className="text-xs text-[#81917A]">Approved by Saraswati Shiksha Samiti &amp; Institutional Governing Council</p>
+            </div>
+            <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50 aspect-[16/9] w-full">
+              <img
+                src="/images/campus-real/Organogram.jpg"
+                alt="Shri Haridutt Ayurvedic College Official Administrative Organogram"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <p className="text-[11px] text-gray-500 text-center italic">
+              Formal institutional organogram establishing reporting channels between Board of Trustees, Principal, Academic HODs, Hospital Superintendent, and Student Support Wings.
+            </p>
+          </div>
         </div>
 
       </div>
