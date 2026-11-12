@@ -45,21 +45,25 @@ function getDatabaseUrl(): string | undefined {
   }
 
   if (currentUrl && !currentUrl.startsWith('file:')) {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const connectionLimit = isDev ? '5' : '3';
+    const poolTimeout = isDev ? '20' : '15';
+
     try {
       const parsed = new URL(currentUrl);
-      parsed.searchParams.set('connection_limit', '2');
-      parsed.searchParams.set('pool_timeout', '10');
-      parsed.searchParams.set('connect_timeout', '10');
+      parsed.searchParams.set('connection_limit', connectionLimit);
+      parsed.searchParams.set('pool_timeout', poolTimeout);
+      parsed.searchParams.set('connect_timeout', '15');
       return parsed.toString();
     } catch {
       // Fallback regex replacement for non-standard URI formats
       let url = currentUrl
-        .replace(/([?&])connection_limit=\d+/, '$1connection_limit=2')
-        .replace(/([?&])pool_timeout=\d+/, '$1pool_timeout=10');
+        .replace(/([?&])connection_limit=\d+/, `$1connection_limit=${connectionLimit}`)
+        .replace(/([?&])pool_timeout=\d+/, `$1pool_timeout=${poolTimeout}`);
 
       if (!url.includes('connection_limit=')) {
         const delimiter = url.includes('?') ? '&' : '?';
-        url = `${url}${delimiter}connection_limit=2&pool_timeout=10&connect_timeout=10`;
+        url = `${url}${delimiter}connection_limit=${connectionLimit}&pool_timeout=${poolTimeout}&connect_timeout=15`;
       }
       return url;
     }
