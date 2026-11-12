@@ -10,6 +10,7 @@ import CompactCTA from '@/components/home/CompactCTA';
 // Code-split below-the-fold static sections
 const CompactHospital = nextDynamic(() => import('@/components/home/CompactHospital'), { ssr: true });
 const CompactCampus = nextDynamic(() => import('@/components/home/CompactCampus'), { ssr: true });
+const CompactHomeGallery = nextDynamic(() => import('@/components/home/CompactHomeGallery'), { ssr: true });
 
 export const dynamic = 'force-dynamic';
 
@@ -33,6 +34,9 @@ export default function HomePage() {
 
       {/* SECTION 7 — Campus & Facilities (Compact 4-Item Grid) */}
       <CompactCampus />
+
+      {/* SECTION 7.5 — Separate Campus Multimedia Gallery (Photos & Videos from shddcbpr.org) */}
+      <CompactHomeGallery />
 
       {/* SECTION 8 — Notifications & News (Compact 2-Column Desktop Layout) */}
       <CompactNewsNotices />

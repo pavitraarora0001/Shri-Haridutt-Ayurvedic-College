@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import PageHeader from '@/components/common/PageHeader';
 import { 
   Maximize2, X, ChevronLeft, ChevronRight, Image as ImageIcon,
-  Sparkles, Download, Layers, Eye, Video, Play, ExternalLink, Calendar, Tag
+  Sparkles, Download, Layers, Eye, Video, Play, ExternalLink, Calendar, Tag, CheckCircle2
 } from 'lucide-react';
 
 interface GalleryItem {
@@ -102,7 +102,7 @@ const STATIC_VIDEOS: VideoItem[] = [
 ];
 
 const INITIAL_PHOTOS: GalleryItem[] = [
-  // Real Campus Architecture
+  // Campus & Architecture
   {
     id: 1,
     title: 'Technology Park Campus & Main Academic Block',
@@ -145,128 +145,156 @@ const INITIAL_PHOTOS: GalleryItem[] = [
     url: '/images/campus-real/img_20241019_130606.jpg',
     caption: 'Administrative reception, dean chambers, and admissions facilitation center.',
   },
-
-  // Hospital & Panchakarma Clinical
   {
     id: 7,
+    title: 'Campus Green Boulevard & Academic Pavilion',
+    category: 'Campus & Architecture',
+    url: '/images/campus-real/whatsapp_image_2025-02-07_at_11_33_02_pm.jpeg',
+    caption: 'Tree-lined central campus boulevard providing a calm, eco-friendly environment for study and reflection.',
+  },
+  {
+    id: 8,
+    title: 'Collegiate Courtyard & Assembly Ground',
+    category: 'Campus & Architecture',
+    url: '/images/campus-real/whatsapp_image_2025-01-27_at_1_54_17_pm.jpeg',
+    caption: 'Spacious central assembly quadrangle where institutional assemblies, yoga sessions, and cultural events take place.',
+  },
+
+  // Hospital & Clinical
+  {
+    id: 9,
     title: 'Free Ayurvedic Diagnosis & Medical Camp',
     category: 'Hospital & Clinical',
     url: '/images/campus-real/img-20171201-wa0087_gfgfg.jpg',
     caption: 'Faculty Vaidyas and intern scholars conducting community health outreach and pulse diagnosis.',
   },
   {
-    id: 8,
+    id: 10,
     title: 'Community Health Outreach & Medicine Distribution',
     category: 'Hospital & Clinical',
     url: '/images/campus-real/whatsapp_image_2022-04-01_at_10_45_06_jpeg.jpg',
     caption: 'Providing free authentic Ayurvedic remedies and geriatric consultation to rural populations.',
   },
   {
-    id: 9,
+    id: 11,
     title: 'Attached Hospital Clinical Inpatient Ward',
     category: 'Hospital & Clinical',
     url: '/images/campus-real/img_20241019_160610.jpg',
     caption: 'Specialized IPD patient ward supporting round-the-clock clinical bedside care.',
   },
   {
-    id: 10,
+    id: 12,
     title: 'Specialty Clinical Consultation Gathering',
     category: 'Hospital & Clinical',
     url: '/images/campus-real/img_20241115_170818.jpg',
     caption: 'Senior clinical professors supervising patient examinations across Kayachikitsa and Shalya Tantra.',
   },
   {
-    id: 11,
-    title: 'Traditional Panchakarma Therapy Suite',
+    id: 13,
+    title: 'Hospital Outpatient Department (OPD) Reception',
     category: 'Hospital & Clinical',
-    url: '/images/ayurveda/panchakarma/traditional-panchakarma-suite.webp',
-    caption: 'Specialized therapy chamber fitted with carved teakwood Droni and copper vessels for classical shodhana therapies.',
-  },
-  {
-    id: 12,
-    title: 'Authentic Shirodhara Bronze Vessel Sanctum',
-    category: 'Hospital & Clinical',
-    url: '/images/ayurveda/panchakarma/shirodhara-bronze-vessel.webp',
-    caption: 'Continuous rhythmic stream of medicated oil for psychosomatic balance and neurological rejuvenation.',
+    url: '/images/campus-real/img_4546.jpg',
+    caption: 'Welcoming patients for specialized Kayachikitsa, Shalya Tantra, Shalakya, Kaumarbhritya, and Prasuti Tantra consultations.',
   },
 
   // Laboratories & Academics
   {
-    id: 13,
+    id: 14,
     title: 'ICT Smart Classroom & Digital Recording Studio',
     category: 'Laboratories & Academics',
     url: '/images/campus-real/whatsapp_image_2025-09-01_at_15_01_46_95afe1d9.jpg',
     caption: 'Smart interactive classrooms equipped with audiovisual lecture capture systems.',
   },
   {
-    id: 14,
+    id: 15,
     title: 'Modern High-Speed Computer & ICT Laboratory',
     category: 'Laboratories & Academics',
     url: '/images/campus-real/whatsapp_image_2025-09-01_at_13_36_30_9c58320d.jpg',
     caption: 'Digital computing facility with high-speed internet and DELNET library access for research.',
   },
   {
-    id: 15,
+    id: 16,
     title: 'Digital Computing Workstations & E-Learning',
     category: 'Laboratories & Academics',
     url: '/images/campus-real/whatsapp_image_2025-09-01_at_13_36_29_955b5c94.jpg',
     caption: 'Providing computer literacy, biostatistics processing, and digital manuscript exploration.',
   },
   {
-    id: 16,
+    id: 17,
     title: 'Dravyaguna & Pharmacognosy Science Laboratory',
     category: 'Laboratories & Academics',
     url: '/images/campus-real/gallery_(4).jpg',
     caption: 'Equipped with binocular compound microscopes, botanical specimens, and chemical reagents.',
   },
   {
-    id: 17,
+    id: 18,
     title: 'Analytical Herbarium & Pharmacognostical Lab',
     category: 'Laboratories & Academics',
     url: '/images/campus-real/gallery_(5).jpg',
     caption: 'Practical analysis of crude raw drugs, barks, seeds, and classical formulation standardization.',
   },
+  {
+    id: 19,
+    title: 'Central Library Reference & Reading Wing',
+    category: 'Laboratories & Academics',
+    url: '/images/campus-real/img-20250121-wa0017.jpg',
+    caption: 'Spacious reading hall stocked with Samhitas, classical commentaries, reference textbooks, and modern medical journals.',
+  },
+  {
+    id: 20,
+    title: 'Advanced Anatomy Dissection & Osteology Hall',
+    category: 'Laboratories & Academics',
+    url: '/images/campus-real/img-20250121-wa0026.jpg',
+    caption: 'Rachana Sharir dissection hall with anatomical models, bone sets, organ specimens, and charts for hands-on medical training.',
+  },
+  {
+    id: 21,
+    title: 'Physiology & Clinical Practical Laboratory',
+    category: 'Laboratories & Academics',
+    url: '/images/campus-real/img-20250121-wa0029.jpg',
+    caption: 'Kriya Sharir laboratory for diagnostic hematology, urinalysis, and biochemical assessment.',
+  },
+  {
+    id: 22,
+    title: 'Pharmaceutical Preparation Unit (Rasa Shastra)',
+    category: 'Laboratories & Academics',
+    url: '/images/campus-real/img-20250121-wa0034.jpg',
+    caption: 'Dedicated pharmacy training unit with heating hearths, pulverizers, pill-making machines, and purification apparatus.',
+  },
 
   // Charak Vatika Herbarium
   {
-    id: 18,
-    title: 'Charak Vatika 5-Acre Botanical Garden Sanctuary',
-    category: 'Charak Vatika Herbarium',
-    url: '/images/ayurveda/botanical-gardens/charak-vatika-botanical.webp',
-    caption: 'Over 350 authenticated species of rare medicinal plants cultivated for teaching, herbarium study, and research.',
-  },
-  {
-    id: 19,
+    id: 23,
     title: 'Charak Vatika Medicinal Tree Plantation Drive',
     category: 'Charak Vatika Herbarium',
     url: '/images/campus-real/gallery_(2).jpg',
     caption: 'Students cultivating sacred and rare medicinal trees including Neem, Ashoka, Haritaki, and Amalaki.',
   },
 
-  // Student Life, Sports & Cultural
+  // Student Life & Sports
   {
-    id: 20,
+    id: 24,
     title: 'Classical Swasthavritta & Yoga Morning Session',
     category: 'Student Life & Sports',
     url: '/images/campus-real/gallery_(1).jpg',
     caption: 'Scholars performing daily Pranayama, Surya Namaskar, and therapeutic asanas on the campus lawns.',
   },
   {
-    id: 21,
+    id: 25,
     title: 'Annual Campus Sports Meet & Athletic Championship',
     category: 'Student Life & Sports',
     url: '/images/campus-real/gallery_(6).jpg',
     caption: 'Fostering physical vitality, coordination, and team sportsmanship among students.',
   },
   {
-    id: 22,
+    id: 26,
     title: 'Traditional Kabaddi Tournament Championship',
     category: 'Student Life & Sports',
     url: '/images/campus-real/gallery_(10).jpg',
     caption: 'Competitive rural and traditional sports meet highlighting stamina and agile team play.',
   },
   {
-    id: 23,
+    id: 27,
     title: 'Annual Institutional Cricket Tournament',
     category: 'Student Life & Sports',
     url: '/images/campus-real/gallery_(11).jpg',
@@ -275,28 +303,49 @@ const INITIAL_PHOTOS: GalleryItem[] = [
 
   // Events & Dignitaries
   {
-    id: 24,
+    id: 28,
     title: 'Hon’ble Governor of Rajasthan Shri Haribhau Bagde Campus Visit',
     category: 'Events & Dignitaries',
     url: '/images/campus-real/haribhauBagde.jpg',
     caption: 'Hon’ble Governor addressing the faculty and blessing the institutional healthcare mission.',
   },
   {
-    id: 25,
+    id: 29,
     title: 'Chairman Shri Hari Dutt Sharma Presiding at Annual Function',
     category: 'Events & Dignitaries',
     url: '/images/campus-real/chairman.jpg',
     caption: 'Founder & Chairman delivering institutional address on value-based education and Ayurvedic excellence.',
   },
   {
-    id: 26,
+    id: 30,
     title: 'Institutional Faculty & Academic Directorate Group',
     category: 'Events & Dignitaries',
     url: '/images/campus-real/group_photo.jpg',
     caption: 'Eminent professors, Ayurvedic clinicians, and senior department heads.',
   },
   {
-    id: 27,
+    id: 31,
+    title: 'Executive Leadership & Managing Committee Meeting',
+    category: 'Events & Dignitaries',
+    url: '/images/campus-real/madansingh.jpeg',
+    caption: 'Members of the governing trust and managing committee reviewing academic standards and institutional expansion.',
+  },
+  {
+    id: 32,
+    title: 'Academic Mentorship & Student Welfare Directorate',
+    category: 'Events & Dignitaries',
+    url: '/images/campus-real/sanju_mam(1).jpeg',
+    caption: 'Senior faculty mentor providing student counseling, welfare orientation, and academic guidance.',
+  },
+  {
+    id: 33,
+    title: 'State-Level Ayurveda Seminar & Academic Publication',
+    category: 'Events & Dignitaries',
+    url: '/images/campus-real/news-cover.jpg',
+    caption: 'Special publication release and scientific proceedings from the annual state-level Ayurvedic symposium.',
+  },
+  {
+    id: 34,
     title: 'Campus Central Auditorium & Scientific Seminar',
     category: 'Events & Dignitaries',
     url: '/images/campus-real/img-20250121-wa0018.jpg',
@@ -316,9 +365,10 @@ const PHOTO_CATEGORIES = [
 
 function GalleryContent() {
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get('tab') === 'videos' ? 'videos' : 'photos';
+  const tabParam = searchParams.get('tab');
+  const initialTab = tabParam === 'videos' ? 'videos' : tabParam === 'photos' ? 'photos' : 'all';
   
-  const [activeTab, setActiveTab] = useState<'photos' | 'videos'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'all' | 'photos' | 'videos'>(initialTab);
   const [photos, setPhotos] = useState<GalleryItem[]>(INITIAL_PHOTOS);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
@@ -370,6 +420,33 @@ function GalleryContent() {
     ? photos
     : photos.filter((item) => item.category === selectedCategory);
 
+  // Unified stream for "All Media"
+  const allMediaItems = [
+    ...STATIC_VIDEOS.map((v) => ({ ...v, mediaType: 'video' as const })),
+    ...photos.map((p) => ({ ...p, mediaType: 'photo' as const })),
+  ];
+
+  const filteredAllMedia = selectedCategory === 'ALL'
+    ? allMediaItems
+    : allMediaItems.filter((item) => {
+        if (selectedCategory === 'Campus & Architecture') {
+          return item.category === 'Campus & Architecture' || item.category === 'Campus Tour' || item.category === 'Infrastructure';
+        }
+        if (selectedCategory === 'Hospital & Clinical') {
+          return item.category === 'Hospital & Clinical' || item.category === 'Community Seva';
+        }
+        if (selectedCategory === 'Laboratories & Academics') {
+          return item.category === 'Laboratories & Academics' || item.category === 'Academic Pedagogy';
+        }
+        if (selectedCategory === 'Student Life & Sports') {
+          return item.category === 'Student Life & Sports' || item.category === 'Sports & Athletics' || item.category === 'Swasthavritta & Yoga';
+        }
+        if (selectedCategory === 'Events & Dignitaries') {
+          return item.category === 'Events & Dignitaries' || item.category === 'Cultural Arts';
+        }
+        return item.category === selectedCategory;
+      });
+
   const openLightbox = (index: number) => {
     setCurrentIndex(index);
   };
@@ -408,78 +485,205 @@ function GalleryContent() {
       <PageHeader
         title="Institutional Media &amp; Visual Archives"
         subtitle="Technology Park Campus · Academic Complex · 100-Bed Hospital · Student Life"
-        crumbs={[{ label: 'Media & Archives', href: '/gallery' }, { label: activeTab === 'photos' ? 'Photo Gallery' : 'Video Gallery' }]}
+        crumbs={[{ label: 'Media & Archives', href: '/gallery' }, { label: activeTab === 'all' ? 'All Media Archives' : activeTab === 'photos' ? 'Photo Gallery' : 'Video Gallery' }]}
         bgImage="/images/campus-real/banner2(1).jpg"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
         
-        {/* Main Tab Switcher: Photos vs Videos */}
+        {/* Main Tab Switcher: All Media vs Photos vs Videos */}
         <div className="flex justify-center">
-          <div className="bg-white p-1.5 rounded-full border-2 border-[#C5A46D]/40 shadow-luxury flex items-center space-x-2">
+          <div className="bg-white p-1.5 rounded-full border-2 border-[#C5A46D]/40 shadow-luxury flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+            <button
+              onClick={() => setActiveTab('all')}
+              className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center space-x-2 ${
+                activeTab === 'all'
+                  ? 'bg-[#173D32] text-[#DFCA9E] shadow-gold'
+                  : 'text-[#342B25] hover:text-[#173D32] hover:bg-gray-100'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-[#C5A46D]" />
+              <span>All Media ({photos.length + STATIC_VIDEOS.length})</span>
+            </button>
             <button
               onClick={() => setActiveTab('photos')}
-              className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center space-x-2 ${
+              className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center space-x-2 ${
                 activeTab === 'photos'
                   ? 'bg-[#173D32] text-[#DFCA9E] shadow-gold'
                   : 'text-[#342B25] hover:text-[#173D32] hover:bg-gray-100'
               }`}
             >
               <ImageIcon className="w-4 h-4 text-[#C5A46D]" />
-              <span>Photo Gallery ({photos.length} Photographs)</span>
+              <span>Photo Gallery ({photos.length} Photos)</span>
             </button>
             <button
               onClick={() => setActiveTab('videos')}
-              className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center space-x-2 ${
+              className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center space-x-2 ${
                 activeTab === 'videos'
                   ? 'bg-[#173D32] text-[#DFCA9E] shadow-gold'
                   : 'text-[#342B25] hover:text-[#173D32] hover:bg-gray-100'
               }`}
             >
               <Video className="w-4 h-4 text-[#C5A46D]" />
-              <span>Video Gallery ({STATIC_VIDEOS.length} Official Films)</span>
+              <span>Video Gallery ({STATIC_VIDEOS.length} Films)</span>
             </button>
           </div>
         </div>
 
+        {/* Category Filters (Common for All & Photos) */}
+        {(activeTab === 'all' || activeTab === 'photos') && (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {PHOTO_CATEGORIES.map((cat) => {
+              const count = activeTab === 'all'
+                ? (cat === 'ALL' ? allMediaItems.length : filteredAllMedia.length)
+                : (cat === 'ALL' ? photos.length : photos.filter((i) => i.category === cat).length);
+              const isSelected = selectedCategory === cat;
+
+              return (
+                <button
+                  key={cat}
+                  onClick={() => {
+                    setSelectedCategory(cat);
+                    setCurrentIndex(null);
+                  }}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-200 flex items-center space-x-2 border shadow-sm ${
+                    isSelected
+                      ? 'bg-[#173D32] text-[#DFCA9E] border-[#C5A46D] shadow-gold'
+                      : 'bg-white text-[#342B25] border-[#C5A46D]/30 hover:bg-[#173D32]/10 hover:border-[#C5A46D]'
+                  }`}
+                >
+                  <span>{cat}</span>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    isSelected ? 'bg-[#C5A46D] text-[#173D32]' : 'bg-[#173D32]/10 text-[#173D32]'
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* ============================================================ */}
-        {/* TAB 1: PHOTO GALLERY                                         */}
+        {/* TAB 1: ALL MEDIA (UNIFIED STREAM)                            */}
         {/* ============================================================ */}
-        {activeTab === 'photos' && (
+        {activeTab === 'all' && (
           <div className="space-y-8 animate-fade-in">
-            {/* Category Filters */}
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {PHOTO_CATEGORIES.map((cat) => {
-                const count = cat === 'ALL'
-                  ? photos.length
-                  : photos.filter((i) => i.category === cat).length;
-                const isSelected = selectedCategory === cat;
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {filteredAllMedia.map((item, idx) => {
+                if (item.mediaType === 'video') {
+                  const vid = item as VideoItem & { mediaType: 'video' };
+                  return (
+                    <div
+                      key={`all-vid-${vid.id}`}
+                      className="group bg-white rounded-xl overflow-hidden border-2 border-[#C5A46D]/40 shadow-card hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
+                    >
+                      <div
+                        onClick={() => setActiveVideo(vid)}
+                        className="relative aspect-[4/3] bg-black overflow-hidden cursor-pointer"
+                      >
+                        <img
+                          src={`https://img.youtube.com/vi/${vid.youtubeId}/hqdefault.jpg`}
+                          alt={vid.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                        />
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
+
+                        {/* Video Badge */}
+                        <div className="absolute top-3 left-3 flex items-center space-x-1 px-2.5 py-1 rounded bg-[#0F2821]/90 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-[#DFCA9E] border border-[#C5A46D]/50 shadow-sm">
+                          <Video className="w-3 h-3 text-[#C5A46D]" />
+                          <span>Video Film · {vid.category}</span>
+                        </div>
+
+                        {/* Central Play Button */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-14 h-14 rounded-full bg-[#C5A46D] text-[#173D32] flex items-center justify-center shadow-luxury group-hover:scale-115 group-hover:bg-[#DFCA9E] transition-all">
+                            <Play className="w-6 h-6 fill-current translate-x-0.5" />
+                          </div>
+                        </div>
+
+                        <div className="absolute bottom-3 right-3 text-white text-[11px] font-medium flex items-center bg-black/70 px-2 py-0.5 rounded">
+                          <Play className="w-3 h-3 mr-1 text-[#C5A46D] fill-current" />
+                          <span>Watch Video</span>
+                        </div>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
+                        <div>
+                          <h3
+                            onClick={() => setActiveVideo(vid)}
+                            className="font-serif text-base font-bold text-[#173D32] group-hover:text-[#C5A46D] transition-colors leading-tight cursor-pointer"
+                          >
+                            {vid.title}
+                          </h3>
+                          <p className="text-xs text-[#342B25]/80 font-light leading-relaxed mt-1.5 line-clamp-3">
+                            {vid.caption}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Photo Card in All Media
+                const pho = item as GalleryItem & { mediaType: 'photo' };
+                const photoIdx = filteredPhotos.findIndex((p) => p.url === pho.url);
 
                 return (
-                  <button
-                    key={cat}
+                  <div
+                    key={`all-pho-${pho.id}`}
                     onClick={() => {
-                      setSelectedCategory(cat);
-                      setCurrentIndex(null);
+                      if (photoIdx !== -1) openLightbox(photoIdx);
                     }}
-                    className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-200 flex items-center space-x-2 border shadow-sm ${
-                      isSelected
-                        ? 'bg-[#173D32] text-[#DFCA9E] border-[#C5A46D] shadow-gold'
-                        : 'bg-white text-[#342B25] border-[#C5A46D]/30 hover:bg-[#173D32]/10 hover:border-[#C5A46D]'
-                    }`}
+                    className="group bg-white rounded-xl overflow-hidden border border-[#C5A46D]/30 shadow-card hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
                   >
-                    <span>{cat}</span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      isSelected ? 'bg-[#C5A46D] text-[#173D32]' : 'bg-[#173D32]/10 text-[#173D32]'
-                    }`}>
-                      {count}
-                    </span>
-                  </button>
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#173D32]">
+                      <img
+                        src={pho.url}
+                        alt={pho.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0F2821]/80 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
+
+                      <div className="absolute top-3 left-3 flex items-center space-x-1 px-2.5 py-1 rounded bg-[#0F2821]/85 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-[#C5A46D] border border-[#C5A46D]/40 shadow-sm">
+                        <ImageIcon className="w-3 h-3 text-[#C5A46D]" />
+                        <span>{pho.category}</span>
+                      </div>
+
+                      <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#173D32]/85 text-[#C5A46D] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
+                        <Maximize2 className="w-4 h-4" />
+                      </div>
+
+                      <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-white text-[11px] font-medium flex items-center bg-black/60 px-2 py-0.5 rounded">
+                        <Eye className="w-3 h-3 mr-1 text-[#C5A46D]" />
+                        <span>Enlarge Photo</span>
+                      </div>
+                    </div>
+
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
+                      <div>
+                        <h3 className="font-serif text-base font-bold text-[#173D32] group-hover:text-[#C5A46D] transition-colors leading-tight">
+                          {pho.title}
+                        </h3>
+                        <p className="text-xs text-[#342B25]/80 leading-relaxed font-light mt-1.5 line-clamp-3">
+                          {pho.caption}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
+          </div>
+        )}
 
-            {/* Photo Grid */}
+        {/* ============================================================ */}
+        {/* TAB 2: PHOTO GALLERY ONLY                                    */}
+        {/* ============================================================ */}
+        {activeTab === 'photos' && (
+          <div className="space-y-8 animate-fade-in">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {filteredPhotos.map((item, index) => (
                 <div
@@ -498,8 +702,9 @@ function GalleryContent() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0F2821]/80 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
 
                     <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-1 rounded bg-[#0F2821]/85 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-[#C5A46D] border border-[#C5A46D]/40 shadow-sm">
-                        {item.category}
+                      <span className="px-2.5 py-1 rounded bg-[#0F2821]/85 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-[#C5A46D] border border-[#C5A46D]/40 shadow-sm flex items-center space-x-1">
+                        <ImageIcon className="w-3 h-3 text-[#C5A46D]" />
+                        <span>{item.category}</span>
                       </span>
                     </div>
 
@@ -518,7 +723,7 @@ function GalleryContent() {
                       <h3 className="font-serif text-base font-bold text-[#173D32] group-hover:text-[#C5A46D] transition-colors leading-tight">
                         {item.title}
                       </h3>
-                      <p className="text-xs text-[#342B25]/80 leading-relaxed font-light mt-1.5">
+                      <p className="text-xs text-[#342B25]/80 leading-relaxed font-light mt-1.5 line-clamp-3">
                         {item.caption}
                       </p>
                     </div>
@@ -530,7 +735,7 @@ function GalleryContent() {
         )}
 
         {/* ============================================================ */}
-        {/* TAB 2: VIDEO GALLERY                                         */}
+        {/* TAB 3: VIDEO GALLERY ONLY                                    */}
         {/* ============================================================ */}
         {activeTab === 'videos' && (
           <div className="space-y-8 animate-fade-in">
@@ -566,7 +771,7 @@ function GalleryContent() {
                     />
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
 
-                    {/* Category & Duration Pill */}
+                    {/* Category Pill */}
                     <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-[#0F2821]/85 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-[#C5A46D] border border-[#C5A46D]/40">
                       {vid.category}
                     </span>
