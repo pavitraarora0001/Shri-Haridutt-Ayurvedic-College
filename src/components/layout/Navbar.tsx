@@ -49,14 +49,34 @@ export default function Navbar() {
     setActiveDropdown(null);
   }, [pathname]);
 
+  const [currentSearch, setCurrentSearch] = useState('');
+
+  useEffect(() => {
+    const updateSearch = () => {
+      if (typeof window !== 'undefined') {
+        setCurrentSearch(window.location.search);
+      }
+    };
+    updateSearch();
+    window.addEventListener('popstate', updateSearch);
+    return () => window.removeEventListener('popstate', updateSearch);
+  }, [pathname]);
+
   const isHome = pathname === '/';
+
+  const isVideoGalleryActive =
+    pathname === '/video-gallery' ||
+    (pathname === '/gallery' && currentSearch.includes('tab=videos'));
+
+  const isPhotoGalleryActive =
+    pathname === '/gallery' && !currentSearch.includes('tab=videos');
 
   const toggleMobileAccordion = (section: string) => {
     setMobileExpanded(mobileExpanded === section ? null : section);
   };
 
   const getNavItemClass = (isActive: boolean) =>
-    `h-9 px-1.5 xl:px-1.5 2xl:px-2.5 rounded text-[11px] xl:text-[11.5px] 2xl:text-[12.5px] font-medium tracking-normal transition-all duration-200 flex items-center space-x-0.5 xl:space-x-1 whitespace-nowrap shrink-0 select-none ${
+    `h-9 px-1 xl:px-1.5 2xl:px-2.5 rounded text-[11px] xl:text-[11px] 2xl:text-[12.5px] font-medium tracking-normal transition-all duration-200 flex items-center space-x-0.5 xl:space-x-0.5 2xl:space-x-1 whitespace-nowrap shrink-0 select-none ${
       isActive
         ? 'text-[#DFCA9E] bg-[#C5A46D]/15 font-semibold border-b-2 border-[#C5A46D]'
         : 'text-[#F6F2E9] hover:text-[#DFCA9E] hover:bg-white/5'
@@ -83,8 +103,8 @@ export default function Navbar() {
           : 'bg-[#173D32] border-b border-[#C5A46D]/30 py-2.5'
       }`}
     >
-      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-6 2xl:px-8">
-        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3 lg:gap-4 xl:gap-3 2xl:gap-5 w-full">
+      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-2.5 2xl:px-8">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3 lg:gap-4 xl:gap-1.5 2xl:gap-5 w-full">
           {/* Logo & College Identity - Fluid & responsive across all screens */}
           <Link prefetch={true} href="/"
             className="flex items-center space-x-2 sm:space-x-2.5 group shrink-0 py-0.5 select-none min-w-0"
@@ -488,7 +508,7 @@ export default function Navbar() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button
-                className={getNavItemClass(pathname.startsWith('/news-events') || pathname === '/notices' || pathname === '/gallery' || pathname === '/achievements')}
+                className={getNavItemClass(pathname.startsWith('/news-events') || pathname === '/notices' || pathname === '/achievements')}
               >
                 <span>News &amp; Events</span>
                 <ChevronDown className="w-3 h-3 text-[#C5A46D]/80 group-hover:text-[#DFCA9E] group-hover:rotate-180 transition-transform duration-200 shrink-0" />
@@ -517,21 +537,26 @@ export default function Navbar() {
                     <Link prefetch={true} href="/achievements" className="block px-4 py-1.5 text-[#F6F2E9] hover:bg-[#173D32] hover:text-[#C5A46D] transition-colors">
                       Student &amp; Faculty Achievements
                     </Link>
-                    <div className="border-t border-[#C5A46D]/20 my-1" />
-                    <Link prefetch={true} href="/gallery" className="block px-4 py-1.5 text-[#C5A46D] font-bold hover:bg-[#173D32] transition-colors flex items-center justify-between">
-                      <span>Photo Gallery Archive</span>
-                      <span className="text-[10px] bg-[#C5A46D] text-[#173D32] px-1.5 rounded">34+ Photos</span>
-                    </Link>
-                    <Link prefetch={true} href="/gallery?tab=videos" className="block px-4 py-1.5 text-[#DFCA9E] font-bold hover:bg-[#173D32] transition-colors flex items-center justify-between">
-                      <span>Video Gallery (Official Films)</span>
-                      <span className="text-[10px] bg-[#DFCA9E] text-[#173D32] px-1.5 rounded">8 Videos</span>
-                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* 8. EXAMINATION (Dropdown - Positioned right-0) */}
+            {/* 8. PHOTO GALLERY (Direct Top-Level Link) */}
+            <Link prefetch={true} href="/gallery"
+              className={getNavItemClass(isPhotoGalleryActive)}
+            >
+              <span>Photo Gallery</span>
+            </Link>
+
+            {/* 9. VIDEO GALLERY (Direct Top-Level Link) */}
+            <Link prefetch={true} href="/gallery?tab=videos"
+              className={getNavItemClass(isVideoGalleryActive)}
+            >
+              <span>Video Gallery</span>
+            </Link>
+
+            {/* 10. EXAMINATION (Dropdown - Positioned right-0) */}
             <div
               className="relative group"
               onMouseEnter={() => setActiveDropdown('examination')}
@@ -582,7 +607,7 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* 9. MISCELLANEOUS (Multi-Column Dropdown - Positioned right-0) */}
+            {/* 11. MISCELLANEOUS (Multi-Column Dropdown - Positioned right-0) */}
             <div
               className="relative group"
               onMouseEnter={() => setActiveDropdown('miscellaneous')}
@@ -815,19 +840,45 @@ export default function Navbar() {
                   <Link prefetch={true} href="/notices" className="block py-0.5 text-[#DFCA9E] font-semibold">Official Notices &amp; Circulars</Link>
                   <Link prefetch={true} href="/student-life" className="block py-0.5 text-[#F6F2E9]/90 hover:text-[#C5A46D]">Cultural &amp; Sports</Link>
                   <Link prefetch={true} href="/achievements" className="block py-0.5 text-[#F6F2E9]/90 hover:text-[#C5A46D]">Achievements &amp; Medals</Link>
-                  <Link prefetch={true} href="/gallery" className="block py-0.5 text-[#C5A46D] font-bold">Photo Gallery (34+ Photos)</Link>
-                  <Link prefetch={true} href="/gallery?tab=videos" className="block py-0.5 text-[#DFCA9E] font-bold">Video Gallery (8 Official Films)</Link>
                 </div>
               )}
             </div>
 
-            {/* 8. Examination */}
+            {/* 8. Photo Gallery (Direct Mobile Top-Level Link) */}
+            <div className="pt-2">
+              <Link
+                prefetch={true}
+                href="/gallery"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block py-1 text-sm font-bold transition-colors ${
+                  isPhotoGalleryActive ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
+                }`}
+              >
+                <span>8. Photo Gallery</span>
+              </Link>
+            </div>
+
+            {/* 9. Video Gallery (Direct Mobile Top-Level Link) */}
+            <div className="pt-2">
+              <Link
+                prefetch={true}
+                href="/gallery?tab=videos"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block py-1 text-sm font-bold transition-colors ${
+                  isVideoGalleryActive ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
+                }`}
+              >
+                <span>9. Video Gallery</span>
+              </Link>
+            </div>
+
+            {/* 10. Examination */}
             <div className="pt-2">
               <button
                 onClick={() => toggleMobileAccordion('examination')}
                 className="w-full flex items-center justify-between text-sm font-bold text-white hover:text-[#C5A46D] py-1"
               >
-                <span>8. Examination</span>
+                <span>10. Examination</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpanded === 'examination' ? 'rotate-180 text-[#C5A46D]' : ''}`} />
               </button>
               {mobileExpanded === 'examination' && (
@@ -843,13 +894,13 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* 9. Miscellaneous */}
+            {/* 11. Miscellaneous */}
             <div className="pt-2">
               <button
                 onClick={() => toggleMobileAccordion('misc')}
                 className="w-full flex items-center justify-between text-sm font-bold text-white hover:text-[#C5A46D] py-1"
               >
-                <span>9. Miscellaneous</span>
+                <span>11. Miscellaneous</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpanded === 'misc' ? 'rotate-180 text-[#C5A46D]' : ''}`} />
               </button>
               {mobileExpanded === 'misc' && (

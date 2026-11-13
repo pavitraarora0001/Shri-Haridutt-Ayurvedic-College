@@ -366,13 +366,24 @@ const PHOTO_CATEGORIES = [
 function GalleryContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const initialTab = tabParam === 'videos' ? 'videos' : tabParam === 'photos' ? 'photos' : 'all';
+  const initialTab = tabParam === 'videos' ? 'videos' : tabParam === 'all' ? 'all' : 'photos';
   
   const [activeTab, setActiveTab] = useState<'all' | 'photos' | 'videos'>(initialTab);
   const [photos, setPhotos] = useState<GalleryItem[]>(INITIAL_PHOTOS);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
+
+  // Sync tab with URL search parameter
+  useEffect(() => {
+    if (tabParam === 'videos') {
+      setActiveTab('videos');
+    } else if (tabParam === 'all') {
+      setActiveTab('all');
+    } else {
+      setActiveTab('photos');
+    }
+  }, [tabParam]);
 
   // Dynamic fetch from Database
   useEffect(() => {
