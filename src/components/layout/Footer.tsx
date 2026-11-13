@@ -158,7 +158,7 @@ export default async function Footer() {
               </li>
               <li>
                 <Link prefetch={true} href="/gallery" className="hover:text-[#C5A46D] transition-colors flex items-center">
-                  <span className="text-[#C5A46D] mr-1.5 font-bold">›</span> Campus Photo Gallery
+                  <span className="text-[#C5A46D] mr-1.5 font-bold">›</span> Campus Gallery (Photos &amp; Videos)
                 </Link>
               </li>
               <li>

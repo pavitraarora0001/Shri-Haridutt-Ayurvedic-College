@@ -438,7 +438,7 @@ const PHOTO_CATEGORIES = [
 function GalleryContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const initialTab = tabParam === 'videos' ? 'videos' : tabParam === 'all' ? 'all' : 'photos';
+  const initialTab = tabParam === 'videos' ? 'videos' : tabParam === 'photos' ? 'photos' : 'all';
   
   const [activeTab, setActiveTab] = useState<'all' | 'photos' | 'videos'>(initialTab);
   const [photos, setPhotos] = useState<GalleryItem[]>(INITIAL_PHOTOS);
@@ -453,10 +453,10 @@ function GalleryContent() {
   useEffect(() => {
     if (tabParam === 'videos') {
       setActiveTab('videos');
-    } else if (tabParam === 'all') {
-      setActiveTab('all');
-    } else {
+    } else if (tabParam === 'photos') {
       setActiveTab('photos');
+    } else {
+      setActiveTab('all');
     }
   }, [tabParam]);
 
@@ -602,9 +602,9 @@ function GalleryContent() {
   return (
     <div className="bg-[#F6F2E9] min-h-screen">
       <PageHeader
-        title="Institutional Media &amp; Visual Archives"
+        title="Institutional Gallery &amp; Media Archives"
         subtitle="Technology Park Campus · Academic Complex · 100-Bed Hospital · Student Life"
-        crumbs={[{ label: 'Media & Archives', href: '/gallery' }, { label: activeTab === 'all' ? 'All Media Archives' : activeTab === 'photos' ? 'Photo Gallery' : 'Video Gallery' }]}
+        crumbs={[{ label: 'Home', href: '/' }, { label: 'Gallery' }]}
         bgImage="/images/campus-real/banner2(1).jpg"
       />
 

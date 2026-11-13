@@ -75,27 +75,10 @@ export default function Navbar() {
     };
   }, []);
 
-  const [currentSearch, setCurrentSearch] = useState('');
-
-  useEffect(() => {
-    const updateSearch = () => {
-      if (typeof window !== 'undefined') {
-        setCurrentSearch(window.location.search);
-      }
-    };
-    updateSearch();
-    window.addEventListener('popstate', updateSearch);
-    return () => window.removeEventListener('popstate', updateSearch);
-  }, [pathname]);
-
   const isHome = pathname === '/';
 
-  const isVideoGalleryActive =
-    pathname === '/video-gallery' ||
-    (pathname === '/gallery' && currentSearch.includes('tab=videos'));
-
-  const isPhotoGalleryActive =
-    pathname === '/gallery' && !currentSearch.includes('tab=videos');
+  const isGalleryActive =
+    pathname === '/gallery' || pathname === '/video-gallery';
 
   const toggleMobileAccordion = (section: string) => {
     setMobileExpanded(mobileExpanded === section ? null : section);
@@ -590,18 +573,11 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* 8. PHOTO GALLERY (Direct Top-Level Link) */}
+            {/* 8. GALLERY (Unified Direct Top-Level Link) */}
             <Link prefetch={true} href="/gallery"
-              className={getNavItemClass(isPhotoGalleryActive)}
+              className={getNavItemClass(isGalleryActive)}
             >
-              <span>Photo Gallery</span>
-            </Link>
-
-            {/* 9. VIDEO GALLERY (Direct Top-Level Link) */}
-            <Link prefetch={true} href="/gallery?tab=videos"
-              className={getNavItemClass(isVideoGalleryActive)}
-            >
-              <span>Video Gallery</span>
+              <span>Gallery</span>
             </Link>
 
             {/* 10. EXAMINATION (Dropdown - Positioned right-0) */}
@@ -925,35 +901,21 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* 8. Photo Gallery (Direct Mobile Top-Level Link) */}
+            {/* 8. Gallery (Unified Direct Mobile Top-Level Link) */}
             <div className="pt-2">
               <Link
                 prefetch={true}
                 href="/gallery"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block py-1 text-sm font-bold transition-colors ${
-                  isPhotoGalleryActive ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
+                  isGalleryActive ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
                 }`}
               >
-                <span>8. Photo Gallery</span>
+                <span>8. Gallery</span>
               </Link>
             </div>
 
-            {/* 9. Video Gallery (Direct Mobile Top-Level Link) */}
-            <div className="pt-2">
-              <Link
-                prefetch={true}
-                href="/gallery?tab=videos"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`block py-1 text-sm font-bold transition-colors ${
-                  isVideoGalleryActive ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
-                }`}
-              >
-                <span>9. Video Gallery</span>
-              </Link>
-            </div>
-
-            {/* 10. Examination */}
+            {/* 9. Examination */}
             <div className="pt-2">
               <button
                 type="button"
@@ -961,7 +923,7 @@ export default function Navbar() {
                 className="w-full flex items-center justify-between text-sm font-bold text-white hover:text-[#C5A46D] py-1"
                 aria-expanded={mobileExpanded === 'examination'}
               >
-                <span>10. Examination</span>
+                <span>9. Examination</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpanded === 'examination' ? 'rotate-180 text-[#C5A46D]' : ''}`} />
               </button>
               {mobileExpanded === 'examination' && (
@@ -977,7 +939,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* 11. Miscellaneous */}
+            {/* 10. Miscellaneous */}
             <div className="pt-2">
               <button
                 type="button"
@@ -985,7 +947,7 @@ export default function Navbar() {
                 className="w-full flex items-center justify-between text-sm font-bold text-white hover:text-[#C5A46D] py-1"
                 aria-expanded={mobileExpanded === 'misc'}
               >
-                <span>11. Miscellaneous</span>
+                <span>10. Miscellaneous</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpanded === 'misc' ? 'rotate-180 text-[#C5A46D]' : ''}`} />
               </button>
               {mobileExpanded === 'misc' && (
