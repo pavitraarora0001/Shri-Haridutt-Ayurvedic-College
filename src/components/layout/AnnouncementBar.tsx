@@ -10,20 +10,20 @@ export default async function AnnouncementBar() {
   return (
     <div
       suppressHydrationWarning
-      className="bg-[#0B1E19] text-[#F6F2E9] text-xs border-b border-[#C5A46D]/20 py-1.5 transition-all duration-300 select-none overflow-hidden w-full"
+      className="bg-[#0B1E19] text-[#F6F2E9] text-xs border-b border-[#C5A46D]/20 py-1 sm:py-1.5 transition-all duration-300 select-none overflow-hidden w-full"
     >
       <div
         suppressHydrationWarning
-        className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-6 2xl:px-8 flex items-center justify-between gap-2 sm:gap-3"
+        className="w-full max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-4 2xl:px-8 flex items-center justify-between gap-1.5 sm:gap-3"
       >
         {/* Left: Admissions Badge, Sacred Shloka & Live Announcement Ticker */}
-        <div suppressHydrationWarning className="flex items-center space-x-2 min-w-0 overflow-hidden flex-1">
+        <div suppressHydrationWarning className="flex items-center space-x-1.5 sm:space-x-2 min-w-0 overflow-hidden flex-1">
           {/* Admissions Badge */}
           <Link
             href="/admissions/apply"
             prefetch={true}
             suppressHydrationWarning
-            className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[9.5px] sm:text-[10px] font-semibold bg-[#C5A46D]/20 text-[#DFCA9E] border border-[#C5A46D]/50 tracking-wide uppercase whitespace-nowrap shrink-0 hover:bg-[#C5A46D]/30 transition-colors"
+            className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold bg-[#C5A46D]/20 text-[#DFCA9E] border border-[#C5A46D]/50 tracking-wide uppercase whitespace-nowrap shrink-0 hover:bg-[#C5A46D]/30 transition-colors"
           >
             <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 text-[#DFCA9E] shrink-0" />
             <span className="hidden sm:inline">Admissions 2026</span>
@@ -36,8 +36,8 @@ export default async function AnnouncementBar() {
           </span>
 
           {/* Announcement Ticker with Pulsing Icon */}
-          <div className="text-[#F6F2E9] truncate flex items-center text-[10.5px] sm:text-[11px] font-normal min-w-0 pl-0.5">
-            <Bell className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 text-[#C5A46D] shrink-0 inline animate-pulse" />
+          <div className="text-[#F6F2E9] truncate flex items-center text-[10px] sm:text-[11px] font-normal min-w-0 pl-0.5">
+            <Bell className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 mr-1 text-[#C5A46D] shrink-0 inline animate-pulse" />
             <span className="truncate">{settings.announcementBannerText}</span>
           </div>
         </div>
@@ -49,9 +49,9 @@ export default async function AnnouncementBar() {
             className="flex items-center text-[#DFCA9E] hover:text-white transition-colors whitespace-nowrap shrink-0"
             title="Admissions Helpline"
           >
-            <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 text-[#C5A46D] shrink-0" />
+            <Phone className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 mr-1 text-[#C5A46D] shrink-0" />
             <span className="hidden sm:inline text-[#C5A46D]/90 mr-1 text-[11px] font-sans whitespace-nowrap">Admissions:</span>
-            <span className="font-sans text-[10.5px] sm:text-[11px] tracking-normal whitespace-nowrap font-semibold text-white">{settings.contactPhone}</span>
+            <span className="font-sans text-[10px] sm:text-[11px] tracking-normal whitespace-nowrap font-semibold text-white">{settings.contactPhone}</span>
           </a>
 
           <span className="hidden sm:inline text-[#C5A46D]/40 shrink-0">•</span>

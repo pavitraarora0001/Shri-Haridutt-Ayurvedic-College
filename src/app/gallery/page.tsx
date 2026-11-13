@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import PageHeader from '@/components/common/PageHeader';
 import { 
   Maximize2, X, ChevronLeft, ChevronRight, Image as ImageIcon,
-  Sparkles, Download, Layers, Eye, Video, Play, ExternalLink, Calendar, Tag, CheckCircle2
+  Sparkles, Download, Layers, Eye, Video, Play, ExternalLink, Calendar, Tag, CheckCircle2,
+  AlertCircle, RotateCcw
 } from 'lucide-react';
 
 interface GalleryItem {
@@ -19,11 +20,66 @@ interface GalleryItem {
 interface VideoItem {
   id: string;
   title: string;
-  youtubeId: string;
+  youtubeId?: string;
   embedUrl: string;
   category: string;
   duration?: string;
   caption: string;
+  sourceType?: 'youtube' | 'self-hosted';
+  videoUrl?: string;
+  thumbnailUrl?: string;
+}
+
+function parseVideoSource(url: string, title?: string): {
+  sourceType: 'youtube' | 'self-hosted';
+  youtubeId?: string;
+  embedUrl: string;
+  videoUrl?: string;
+  thumbnailUrl: string;
+} {
+  const cleanUrl = (url || '').trim();
+
+  // Check if self-hosted MP4, WebM or Vercel Blob URL
+  if (
+    cleanUrl.endsWith('.mp4') ||
+    cleanUrl.endsWith('.webm') ||
+    cleanUrl.includes('.blob.vercel-storage.com') ||
+    cleanUrl.startsWith('/uploads/')
+  ) {
+    return {
+      sourceType: 'self-hosted',
+      videoUrl: cleanUrl,
+      embedUrl: cleanUrl,
+      thumbnailUrl: '/images/campus-real/banner2(1).jpg',
+    };
+  }
+
+  // YouTube URL parsing:
+  let youtubeId = '';
+  const ytMatch = cleanUrl.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|youtube-nocookie\.com\/embed\/)([a-zA-Z0-9_-]{11})/
+  );
+  if (ytMatch && ytMatch[1]) {
+    youtubeId = ytMatch[1];
+  } else if (/^[a-zA-Z0-9_-]{11}$/.test(cleanUrl)) {
+    youtubeId = cleanUrl;
+  }
+
+  if (youtubeId) {
+    return {
+      sourceType: 'youtube',
+      youtubeId,
+      embedUrl: `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`,
+      thumbnailUrl: `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`,
+    };
+  }
+
+  return {
+    sourceType: 'self-hosted',
+    videoUrl: cleanUrl,
+    embedUrl: cleanUrl,
+    thumbnailUrl: '/images/campus-real/banner2(1).jpg',
+  };
 }
 
 const STATIC_VIDEOS: VideoItem[] = [
@@ -31,73 +87,89 @@ const STATIC_VIDEOS: VideoItem[] = [
     id: 'vid-1',
     title: 'Shri Haridutt College & Technology Park Campus Documentary',
     youtubeId: 'N4w1a5PSjCg',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/N4w1a5PSjCg?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/N4w1a5PSjCg?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Campus Tour',
     duration: 'Full Tour',
     caption: 'Official institutional documentary highlighting the modern academic complex, green campus, analytical laboratories, and facilities situated at Technology Park, Sewar, Bharatpur.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/N4w1a5PSjCg/hqdefault.jpg',
   },
   {
     id: 'vid-2',
     title: 'Technology Park Academic Infrastructure & Green Campus Tour',
     youtubeId: 'YxR2E7TWGJM',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/YxR2E7TWGJM?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/YxR2E7TWGJM?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Infrastructure',
     duration: 'Campus Overview',
     caption: 'Panoramic walkthrough of lecture halls, herbal gardens, administrative directorate, and student facilities.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/YxR2E7TWGJM/hqdefault.jpg',
   },
   {
     id: 'vid-3',
     title: 'Classical Yoga & Asana Demonstration at Technology Park',
     youtubeId: 'wcF1hI1VQtU',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/wcF1hI1VQtU?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/wcF1hI1VQtU?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Swasthavritta & Yoga',
     duration: 'Yoga Practical',
     caption: 'Demonstration of classical Surya Namaskar, Pranayama, and Yogasanas reflecting the Ayurvedic principles of Swasthavritta and preventive health.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/wcF1hI1VQtU/hqdefault.jpg',
   },
   {
     id: 'vid-4',
     title: 'Road Safety Awareness & Community Outreach Initiative',
     youtubeId: 'AjNZvDV9fAs',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/AjNZvDV9fAs?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/AjNZvDV9fAs?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Community Seva',
     duration: 'Outreach Camp',
     caption: 'Public health awareness and community civic campaign organized by the college scholars and faculty.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/AjNZvDV9fAs/hqdefault.jpg',
   },
   {
     id: 'vid-5',
     title: 'Annual Inter-Institutional Sports Meet & Traditional Kabaddi Match',
     youtubeId: 'DhJuZiKfxP4',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/DhJuZiKfxP4?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/DhJuZiKfxP4?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Sports & Athletics',
     duration: 'Championship',
     caption: 'High-energy traditional Kabaddi tournament match displaying vigor, physical stamina, and team spirit.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/DhJuZiKfxP4/hqdefault.jpg',
   },
   {
     id: 'vid-6',
     title: 'Annual Institutional Cricket Cup at Campus Grounds',
     youtubeId: 'fHWpWOMDg8c',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/fHWpWOMDg8c?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/fHWpWOMDg8c?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Sports & Athletics',
     duration: 'Tournament Match',
     caption: 'Inter-batch cricket championship organized at the campus sports grounds.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/fHWpWOMDg8c/hqdefault.jpg',
   },
   {
     id: 'vid-7',
     title: 'Vedic Cultural & Social Drama Performance at Campus Auditorium',
     youtubeId: '7x2wowT4PNc',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/7x2wowT4PNc?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/7x2wowT4PNc?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Cultural Arts',
     duration: 'Theatrical Drama',
     caption: 'Poignant annual day cultural drama "Khaandaan" performed by students in the campus central auditorium.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/7x2wowT4PNc/hqdefault.jpg',
   },
   {
     id: 'vid-8',
     title: 'Educational Evaluation & Academic Orientation Lecture',
     youtubeId: 'PTtttnJV6mk',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/PTtttnJV6mk?autoplay=1',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/PTtttnJV6mk?autoplay=1&rel=0&modestbranding=1&playsinline=1',
     category: 'Academic Pedagogy',
     duration: 'Academic Lecture',
     caption: 'Comprehensive faculty and student development seminar on curriculum pedagogy, instructional evaluation, and classical teaching methodology.',
+    sourceType: 'youtube',
+    thumbnailUrl: 'https://img.youtube.com/vi/PTtttnJV6mk/hqdefault.jpg',
   },
 ];
 
@@ -370,9 +442,12 @@ function GalleryContent() {
   
   const [activeTab, setActiveTab] = useState<'all' | 'photos' | 'videos'>(initialTab);
   const [photos, setPhotos] = useState<GalleryItem[]>(INITIAL_PHOTOS);
+  const [videos, setVideos] = useState<VideoItem[]>(STATIC_VIDEOS);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
+  const [videoError, setVideoError] = useState(false);
+  const [videoKey, setVideoKey] = useState(1);
 
   // Sync tab with URL search parameter
   useEffect(() => {
@@ -392,8 +467,27 @@ function GalleryContent() {
       .then((json) => {
         if (json.data && json.data.length > 0) {
           const photoItems: GalleryItem[] = [];
+          const videoItems: VideoItem[] = [];
+
           json.data.forEach((d: any, idx: number) => {
-            if (d.category !== 'Video') {
+            const isVideo =
+              d.category === 'Video' ||
+              d.imageUrl?.includes('youtube') ||
+              d.imageUrl?.includes('youtu.be') ||
+              d.imageUrl?.endsWith('.mp4') ||
+              d.imageUrl?.endsWith('.webm');
+
+            if (isVideo) {
+              const parsed = parseVideoSource(d.imageUrl, d.title);
+              videoItems.push({
+                id: d.id || `db-vid-${idx}`,
+                title: d.title,
+                category: d.caption?.includes('·') ? d.caption.split('·')[0].trim() : 'Institutional Film',
+                caption: d.caption || '',
+                duration: 'Official Film',
+                ...parsed,
+              });
+            } else {
               let catName = d.category;
               if (catName === 'Campus') catName = 'Campus & Architecture';
               if (catName === 'Hospital') catName = 'Hospital & Clinical';
@@ -422,6 +516,20 @@ function GalleryContent() {
             }
             setPhotos(merged);
           }
+
+          if (videoItems.length > 0) {
+            // Deduplicate by YouTube ID or URL
+            const keySet = new Set<string>();
+            const mergedVideos: VideoItem[] = [];
+            for (const item of [...videoItems, ...STATIC_VIDEOS]) {
+              const key = item.youtubeId || item.videoUrl || item.embedUrl;
+              if (!keySet.has(key)) {
+                keySet.add(key);
+                mergedVideos.push(item);
+              }
+            }
+            setVideos(mergedVideos);
+          }
         }
       })
       .catch(() => {});
@@ -433,7 +541,7 @@ function GalleryContent() {
 
   // Unified stream for "All Media"
   const allMediaItems = [
-    ...STATIC_VIDEOS.map((v) => ({ ...v, mediaType: 'video' as const })),
+    ...videos.map((v) => ({ ...v, mediaType: 'video' as const })),
     ...photos.map((p) => ({ ...p, mediaType: 'photo' as const })),
   ];
 
@@ -514,7 +622,7 @@ function GalleryContent() {
               }`}
             >
               <Sparkles className="w-4 h-4 text-[#C5A46D]" />
-              <span>All Media ({photos.length + STATIC_VIDEOS.length})</span>
+              <span>All Media ({photos.length + videos.length})</span>
             </button>
             <button
               onClick={() => setActiveTab('photos')}
@@ -536,7 +644,7 @@ function GalleryContent() {
               }`}
             >
               <Video className="w-4 h-4 text-[#C5A46D]" />
-              <span>Video Gallery ({STATIC_VIDEOS.length} Films)</span>
+              <span>Video Gallery ({videos.length} Films)</span>
             </button>
           </div>
         </div>
@@ -590,11 +698,14 @@ function GalleryContent() {
                       className="group bg-white rounded-xl overflow-hidden border-2 border-[#C5A46D]/40 shadow-card hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
                     >
                       <div
-                        onClick={() => setActiveVideo(vid)}
+                        onClick={() => {
+                          setVideoError(false);
+                          setActiveVideo(vid);
+                        }}
                         className="relative aspect-[4/3] bg-black overflow-hidden cursor-pointer"
                       >
                         <img
-                          src={`https://img.youtube.com/vi/${vid.youtubeId}/hqdefault.jpg`}
+                          src={vid.thumbnailUrl || (vid.youtubeId ? `https://img.youtube.com/vi/${vid.youtubeId}/hqdefault.jpg` : '/images/campus-real/banner2(1).jpg')}
                           alt={vid.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                         />
@@ -613,7 +724,7 @@ function GalleryContent() {
                           </div>
                         </div>
 
-                        <div className="absolute bottom-3 right-3 text-white text-[11px] font-medium flex items-center bg-black/70 px-2 py-0.5 rounded">
+                        <div className="absolute bottom-3 right-3 text-white text-[11px] font-medium flex items-center bg-black/70 px-2.5 py-1 rounded-full border border-[#C5A46D]/40 shadow-sm">
                           <Play className="w-3 h-3 mr-1 text-[#C5A46D] fill-current" />
                           <span>Watch Video</span>
                         </div>
@@ -622,7 +733,10 @@ function GalleryContent() {
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
                         <div>
                           <h3
-                            onClick={() => setActiveVideo(vid)}
+                            onClick={() => {
+                              setVideoError(false);
+                              setActiveVideo(vid);
+                            }}
                             className="font-serif text-base font-bold text-[#173D32] group-hover:text-[#C5A46D] transition-colors leading-tight cursor-pointer"
                           >
                             {vid.title}
@@ -765,18 +879,21 @@ function GalleryContent() {
 
             {/* Video Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {STATIC_VIDEOS.map((vid) => (
+              {videos.map((vid) => (
                 <div
                   key={vid.id}
                   className="bg-white rounded-xl overflow-hidden border-2 border-[#C5A46D]/30 shadow-card hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group"
                 >
                   {/* Thumbnail with Play Overlay */}
                   <div
-                    onClick={() => setActiveVideo(vid)}
+                    onClick={() => {
+                      setVideoError(false);
+                      setActiveVideo(vid);
+                    }}
                     className="relative aspect-video bg-black overflow-hidden cursor-pointer"
                   >
                     <img
-                      src={`https://img.youtube.com/vi/${vid.youtubeId}/hqdefault.jpg`}
+                      src={vid.thumbnailUrl || (vid.youtubeId ? `https://img.youtube.com/vi/${vid.youtubeId}/hqdefault.jpg` : '/images/campus-real/banner2(1).jpg')}
                       alt={vid.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                     />
@@ -799,7 +916,10 @@ function GalleryContent() {
                   <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-1.5">
                       <h3
-                        onClick={() => setActiveVideo(vid)}
+                        onClick={() => {
+                          setVideoError(false);
+                          setActiveVideo(vid);
+                        }}
                         className="font-serif text-base font-bold text-[#173D32] group-hover:text-[#C5A46D] transition-colors leading-tight cursor-pointer"
                       >
                         {vid.title}
@@ -809,23 +929,17 @@ function GalleryContent() {
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <div className="pt-3 border-t border-gray-100">
                       <button
-                        onClick={() => setActiveVideo(vid)}
-                        className="text-xs font-semibold text-[#173D32] hover:text-[#C5A46D] flex items-center space-x-1"
+                        onClick={() => {
+                          setVideoError(false);
+                          setActiveVideo(vid);
+                        }}
+                        className="w-full py-2.5 px-4 rounded-lg bg-[#173D32] hover:bg-[#1f4e40] text-[#DFCA9E] font-medium text-xs flex items-center justify-center space-x-2 transition-all shadow-sm hover:shadow-md cursor-pointer"
                       >
-                        <Play className="w-3.5 h-3.5 text-[#C5A46D]" />
-                        <span>Watch Video</span>
+                        <Play className="w-3.5 h-3.5 fill-current text-[#C5A46D]" />
+                        <span>Watch Video Inside Website</span>
                       </button>
-                      <a
-                        href={`https://www.youtube.com/watch?v=${vid.youtubeId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[11px] text-[#81917A] hover:text-[#173D32] flex items-center space-x-1"
-                      >
-                        <span>Open YouTube</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
                     </div>
                   </div>
                 </div>
@@ -837,23 +951,29 @@ function GalleryContent() {
         {/* Video Player Modal */}
         {activeVideo && (
           <div
-            className="fixed inset-0 z-50 bg-[#0A1612]/95 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in"
-            onClick={() => setActiveVideo(null)}
+            className="fixed inset-0 z-50 bg-[#0A1612]/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fade-in"
+            onClick={() => {
+              setActiveVideo(null);
+              setVideoError(false);
+            }}
           >
             <div
               className="relative max-w-4xl w-full bg-[#0F2821] rounded-2xl border-2 border-[#C5A46D] shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Top Header */}
-              <div className="p-4 bg-[#173D32] text-white flex items-center justify-between border-b border-[#C5A46D]/30">
+              <div className="p-3 sm:p-4 bg-[#173D32] text-white flex items-center justify-between border-b border-[#C5A46D]/30">
                 <div className="flex items-center space-x-2 truncate pr-4">
                   <Video className="w-4 h-4 text-[#C5A46D] shrink-0" />
-                  <span className="font-serif font-bold text-sm text-[#DFCA9E] truncate">
+                  <span className="font-serif font-bold text-xs sm:text-sm text-[#DFCA9E] truncate">
                     {activeVideo.title}
                   </span>
                 </div>
                 <button
-                  onClick={() => setActiveVideo(null)}
+                  onClick={() => {
+                    setActiveVideo(null);
+                    setVideoError(false);
+                  }}
                   className="p-1.5 rounded-full bg-white/10 text-white hover:bg-rose-600 transition-colors shrink-0"
                   title="Close (Esc)"
                 >
@@ -863,34 +983,72 @@ function GalleryContent() {
 
               {/* Responsive Video Frame */}
               <div className="relative aspect-video w-full bg-black">
-                <iframe
-                  src={activeVideo.embedUrl}
-                  title={activeVideo.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full border-0"
-                />
+                {videoError ? (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center space-y-3 bg-[#0A1612]">
+                    <AlertCircle className="w-12 h-12 text-[#C5A46D]" />
+                    <p className="text-white text-sm font-medium">Unable to load the video player stream.</p>
+                    <button
+                      onClick={() => {
+                        setVideoError(false);
+                        setVideoKey((k) => k + 1);
+                      }}
+                      className="inline-flex items-center space-x-2 px-4 py-2 bg-[#C5A46D] text-[#173D32] rounded-lg font-bold text-xs hover:bg-[#DFCA9E] transition-colors"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      <span>Retry Playback</span>
+                    </button>
+                  </div>
+                ) : activeVideo.sourceType === 'self-hosted' ? (
+                  <video
+                    key={`${activeVideo.id}-${videoKey}`}
+                    src={activeVideo.videoUrl}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-contain"
+                    onError={() => setVideoError(true)}
+                  />
+                ) : (
+                  <iframe
+                    key={`${activeVideo.id}-${videoKey}`}
+                    src={activeVideo.embedUrl}
+                    title={activeVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    className="w-full h-full border-0"
+                    onError={() => setVideoError(true)}
+                  />
+                )}
               </div>
 
               {/* Modal Footer Caption */}
-              <div className="p-4 sm:p-5 text-white space-y-1.5">
-                <div className="flex items-center space-x-2">
-                  <span className="px-2 py-0.5 rounded bg-[#C5A46D]/20 text-[#DFCA9E] text-[10px] uppercase font-bold tracking-wider border border-[#C5A46D]/40">
-                    {activeVideo.category}
-                  </span>
-                  <a
-                    href={`https://www.youtube.com/watch?v=${activeVideo.youtubeId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-[#DFCA9E] hover:underline flex items-center space-x-1"
+              <div className="p-3 sm:p-5 text-white space-y-2 bg-[#0F2821]">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#C5A46D]/20 text-[#DFCA9E] text-[10px] uppercase font-bold tracking-wider border border-[#C5A46D]/40">
+                      {activeVideo.category}
+                    </span>
+                    <span className="text-[11px] text-[#A3B899] font-medium flex items-center">
+                      <CheckCircle2 className="w-3 h-3 text-[#C5A46D] mr-1" />
+                      In-Website Embed Player
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setActiveVideo(null);
+                      setVideoError(false);
+                    }}
+                    className="text-xs text-[#DFCA9E] hover:text-white underline font-medium cursor-pointer"
                   >
-                    <span>Watch directly on YouTube</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                    Close Player
+                  </button>
                 </div>
-                <p className="text-xs text-[#F6F2E9]/80 font-light">
-                  {activeVideo.caption}
-                </p>
+                {activeVideo.caption && (
+                  <p className="text-xs text-[#F6F2E9]/80 font-light leading-relaxed">
+                    {activeVideo.caption}
+                  </p>
+                )}
               </div>
             </div>
           </div>

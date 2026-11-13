@@ -10,7 +10,10 @@ const cspHeader = `
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  img-src 'self' data: blob: https://images.unsplash.com https://images.pexels.com https://upload.wikimedia.org https://placehold.co https://hariduttayurveda.edu.in https://*.public.blob.vercel-storage.com;
+  img-src 'self' data: blob: https://images.unsplash.com https://images.pexels.com https://upload.wikimedia.org https://placehold.co https://hariduttayurveda.edu.in https://*.public.blob.vercel-storage.com https://img.youtube.com https://i.ytimg.com;
+  media-src 'self' blob: data: https://*.public.blob.vercel-storage.com;
+  frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://youtube.com;
+  child-src 'self' https://www.youtube-nocookie.com https://www.youtube.com;
   connect-src 'self' https://* http://* ws: wss:;
   frame-ancestors 'self';
   object-src 'none';
@@ -84,7 +87,7 @@ const nextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), fullscreen=*',
           },
           {
             key: 'Strict-Transport-Security',
