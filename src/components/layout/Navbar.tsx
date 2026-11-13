@@ -85,10 +85,9 @@ export default function Navbar() {
   };
 
   const getNavItemClass = (isActive: boolean) =>
-    `h-9 px-1.5 xl:px-1.5 2xl:px-2 rounded text-[10.5px] xl:text-[10.5px] 2xl:text-[12px] font-medium tracking-normal transition-all duration-200 flex items-center space-x-0.5 xl:space-x-0.5 2xl:space-x-1 whitespace-nowrap shrink-0 select-none ${
-      isActive
-        ? 'text-[#DFCA9E] bg-[#C5A46D]/15 font-semibold border-b-2 border-[#C5A46D]'
-        : 'text-[#F6F2E9] hover:text-[#DFCA9E] hover:bg-white/5'
+    `h-9 px-1.5 xl:px-1.5 2xl:px-2 rounded text-[10.5px] xl:text-[10.5px] 2xl:text-[12px] font-medium tracking-normal transition-all duration-200 flex items-center space-x-0.5 xl:space-x-0.5 2xl:space-x-1 whitespace-nowrap shrink-0 select-none ${isActive
+      ? 'text-[#DFCA9E] bg-[#C5A46D]/15 font-semibold border-b-2 border-[#C5A46D]'
+      : 'text-[#F6F2E9] hover:text-[#DFCA9E] hover:bg-white/5'
     }`;
 
   const dropdownVariants = {
@@ -105,13 +104,12 @@ export default function Navbar() {
   return (
     <header
       ref={headerRef}
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
           ? 'bg-[#173D32] shadow-luxury border-b border-[#C5A46D]/30 py-2'
           : isHome
-          ? 'bg-[#173D32]/95 backdrop-blur-md border-b border-[#C5A46D]/20 py-2.5'
-          : 'bg-[#173D32] border-b border-[#C5A46D]/30 py-2.5'
-      }`}
+            ? 'bg-[#173D32]/95 backdrop-blur-md border-b border-[#C5A46D]/20 py-2.5'
+            : 'bg-[#173D32] border-b border-[#C5A46D]/30 py-2.5'
+        }`}
     >
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-3 2xl:px-8">
         <div className="flex items-center justify-between gap-2 xl:gap-2 2xl:gap-4 w-full">
@@ -744,9 +742,8 @@ export default function Navbar() {
                 prefetch={true}
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block text-sm font-bold transition-colors py-1 ${
-                  isHome ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
-                }`}
+                className={`block text-sm font-bold transition-colors py-1 ${isHome ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
+                  }`}
               >
                 1. Home
               </Link>
@@ -907,9 +904,8 @@ export default function Navbar() {
                 prefetch={true}
                 href="/gallery"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block py-1 text-sm font-bold transition-colors ${
-                  isGalleryActive ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
-                }`}
+                className={`block py-1 text-sm font-bold transition-colors ${isGalleryActive ? 'text-[#DFCA9E]' : 'text-white hover:text-[#C5A46D]'
+                  }`}
               >
                 <span>8. Gallery</span>
               </Link>
